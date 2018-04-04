@@ -1,0 +1,58 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v2.0",
+    "signature": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v2.0": {
+      "TradeBot.BL/1.0.0": {
+        "dependencies": {
+          "TradeBot.MockRepo": "1.0.0",
+          "TradeBot.Models": "1.0.0",
+          "TradeBot.Utils": "1.0.0"
+        },
+        "runtime": {
+          "TradeBot.BL.dll": {}
+        }
+      },
+      "TradeBot.MockRepo/1.0.0": {
+        "runtime": {
+          "TradeBot.MockRepo.dll": {}
+        }
+      },
+      "TradeBot.Models/1.0.0": {
+        "runtime": {
+          "TradeBot.Models.dll": {}
+        }
+      },
+      "TradeBot.Utils/1.0.0": {
+        "runtime": {
+          "TradeBot.Utils.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "TradeBot.BL/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "TradeBot.MockRepo/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "TradeBot.Models/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "TradeBot.Utils/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

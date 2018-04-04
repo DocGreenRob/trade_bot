@@ -16,4 +16,10 @@
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TradeBot.BL\TradeBot.BL.csproj" />
+    <ProjectReference Include="..\TradeBot.Models\TradeBot.Models.csproj" />
+    <ProjectReference Include="..\TradeBot.Utils\TradeBot.Utils.csproj" />
+  </ItemGroup>
+
 </Project>

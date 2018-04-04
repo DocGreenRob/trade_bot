@@ -5,8 +5,6 @@ VisualStudioVersion = 15.0.27130.2024
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradeBot", "TradeBot\TradeBot.csproj", "{73F3D537-D285-42CD-8407-A00F0730E51B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradeBotTests", "TradeBotTests\TradeBotTests.csproj", "{88517E0D-2C38-4A9A-8193-C0AA18057C30}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradeBot.Utils", "TradeBot.Utils\TradeBot.Utils.csproj", "{709C89B2-8D21-4B6C-93CD-7856ED5A2B99}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradeBot.MockRepo", "TradeBot.MockRepo\TradeBot.MockRepo.csproj", "{5B631009-3583-4AA5-A092-1AC9B34ABE1C}"
@@ -16,6 +14,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradeBot.Dal", "TradeBot.Dal\TradeBot.Dal.csproj", "{888C0F0A-73AF-4C42-86CB-37ECFC78C78B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradeBot.Models", "TradeBot.Models\TradeBot.Models.csproj", "{D51FDF3C-D78B-4040-A6F7-B396944D740F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradeBot.Test", "TradeBot.Test\TradeBot.Test.csproj", "{1C9E2EE1-16D2-4972-9CA5-92C5CE12A859}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,10 +27,6 @@ Global
 		{73F3D537-D285-42CD-8407-A00F0730E51B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{73F3D537-D285-42CD-8407-A00F0730E51B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{73F3D537-D285-42CD-8407-A00F0730E51B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{88517E0D-2C38-4A9A-8193-C0AA18057C30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{88517E0D-2C38-4A9A-8193-C0AA18057C30}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{88517E0D-2C38-4A9A-8193-C0AA18057C30}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{88517E0D-2C38-4A9A-8193-C0AA18057C30}.Release|Any CPU.Build.0 = Release|Any CPU
 		{709C89B2-8D21-4B6C-93CD-7856ED5A2B99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{709C89B2-8D21-4B6C-93CD-7856ED5A2B99}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{709C89B2-8D21-4B6C-93CD-7856ED5A2B99}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -51,6 +47,10 @@ Global
 		{D51FDF3C-D78B-4040-A6F7-B396944D740F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D51FDF3C-D78B-4040-A6F7-B396944D740F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D51FDF3C-D78B-4040-A6F7-B396944D740F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C9E2EE1-16D2-4972-9CA5-92C5CE12A859}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C9E2EE1-16D2-4972-9CA5-92C5CE12A859}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C9E2EE1-16D2-4972-9CA5-92C5CE12A859}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C9E2EE1-16D2-4972-9CA5-92C5CE12A859}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

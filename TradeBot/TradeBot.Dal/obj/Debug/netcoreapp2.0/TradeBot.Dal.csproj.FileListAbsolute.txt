@@ -1,0 +1,9 @@
+C:\_dev\_git\trade_bot\TradeBot\TradeBot.Dal\bin\Debug\netcoreapp2.0\TradeBot.Dal.deps.json
+C:\_dev\_git\trade_bot\TradeBot\TradeBot.Dal\bin\Debug\netcoreapp2.0\TradeBot.Dal.dll
+C:\_dev\_git\trade_bot\TradeBot\TradeBot.Dal\bin\Debug\netcoreapp2.0\TradeBot.Dal.pdb
+C:\_dev\_git\trade_bot\TradeBot\TradeBot.Dal\obj\Debug\netcoreapp2.0\TradeBot.Dal.csprojResolveAssemblyReference.cache
+C:\_dev\_git\trade_bot\TradeBot\TradeBot.Dal\obj\Debug\netcoreapp2.0\TradeBot.Dal.csproj.CoreCompileInputs.cache
+C:\_dev\_git\trade_bot\TradeBot\TradeBot.Dal\obj\Debug\netcoreapp2.0\TradeBot.Dal.AssemblyInfoInputs.cache
+C:\_dev\_git\trade_bot\TradeBot\TradeBot.Dal\obj\Debug\netcoreapp2.0\TradeBot.Dal.AssemblyInfo.cs
+C:\_dev\_git\trade_bot\TradeBot\TradeBot.Dal\obj\Debug\netcoreapp2.0\TradeBot.Dal.dll
+C:\_dev\_git\trade_bot\TradeBot\TradeBot.Dal\obj\Debug\netcoreapp2.0\TradeBot.Dal.pdb
