@@ -37,6 +37,15 @@ namespace TradeBot.Test.BL
             // TBD
         }
 
+        /// <summary>
+        /// In this case, we will change the Position value such as to make the app start the monitoring process
+        /// </summary>
+        [TestMethod]
+        public void Can_Evaluate_Position_And_Toggle_Monitor() { }
+
+        /// <summary>
+        /// In this case, we will evaluate the Position and becuase of its behavior we know its time to close the position
+        /// </summary>
         [TestMethod]
         public void Can_Evaluate_Position_And_Close_Position() { }
     }
