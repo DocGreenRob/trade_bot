@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace TradeBot.Tests
+namespace TradeBot.Tests.BusinessLogicTests
 {
     [TestClass]
     public class UnitTest1
