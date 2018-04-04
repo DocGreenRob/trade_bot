@@ -4746,6 +4746,51 @@
         "runtime": {
           "lib/netstandard1.3/Microsoft.WindowsAzure.Storage.dll": {}
         }
+      },
+      "TradeBot.BL/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v2.0",
+        "dependencies": {
+          "TradeBot.MockRepo": "1.0.0",
+          "TradeBot.Models": "1.0.0",
+          "TradeBot.Utils": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/TradeBot.BL.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/TradeBot.BL.dll": {}
+        }
+      },
+      "TradeBot.MockRepo/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v2.0",
+        "compile": {
+          "bin/placeholder/TradeBot.MockRepo.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/TradeBot.MockRepo.dll": {}
+        }
+      },
+      "TradeBot.Models/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v2.0",
+        "compile": {
+          "bin/placeholder/TradeBot.Models.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/TradeBot.Models.dll": {}
+        }
+      },
+      "TradeBot.Utils/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v2.0",
+        "compile": {
+          "bin/placeholder/TradeBot.Utils.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/TradeBot.Utils.dll": {}
+        }
       }
     }
   },
@@ -12526,12 +12571,35 @@
         "windowsazure.storage.8.1.4.nupkg.sha512",
         "windowsazure.storage.nuspec"
       ]
+    },
+    "TradeBot.BL/1.0.0": {
+      "type": "project",
+      "path": "../TradeBot.BL/TradeBot.BL.csproj",
+      "msbuildProject": "../TradeBot.BL/TradeBot.BL.csproj"
+    },
+    "TradeBot.MockRepo/1.0.0": {
+      "type": "project",
+      "path": "../TradeBot.MockRepo/TradeBot.MockRepo.csproj",
+      "msbuildProject": "../TradeBot.MockRepo/TradeBot.MockRepo.csproj"
+    },
+    "TradeBot.Models/1.0.0": {
+      "type": "project",
+      "path": "../TradeBot.Models/TradeBot.Models.csproj",
+      "msbuildProject": "../TradeBot.Models/TradeBot.Models.csproj"
+    },
+    "TradeBot.Utils/1.0.0": {
+      "type": "project",
+      "path": "../TradeBot.Utils/TradeBot.Utils.csproj",
+      "msbuildProject": "../TradeBot.Utils/TradeBot.Utils.csproj"
     }
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v2.0": [
       "Microsoft.AspNetCore.All >= 2.0.5",
-      "Microsoft.NETCore.App >= 2.0.0"
+      "Microsoft.NETCore.App >= 2.0.0",
+      "TradeBot.BL >= 1.0.0",
+      "TradeBot.Models >= 1.0.0",
+      "TradeBot.Utils >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -12569,7 +12637,17 @@
       },
       "frameworks": {
         "netcoreapp2.0": {
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\_dev\\_git\\trade_bot\\TradeBot\\TradeBot.Utils\\TradeBot.Utils.csproj": {
+              "projectPath": "C:\\_dev\\_git\\trade_bot\\TradeBot\\TradeBot.Utils\\TradeBot.Utils.csproj"
+            },
+            "C:\\_dev\\_git\\trade_bot\\TradeBot\\TradeBot.Models\\TradeBot.Models.csproj": {
+              "projectPath": "C:\\_dev\\_git\\trade_bot\\TradeBot\\TradeBot.Models\\TradeBot.Models.csproj"
+            },
+            "C:\\_dev\\_git\\trade_bot\\TradeBot\\TradeBot.BL\\TradeBot.BL.csproj": {
+              "projectPath": "C:\\_dev\\_git\\trade_bot\\TradeBot\\TradeBot.BL\\TradeBot.BL.csproj"
+            }
+          }
         }
       },
       "warningProperties": {
