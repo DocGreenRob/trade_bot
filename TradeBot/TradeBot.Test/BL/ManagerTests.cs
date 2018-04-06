@@ -16,7 +16,7 @@ namespace TradeBot.Test.BL
             // -------
             // Create Position
             PositionManager position = new PositionManager();
-            position.CreatePosition("TSLA");
+            position.OpenPosition("TSLA", PositionType.Strangle);
 
             // Simulate Position Change
             position.Change(TradeDirection.Up, .02);

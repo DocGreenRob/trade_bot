@@ -40,7 +40,7 @@ public bool IsReversal(int sessionInterval){
 public class Position{
     public int PositionId {get; set;}
     public double UnderlyingPriceAtEntry {get; set;}
-    public IPositionType PositionType {get; set;}
+    public IPosition PositionType {get; set;}
     public DateTime EntryTime {get; set;}
     public double ProfitLossOpen
 }
