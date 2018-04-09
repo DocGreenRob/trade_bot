@@ -196,6 +196,43 @@
         "build": {
           "build/netstandard2.0/NETStandard.Library.targets": {}
         }
+      },
+      "TradeBot.Models/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v2.0",
+        "dependencies": {
+          "TradeBot.Utils": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/TradeBot.Models.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/TradeBot.Models.dll": {}
+        }
+      },
+      "TradeBot.Repo/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v2.0",
+        "dependencies": {
+          "TradeBot.Models": "1.0.0",
+          "TradeBot.Utils": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/TradeBot.Repo.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/TradeBot.Repo.dll": {}
+        }
+      },
+      "TradeBot.Utils/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v2.0",
+        "compile": {
+          "bin/placeholder/TradeBot.Utils.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/TradeBot.Utils.dll": {}
+        }
       }
     }
   },
@@ -656,16 +693,31 @@
         "netstandard.library.2.0.0.nupkg.sha512",
         "netstandard.library.nuspec"
       ]
+    },
+    "TradeBot.Models/1.0.0": {
+      "type": "project",
+      "path": "../TradeBot.Models/TradeBot.Models.csproj",
+      "msbuildProject": "../TradeBot.Models/TradeBot.Models.csproj"
+    },
+    "TradeBot.Repo/1.0.0": {
+      "type": "project",
+      "path": "../TradeBot.Repo/TradeBot.Repo.csproj",
+      "msbuildProject": "../TradeBot.Repo/TradeBot.Repo.csproj"
+    },
+    "TradeBot.Utils/1.0.0": {
+      "type": "project",
+      "path": "../TradeBot.Utils/TradeBot.Utils.csproj",
+      "msbuildProject": "../TradeBot.Utils/TradeBot.Utils.csproj"
     }
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v2.0": [
-      "Microsoft.NETCore.App >= 2.0.0"
+      "Microsoft.NETCore.App >= 2.0.0",
+      "TradeBot.Repo >= 1.0.0"
     ]
   },
   "packageFolders": {
-    "C:\\Users\\rgreen\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackagesFallback\\": {},
+    "C:\\Users\\Admin\\.nuget\\packages\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
@@ -674,20 +726,18 @@
       "hideWarningsAndErrors": true
     },
     "restore": {
-      "projectUniqueName": "C:\\_dev\\_git\\trade_bot\\TradeBot\\TradeBot.MockRepo\\TradeBot.MockRepo.csproj",
+      "projectUniqueName": "C:\\_sandbox\\_dev\\trade_bot\\TradeBot\\TradeBot.MockRepo\\TradeBot.MockRepo.csproj",
       "projectName": "TradeBot.MockRepo",
-      "projectPath": "C:\\_dev\\_git\\trade_bot\\TradeBot\\TradeBot.MockRepo\\TradeBot.MockRepo.csproj",
-      "packagesPath": "C:\\Users\\rgreen\\.nuget\\packages\\",
-      "outputPath": "C:\\_dev\\_git\\trade_bot\\TradeBot\\TradeBot.MockRepo\\obj\\",
+      "projectPath": "C:\\_sandbox\\_dev\\trade_bot\\TradeBot\\TradeBot.MockRepo\\TradeBot.MockRepo.csproj",
+      "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+      "outputPath": "C:\\_sandbox\\_dev\\trade_bot\\TradeBot\\TradeBot.MockRepo\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackagesFallback\\",
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\rgreen\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.Fallback.config"
+        "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp2.0"
@@ -698,7 +748,11 @@
       },
       "frameworks": {
         "netcoreapp2.0": {
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\_sandbox\\_dev\\trade_bot\\TradeBot\\TradeBot.Repo\\TradeBot.Repo.csproj": {
+              "projectPath": "C:\\_sandbox\\_dev\\trade_bot\\TradeBot\\TradeBot.Repo\\TradeBot.Repo.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

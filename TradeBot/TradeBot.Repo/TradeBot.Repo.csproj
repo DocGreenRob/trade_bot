@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TradeBot.Models\TradeBot.Models.csproj" />
+    <ProjectReference Include="..\TradeBot.Utils\TradeBot.Utils.csproj" />
+  </ItemGroup>
+
+</Project>

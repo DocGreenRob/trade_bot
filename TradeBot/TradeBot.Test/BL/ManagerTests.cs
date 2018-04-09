@@ -2,40 +2,50 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TradeBot.BL.Managers;
 using static TradeBot.Utils.Enum.AppEnums;
+using System.Collections.Generic;
 
 namespace TradeBot.Test.BL
 {
     [TestClass]
     public class ManagerTests
     {
-        // TODO: What does it mean to evaluate a position?
-        [TestMethod]
+		// TODO: What does it mean to evaluate a position?
+		/// <summary>
+		/// In this case, we will evaluate an Open Position and make the decision Not to Close the Position becuase we have Not met our Financial Goals with this Trade.
+		/// </summary>
+		[TestMethod]
         public void Can_Evaluate_Position_And_Not_Close_Position()
         {
-            // Arrange
-            // -------
-            // Create Position
-            PositionManager position = new PositionManager();
-            position.OpenPosition("TSLA", PositionType.Strangle);
+			// Arrange
+			// -------
+			List<Broker> brokers = new List<Broker> { Broker.ETrade, Broker.TDAmeritrade };
 
-            // Simulate Position Change
-            position.Change(TradeDirection.Up, .02);
+			foreach(Broker broker in brokers)
+			{
+				// Create Position
+				PositionManager position = new PositionManager(broker);
+				position.OpenPosition("TSLA", PositionType.Strangle, TradeStrength.Light);
 
-            // 50 * 1.5 = 75
-            // 50 * 1.0 = 50 ; so 1.0 = 100%
-            // 50 * .20 = 10 ; so .20 = 20%
-            // 50 * .02 = 1 ; so .02 = 2%
+				// Simulate Position Change
+				position.Change(TradeDirection.Up, .02);
 
-            // Act
-            // ---
-            // Evaluate Position
-            position.Evaluate();
+				// 50 * 1.5 = 75
+				// 50 * 1.0 = 50 ; so 1.0 = 100%
+				// 50 * .20 = 10 ; so .20 = 20%
+				// 50 * .02 = 1 ; so .02 = 2%
 
-            // Assert
-            // ------
+				// Act
+				// ---
+				// Evaluate Position
+				position.Evaluate();
 
-            // TBD
-        }
+				// Assert
+				// ------
+
+				// TBD
+			}
+
+		}
 
         /// <summary>
         /// In this case, we will change the Position value such as to make the app start the monitoring process
@@ -48,5 +58,48 @@ namespace TradeBot.Test.BL
         /// </summary>
         [TestMethod]
         public void Can_Evaluate_Position_And_Close_Position() { }
-    }
+
+		/// <summary>
+		/// In this case, we want to Open a Position
+		/// </summary>
+		[TestMethod]
+		public void Can_Open_Position() { }
+
+		/// <summary>
+		/// In this case, we want to Get a Position
+		/// </summary>
+		[TestMethod]
+		public void Can_Get_Position() { }
+
+		/// <summary>
+		/// In this case, we want to Close a Position
+		/// </summary>
+		[TestMethod]
+		public void Can_Close_Position() { }
+
+		/// <summary>
+		/// In this case, we want to Evaluate a Position
+		/// </summary>
+		[TestMethod]
+		public void Can_Evaluate_Position() { }
+
+		/// <summary>
+		/// In this case, we want to Analyze the Price Action Chart for a specified time frame
+		/// </summary>
+		[TestMethod]
+		public void Can_Evaluate_PriceActionChart() { }
+
+		/// <summary>
+		/// In this case, we want to Analyze a specific time frame's Candlestick
+		/// </summary>
+		[TestMethod]
+		public void Can_Evaluate_Candlestick() { }
+
+		/// <summary>
+		/// In this case, we want to ensure that we can get the correct expiration date for Options based on Today's date
+		/// </summary>
+		[TestMethod]
+		public void Can_Get_Correct_Expiration_Date() { }
+
+	}
 }
