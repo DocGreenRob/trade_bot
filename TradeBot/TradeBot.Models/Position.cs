@@ -1,15 +1,51 @@
 ﻿using System;
 using TradeBot.Models.Interfaces;
+using static TradeBot.Utils.Enum.AppEnums;
 
 namespace TradeBot.Models
 {
     public class Position
     {
         public int PositionId { get; set; }
+        /// <summary>
+        /// Gets or sets the underlying price at entry.
+        /// </summary>
+        /// <value>
+        /// The underlying price at entry. (Which is an estimate a seconds could pass from the time of OrderPreview to Place[Option]Order --> This value is not returned from the API)
+        /// </value>
         public double UnderlyingPriceAtEntry { get; set; }
-        public IPosition PositionType { get; set; }
+        /// <summary>
+        /// Gets or sets the type of the instrument.
+        /// </summary>
+        /// <value>
+        /// The type of the instrument. (Stock, Bond, Mutual Fund, Option)
+        /// </value>
+        public InstrumentType InstrumentType { get; set; }
+        /// <summary>
+        /// Gets or sets the entry time.
+        /// </summary>
+        /// <value>
+        /// The entry time.
+        /// </value>
         public DateTime EntryTime { get; set; }
+        /// <summary>
+        /// Gets or sets the profit loss open.
+        /// </summary>
+        /// <value>
+        /// The profit loss open.
+        /// </value>
         public double ProfitLossOpen { get; set; }
+        /// <summary>
+        /// Gets or sets the underlying.
+        /// </summary>
+        /// <value>
+        /// The underlying.
+        /// </value>
         public Underlying Underlying { get; set; }
+        #region ETrade Properties
+        public OptionOrderResponse OptionOrderResponse { get; set; }
+        #endregion
+
+
     }
 }

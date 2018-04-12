@@ -34,5 +34,12 @@ namespace TradeBot.Repo.Position
 			// https://developer.etrade.com/ctnt/dev-portal/getDetail?contentUri=V0_Documentation-AccountsAPI-GetAccountBalance
 			throw new NotImplementedException();
 		}
-	}
+
+        public Models.Position CreateNewPosition(string underlying, List<Option> optionChain, int numOfContracts, double currentPositionPrice)
+        {
+            // https://developer.etrade.com/ctnt/dev-portal/getDetail?contentUri=V0_Documentation-OrderAPI-PlaceOptionOrder
+            throw new NotImplementedException();
+        }
+
+    }
 }

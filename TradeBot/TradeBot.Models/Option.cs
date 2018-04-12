@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TradeBot.Models.Interfaces;
 using static TradeBot.Utils.Enum.AppEnums;
 
 namespace TradeBot.Models

@@ -6148,7 +6148,8 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Admin\\.nuget\\packages\\": {},
+    "C:\\Users\\rgreen\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackagesFallback\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
@@ -6157,18 +6158,20 @@
       "hideWarningsAndErrors": true
     },
     "restore": {
-      "projectUniqueName": "C:\\_sandbox\\_dev\\trade_bot\\TradeBot\\TradeBot.Test\\TradeBot.Test.csproj",
+      "projectUniqueName": "C:\\_dev\\_git\\trade_bot\\TradeBot\\TradeBot.Test\\TradeBot.Test.csproj",
       "projectName": "TradeBot.Test",
-      "projectPath": "C:\\_sandbox\\_dev\\trade_bot\\TradeBot\\TradeBot.Test\\TradeBot.Test.csproj",
-      "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-      "outputPath": "C:\\_sandbox\\_dev\\trade_bot\\TradeBot\\TradeBot.Test\\obj\\",
+      "projectPath": "C:\\_dev\\_git\\trade_bot\\TradeBot\\TradeBot.Test\\TradeBot.Test.csproj",
+      "packagesPath": "C:\\Users\\rgreen\\.nuget\\packages\\",
+      "outputPath": "C:\\_dev\\_git\\trade_bot\\TradeBot\\TradeBot.Test\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackagesFallback\\",
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Users\\rgreen\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.Fallback.config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp2.0"
@@ -6180,11 +6183,11 @@
       "frameworks": {
         "netcoreapp2.0": {
           "projectReferences": {
-            "C:\\_sandbox\\_dev\\trade_bot\\TradeBot\\TradeBot.Utils\\TradeBot.Utils.csproj": {
-              "projectPath": "C:\\_sandbox\\_dev\\trade_bot\\TradeBot\\TradeBot.Utils\\TradeBot.Utils.csproj"
+            "C:\\_dev\\_git\\trade_bot\\TradeBot\\TradeBot.Utils\\TradeBot.Utils.csproj": {
+              "projectPath": "C:\\_dev\\_git\\trade_bot\\TradeBot\\TradeBot.Utils\\TradeBot.Utils.csproj"
             },
-            "C:\\_sandbox\\_dev\\trade_bot\\TradeBot\\TradeBot.BL\\TradeBot.BL.csproj": {
-              "projectPath": "C:\\_sandbox\\_dev\\trade_bot\\TradeBot\\TradeBot.BL\\TradeBot.BL.csproj"
+            "C:\\_dev\\_git\\trade_bot\\TradeBot\\TradeBot.BL\\TradeBot.BL.csproj": {
+              "projectPath": "C:\\_dev\\_git\\trade_bot\\TradeBot\\TradeBot.BL\\TradeBot.BL.csproj"
             }
           }
         }

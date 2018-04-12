@@ -35,26 +35,28 @@ namespace TradeBot.BL.Managers
 			DateTime expirationDate;
 			List<Option> optionChain;
 
-			// Create new option trade, this should:
-			// 1. Check the current price of the Underlying (Get Option Chain)
-			
-			// positionPrice = THe price of the Position (the Trade).
-			double positionPrice = GetCurrentPrice(underlying, positionType, out expirationDate, out optionChain);
+            // Create new option trade, this should:
+            // 1. Check the current price of the Underlying (Get Option Chain)
+
+            // currentPositionPrice = THe price of the Position (the Trade).
+            double currentPositionPrice = GetCurrentPrice(underlying, positionType, out expirationDate, out optionChain);
 
 			// 2. Check account value (to determine how many contracts to buy)
-			int contracts = DetermineNumberOfContracts(positionPrice, tradeStrength);
+			int numOfContracts = DetermineNumberOfContracts(currentPositionPrice, tradeStrength);
 
-			if(contracts > 0)
+            if (numOfContracts > 0)
 			{
 				// 3. Place trade
-				Position position = CreateNewPosition(underlying, optionChain, contracts);
+				Position position = CreateNewPosition(underlying, optionChain, numOfContracts, currentPositionPrice);
 
 				// 4. Return results of the above (order number, position number, position id)
 			}
 
 		}
 
-		private double GetCurrentPrice(string underlying, PositionType positionType, out DateTime expirationDate, out List<Option> optionChain)
+        
+
+        private double GetCurrentPrice(string underlying, PositionType positionType, out DateTime expirationDate, out List<Option> optionChain)
 		{
 			expirationDate = Utils.Utils.Utils.GetExpirationDate();
 
@@ -110,10 +112,11 @@ namespace TradeBot.BL.Managers
 			}
 
 			return (maxPosition / positionPrice).ToGetBase();
-
-
-			throw new NotImplementedException();
 		}
 
-	}
+        private Position CreateNewPosition(string underlying, List<Option> optionChain, int numOfContracts, double currentPositionPrice)
+        {
+            return _positionRepo.CreateNewPosition(underlying, optionChain, numOfContracts, currentPositionPrice);
+        }
+    }
 }

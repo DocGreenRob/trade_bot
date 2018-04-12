@@ -9,6 +9,12 @@ namespace TradeBot.Test.BL
     [TestClass]
     public class ManagerTests
     {
+        private Repo.IPositionRepo positionRepo;
+
+        public ManagerTests()
+        {
+            positionRepo = new MockRepo.PositionRepo();
+        }
 		// TODO: What does it mean to evaluate a position?
 		/// <summary>
 		/// In this case, we will evaluate an Open Position and make the decision Not to Close the Position becuase we have Not met our Financial Goals with this Trade.
@@ -23,7 +29,7 @@ namespace TradeBot.Test.BL
 			foreach(Broker broker in brokers)
 			{
 				// Create Position
-				PositionManager position = new PositionManager(broker);
+				PositionManager position = new PositionManager(positionRepo, broker);
 				position.OpenPosition("TSLA", PositionType.Strangle, TradeStrength.Light);
 
 				// Simulate Position Change

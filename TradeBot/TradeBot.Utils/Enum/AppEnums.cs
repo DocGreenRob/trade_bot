@@ -75,5 +75,22 @@
 			BUY_TO_CLOSE,
 			SELL_TO_CLOSE
 		}
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public enum InstrumentType
+        {
+            Stock,
+            Bond,
+            Option,
+            MutualFund
+        }
+
+        public enum OrderTerm
+        {
+            GOOD_FOR_DAY,
+            GOOD_TILL_CANCEL
+        }
 	}
 }

@@ -9,5 +9,6 @@ namespace TradeBot.Repo
 		System.Collections.Generic.List<Option> GetOptionChain(string underlying, OptionType chainType);
 		double GetOrderPrice(List<Option> optionChain);
 		double GetOptionBuyingPower();
-	}
+        Models.Position CreateNewPosition(string underlying, List<Option> optionChain, int numOfContracts, double currentPositionPrice);
+    }
 }
