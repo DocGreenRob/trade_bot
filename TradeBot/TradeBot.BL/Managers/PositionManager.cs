@@ -30,7 +30,7 @@ namespace TradeBot.BL.Managers
 			// 1. Need to Authenticate with Broker
 		}
 
-		public void OpenPosition(string underlying, PositionType positionType, TradeStrength tradeStrength)
+		public Position OpenPosition(string underlying, PositionType positionType, TradeStrength tradeStrength)
         {
 			DateTime expirationDate;
 			List<Option> optionChain;
@@ -46,14 +46,13 @@ namespace TradeBot.BL.Managers
 
             if (numOfContracts > 0)
 			{
-				// 3. Place trade
-				Position position = CreateNewPosition(underlying, optionChain, numOfContracts, currentPositionPrice);
-
-				// 4. Return results of the above (order number, position number, position id)
+                // 3. Place trade &
+                // 4. Return results of the above (order number, position number, position id)
+                return CreateNewPosition(underlying, optionChain, numOfContracts, currentPositionPrice);
 			}
 
+            throw new Exception("Don't have enough funds to open a position of this size.");
 		}
-
         
 
         private double GetCurrentPrice(string underlying, PositionType positionType, out DateTime expirationDate, out List<Option> optionChain)

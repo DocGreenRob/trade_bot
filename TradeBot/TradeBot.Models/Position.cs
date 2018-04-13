@@ -1,4 +1,6 @@
 ﻿using System;
+
+using TradeBot.Models.Broker.ETrade;
 using TradeBot.Models.Interfaces;
 using static TradeBot.Utils.Enum.AppEnums;
 
@@ -42,10 +44,16 @@ namespace TradeBot.Models
         /// The underlying.
         /// </value>
         public Underlying Underlying { get; set; }
-        #region ETrade Properties
+
+        #region ETrade Properties        
+        /// <summary>
+        /// Gets or sets the option order response.
+        /// </summary>
+        /// <value>
+        /// The option order response.
+        /// </value>
         public OptionOrderResponse OptionOrderResponse { get; set; }
         #endregion
-
 
     }
 }

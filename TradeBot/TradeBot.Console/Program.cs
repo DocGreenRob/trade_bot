@@ -1,7 +1,7 @@
-﻿using System;
-using System.IO;
+﻿using Microsoft.Extensions.Configuration;
 
-using Microsoft.Extensions.Configuration;
+using System;
+using System.IO;
 
 using TradeBot.Utils.ExtensionMethods;
 

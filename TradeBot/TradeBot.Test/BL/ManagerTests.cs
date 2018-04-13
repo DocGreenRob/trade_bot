@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TradeBot.BL.Managers;
 using static TradeBot.Utils.Enum.AppEnums;
 using System.Collections.Generic;
+using TradeBot.Models;
 
 namespace TradeBot.Test.BL
 {
@@ -17,7 +18,7 @@ namespace TradeBot.Test.BL
         }
 		// TODO: What does it mean to evaluate a position?
 		/// <summary>
-		/// In this case, we will evaluate an Open Position and make the decision Not to Close the Position becuase we have Not met our Financial Goals with this Trade.
+		/// In this case, we will evaluate an Open Position and make the decision Not to Close the Position because we have Not met our Financial Goals (% or $) with this Trade.
 		/// </summary>
 		[TestMethod]
         public void Can_Evaluate_Position_And_Not_Close_Position()
@@ -29,21 +30,21 @@ namespace TradeBot.Test.BL
 			foreach(Broker broker in brokers)
 			{
 				// Create Position
-				PositionManager position = new PositionManager(positionRepo, broker);
-				position.OpenPosition("TSLA", PositionType.Strangle, TradeStrength.Light);
+				PositionManager positionMgr = new PositionManager(positionRepo, broker);
+                Position position = positionMgr.OpenPosition("TSLA", PositionType.Strangle, TradeStrength.Light);
 
-				// Simulate Position Change
-				position.Change(TradeDirection.Up, .02);
+                // Simulate Position Change
+                positionMgr.Change(TradeDirection.Up, .02);
 
-				// 50 * 1.5 = 75
-				// 50 * 1.0 = 50 ; so 1.0 = 100%
-				// 50 * .20 = 10 ; so .20 = 20%
-				// 50 * .02 = 1 ; so .02 = 2%
+                // 50 * 1.5 = 75
+                // 50 * 1.0 = 50 ; so 1.0 = 100%
+                // 50 * .20 = 10 ; so .20 = 20%
+                // 50 * .02 = 1 ; so .02 = 2%
 
-				// Act
-				// ---
-				// Evaluate Position
-				position.Evaluate();
+                // Act
+                // ---
+                // Evaluate Position
+                positionMgr.Evaluate();
 
 				// Assert
 				// ------

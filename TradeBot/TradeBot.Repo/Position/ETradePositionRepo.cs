@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+
 using TradeBot.Models;
 using TradeBot.Utils.Utils;
 using System;

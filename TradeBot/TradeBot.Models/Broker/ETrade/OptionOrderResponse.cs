@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using static TradeBot.Utils.Enum.AppEnums;
 
 namespace TradeBot.Models.Broker.ETrade

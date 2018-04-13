@@ -36,18 +36,18 @@ namespace TradeBot.Models.Broker.ETrade
         /// </value>
         public int ExpirationYear { get; set; }
         /// <summary>
-        /// Gets or sets the month.
+        /// Gets or sets the expiration month.
         /// </summary>
         /// <value>
-        /// The month.
+        /// The expiration month.
         /// </value>
-        public int Month { get; set; }
+        public int ExpirationMonth { get; set; }
         /// <summary>
-        /// Gets or sets the day.
+        /// Gets or sets the expiration day.
         /// </summary>
         /// <value>
-        /// The day.
+        /// The expiration day.
         /// </value>
-        public int Day { get; set; }
+        public int ExpirationDay { get; set; }
     }
 }
