@@ -18,13 +18,15 @@ namespace TradeBot.MockRepo
                     accountPosition.MarketValue = accountPosition.MarketValue - (accountPosition.CurrentPrice * changeAmount);
                     break;
                 case AppEnums.TradeDirection.Sideways:
-                    // Deduct time? RIght?  I think so, because time is the only change in that case.  Here we want to siumulate, effectively, no change in price, which says only a change in time has occured!
+                    // TODO: Investigate
+                    // Deduct time? Right?  I think so, because time is the only change in that case.  Here we want to siumulate, effectively, no change in price, which says only a change in time has occured!
                     break;
                 case AppEnums.TradeDirection.Up:
                     accountPosition.CurrentPrice = accountPosition.CurrentPrice + (accountPosition.CurrentPrice * changeAmount);
                     accountPosition.MarketValue = accountPosition.MarketValue + (accountPosition.CurrentPrice * changeAmount);
                     break;
             }
+            return accountPosition;
         }
 
         public Position CreateNewPosition(string underlying, List<Option> optionChain, int numOfContracts, double currentPositionPrice)
@@ -72,6 +74,72 @@ namespace TradeBot.MockRepo
                     OrderAction = AppEnums.OrderAction.BUY_TO_OPEN
                 }
             };
+        }
+
+        public AppEnums.Decision Evaluate(AccountPosition adjustedAccountPosition)
+        {
+            // Evaluate the currentPositionPrice versus the costBasis and see the difference in percent
+
+            double changeInDollars = adjustedAccountPosition.CurrentPrice - adjustedAccountPosition.CostBasis;
+            double percentAsDecimal = changeInDollars / adjustedAccountPosition.CostBasis;
+            double percent = percentAsDecimal * 100;
+
+            // Add the evaluation to the history
+            History.Add(adjustedAccountPosition, changeInDollars, percent);
+
+            // negative
+            if(percent < 0)
+            {
+                if (percent > -5)
+                {
+                    return AppEnums.Decision.Wait;
+                }
+                if (percent < -5)
+                {
+
+                    return AppEnums.Decision.Wait;
+                }
+                if (percent < -7)
+                {
+                    return AppEnums.Decision.Start_To_Worry;
+                }
+                if (percent >= -7)
+                {
+                    return AppEnums.Decision.Investigate;
+                }
+                if (percent < -10)
+                {
+                    return AppEnums.Decision.Close;
+                }
+                if (percent > -15)
+                {
+                    return AppEnums.Decision.Close;
+                }
+            }
+            else
+            {
+                if (percent > 5)
+                {
+                    // What does 5% look like, what's the book value, (i.e., if 5% = $1,000) then we will NOT give back more than 1% of that 5%.
+                    return AppEnums.Decision.Break_Even;
+                    return AppEnums.Decision.Set_Least_Gain_2_Percent;
+                }
+                if (percent > 7)
+                {
+                    return AppEnums.Decision.Set_Least_Gain_4_Percent;
+                }
+                if (percent > 10)
+                {
+                    // allows room for fluctations
+                    return AppEnums.Decision.Set_Least_Gain_6_Percent;
+                }
+                if (percent > 15)
+                {
+                    return AppEnums.Decision.Close;
+                }
+                // positive
+            }
+
         }
 
         public double GetOptionBuyingPower()

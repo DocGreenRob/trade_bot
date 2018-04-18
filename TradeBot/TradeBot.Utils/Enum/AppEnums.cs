@@ -137,5 +137,43 @@
             /// </summary>
             SHORT
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public enum Decision
+        {
+            /// <summary>
+            /// The close
+            /// </summary>
+            Close,
+            /// <summary>
+            /// The wait
+            /// </summary>
+            Wait,
+            /// <summary>
+            /// The reverse
+            /// </summary>
+            Reverse,
+            Investigate,
+            Start_To_Worry,
+            View_Historicals,
+            /// <summary>
+            /// The set least gain. (In the case where we are up 10% then we want to ensure that we gain at WORST 7.5%, for example)
+            /// </summary>
+            Set_Least_Gain,
+            Break_Even,
+            Trailing_Stop_1_Percent,
+            /// <summary>
+            /// The set least gain 2 percent. In the case where we profit 7% but we don't want to allow the trade to go in the red, we say the minimum gain is 2%.
+            /// </summary>
+            Set_Least_Gain_2_Percent,
+            /// <summary>
+            /// 
+            /// </summary>
+            Set_Least_Gain_4_Percent,
+            Set_Least_Gain_6_Percent,
+            HopeFor10PercentButTrap5Percent
+        }
 	}
 }

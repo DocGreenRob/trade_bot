@@ -123,6 +123,11 @@ namespace TradeBot.BL.Managers
 			return (maxPosition / positionPrice).ToGetBase();
 		}
 
+        public Decision Evaluate(AccountPosition adjustedAccountPosition)
+        {
+            throw new NotImplementedException();
+        }
+
         private Position CreateNewPosition(string underlying, List<Option> optionChain, int numOfContracts, double currentPositionPrice)
         {
             return _positionRepo.CreateNewPosition(underlying, optionChain, numOfContracts, currentPositionPrice);

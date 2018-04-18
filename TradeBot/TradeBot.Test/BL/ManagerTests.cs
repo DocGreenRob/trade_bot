@@ -56,6 +56,7 @@ namespace TradeBot.Test.BL
                             tradeDirection = TradeDirection.Down;
 
                         // Simulate Position Change
+                        // Simulates checking the position via the API (getting the most current status of the position)
                         AccountPosition adjustedAccountPosition = positionMgr.Change(accountPosition, tradeDirection, .02);
 
                         // 50 * 1.5 = 75
@@ -66,10 +67,11 @@ namespace TradeBot.Test.BL
                         // Act
                         // ---
                         // Evaluate Position
-                        positionMgr.Evaluate();
+                        Decision decision = positionMgr.Evaluate(adjustedAccountPosition);
 
                         // Assert
                         // ------
+                        Assert.AreEqual(decision, Decision.Wait);
 
                         // TBD
                     }

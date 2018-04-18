@@ -52,5 +52,10 @@ namespace TradeBot.Repo.Position
         {
             throw new NotImplementedException();
         }
+
+        public AppEnums.Decision Evaluate(AccountPosition adjustedAccountPosition)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

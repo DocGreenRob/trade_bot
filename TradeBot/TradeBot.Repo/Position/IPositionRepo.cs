@@ -16,6 +16,7 @@ namespace TradeBot.Repo
         Models.Position CreateNewPosition(string underlying, List<Option> optionChain, int numOfContracts, double currentPositionPrice);
         AccountPosition Change(AccountPosition accountPosition, TradeDirection tradeDirection, double changeAmount);
         AccountPositionsResponse GetPositions(int accountId);
+        Decision Evaluate(AccountPosition adjustedAccountPosition);
 
         #endregion
 
