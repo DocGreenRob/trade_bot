@@ -53,6 +53,8 @@ namespace TradeBot.Models
         /// The option order response.
         /// </value>
         public OptionOrderResponse OptionOrderResponse { get; set; }
+
+        public AccountPositionsResponse AccountPositionsResponse { get; set; }
         #endregion
 
     }

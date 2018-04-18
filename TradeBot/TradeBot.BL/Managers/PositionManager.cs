@@ -8,7 +8,8 @@ using TradeBot.Repo;
 using TradeBot.Models;
 using static TradeBot.Utils.Enum.AppEnums;
 using TradeBot.Utils.ExtensionMethods;
-
+using TradeBot.Utils.Enum;
+using TradeBot.Models.Broker.ETrade;
 
 namespace TradeBot.BL.Managers
 {
@@ -53,8 +54,12 @@ namespace TradeBot.BL.Managers
 
             throw new Exception("Don't have enough funds to open a position of this size.");
 		}
-        
 
+        public AccountPositionsResponse GetPositions(int accountId)
+        {
+            throw new NotImplementedException();
+        }
+        
         private double GetCurrentPrice(string underlying, PositionType positionType, out DateTime expirationDate, out List<Option> optionChain)
 		{
 			expirationDate = Utils.Utils.Utils.GetExpirationDate();
@@ -72,7 +77,12 @@ namespace TradeBot.BL.Managers
 			throw new NotImplementedException();
 		}
 
-		private int DetermineNumberOfContracts(double positionPrice, TradeStrength tradeStrength)
+        public AccountPosition Change(AccountPosition accountPosition, TradeDirection tradeDirection, double changeAmount)
+        {
+            throw new NotImplementedException();
+        }
+
+        private int DetermineNumberOfContracts(double positionPrice, TradeStrength tradeStrength)
 		{
 			// 1. Get account value
 			double optionBuyingPower = _positionRepo.GetOptionBuyingPower();

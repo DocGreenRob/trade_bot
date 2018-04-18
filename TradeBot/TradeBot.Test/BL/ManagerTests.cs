@@ -4,6 +4,8 @@ using TradeBot.BL.Managers;
 using static TradeBot.Utils.Enum.AppEnums;
 using System.Collections.Generic;
 using TradeBot.Models;
+using TradeBot.Models.Broker.ETrade;
+using System.Linq;
 
 namespace TradeBot.Test.BL
 {
@@ -21,7 +23,7 @@ namespace TradeBot.Test.BL
 		/// In this case, we will evaluate an Open Position and make the decision Not to Close the Position because we have Not met our Financial Goals (% or $) with this Trade.
 		/// </summary>
 		[TestMethod]
-        public void Can_Evaluate_Position_And_Not_Close_Position()
+        public void Can_Evaluate_Single_Position_And_Not_Close_Position()
         {
 			// Arrange
 			// -------
@@ -29,28 +31,52 @@ namespace TradeBot.Test.BL
 
 			foreach(Broker broker in brokers)
 			{
-				// Create Position
-				PositionManager positionMgr = new PositionManager(positionRepo, broker);
-                Position position = positionMgr.OpenPosition("TSLA", PositionType.Strangle, TradeStrength.Light);
+                if(broker == Broker.ETrade)
+                {
+                    // Create Position
+                    PositionManager positionMgr = new PositionManager(positionRepo, broker);
+                    Position position = positionMgr.OpenPosition("TSLA", PositionType.Strangle, TradeStrength.Light);
+                    // TODO: Log
 
-                // Simulate Position Change
-                positionMgr.Change(TradeDirection.Up, .02);
+                    // Get Account Positions
+                    int accountId = 999999999;
+                    AccountPositionsResponse accountPositions = positionMgr.GetPositions(accountId);
 
-                // 50 * 1.5 = 75
-                // 50 * 1.0 = 50 ; so 1.0 = 100%
-                // 50 * .20 = 10 ; so .20 = 20%
-                // 50 * .02 = 1 ; so .02 = 2%
+                    // Get the Position
+                    // Find my "position" in the "accountPositions"
+                    List<AccountPosition> positionsOfInterest = accountPositions.AccountPositions.Where(a => a.Product.Symbol.ToLower() == position.Underlying.Name.ToLower()).ToList();
 
-                // Act
-                // ---
-                // Evaluate Position
-                positionMgr.Evaluate();
+                    
+                    foreach(AccountPosition accountPosition in positionsOfInterest)
+                    {
+                        TradeDirection tradeDirection;
+                        if (accountPosition.Product.CallPut == OptionType.CALL)
+                            tradeDirection = TradeDirection.Up;
+                        else
+                            tradeDirection = TradeDirection.Down;
 
-				// Assert
-				// ------
+                        // Simulate Position Change
+                        AccountPosition adjustedAccountPosition = positionMgr.Change(accountPosition, tradeDirection, .02);
 
-				// TBD
-			}
+                        // 50 * 1.5 = 75
+                        // 50 * 1.0 = 50 ; so 1.0 = 100%
+                        // 50 * .20 = 10 ; so .20 = 20%
+                        // 50 * .02 = 1 ; so .02 = 2%
+
+                        // Act
+                        // ---
+                        // Evaluate Position
+                        positionMgr.Evaluate();
+
+                        // Assert
+                        // ------
+
+                        // TBD
+                    }
+
+                }
+
+            }
 
 		}
 

@@ -2,6 +2,21 @@
   "version": 3,
   "targets": {
     ".NETCoreApp,Version=v2.0": {
+      "elmah/1.2.2": {
+        "type": "package",
+        "dependencies": {
+          "elmah.corelibrary": "1.2.2"
+        }
+      },
+      "elmah.corelibrary/1.2.2": {
+        "type": "package",
+        "compile": {
+          "lib/Elmah.dll": {}
+        },
+        "runtime": {
+          "lib/Elmah.dll": {}
+        }
+      },
       "Microsoft.CSharp/4.3.0": {
         "type": "package",
         "dependencies": {
@@ -1050,6 +1065,28 @@
     }
   },
   "libraries": {
+    "elmah/1.2.2": {
+      "sha512": "UGnc/NHz0SHNc5eWaW+NynuYWFn+KM2NEoBJbavDt6s8pSBZQgDkKaaqvEV43TiF5GB1uDVjXLx1yjdfP78UPQ==",
+      "type": "package",
+      "path": "elmah/1.2.2",
+      "files": [
+        "Readme.txt",
+        "content/App_Readme/Elmah.txt",
+        "content/web.config.transform",
+        "elmah.1.2.2.nupkg.sha512",
+        "elmah.nuspec"
+      ]
+    },
+    "elmah.corelibrary/1.2.2": {
+      "sha512": "OEx4ds9r2bw2/45VZwfw11lLv4y+mC2FUZxp7LsjmauFxj92K1kx8hafSBvls+V9s0WH0wv84B1LfWN/EaGfkg==",
+      "type": "package",
+      "path": "elmah.corelibrary/1.2.2",
+      "files": [
+        "elmah.corelibrary.1.2.2.nupkg.sha512",
+        "elmah.corelibrary.nuspec",
+        "lib/Elmah.dll"
+      ]
+    },
     "Microsoft.CSharp/4.3.0": {
       "sha512": "P+MBhIM0YX+JqROuf7i306ZLJEjQYA9uUyRDE+OqwUI5sh41e2ZbPQV3LfAPh+29cmceE1pUffXsGfR4eMY3KA==",
       "type": "package",
@@ -4094,7 +4131,8 @@
       "TradeBot.MockRepo >= 1.0.0",
       "TradeBot.Models >= 1.0.0",
       "TradeBot.Repo >= 1.0.0",
-      "TradeBot.Utils >= 1.0.0"
+      "TradeBot.Utils >= 1.0.0",
+      "elmah >= 1.2.2"
     ]
   },
   "packageFolders": {
@@ -4166,6 +4204,10 @@
             "target": "Package",
             "version": "[2.0.0, )",
             "autoReferenced": true
+          },
+          "elmah": {
+            "target": "Package",
+            "version": "[1.2.2, )"
           }
         },
         "imports": [
@@ -4175,5 +4217,17 @@
         "warn": true
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'elmah.corelibrary 1.2.2' was restored using '.NETFramework,Version=v4.6.1' instead of the project target framework '.NETCoreApp,Version=v2.0'. This package may not be fully compatible with your project.",
+      "libraryId": "elmah.corelibrary",
+      "targetGraphs": [
+        ".NETCoreApp,Version=v2.0"
+      ]
+    }
+  ]
 }

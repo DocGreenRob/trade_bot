@@ -4,6 +4,7 @@ using TradeBot.Models;
 using TradeBot.Utils.Utils;
 using System;
 using TradeBot.Utils.Enum;
+using TradeBot.Models.Broker.ETrade;
 
 namespace TradeBot.Repo.Position
 {
@@ -42,5 +43,14 @@ namespace TradeBot.Repo.Position
             throw new NotImplementedException();
         }
 
+        public AccountPosition Change(AccountPosition accountPosition, AppEnums.TradeDirection tradeDirection, double changeAmount)
+        {
+            throw new NotImplementedException();
+        }
+
+        public AccountPositionsResponse GetPositions(int accountId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

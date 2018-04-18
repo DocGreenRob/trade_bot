@@ -87,10 +87,55 @@
             MutualFund
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public enum OrderTerm
         {
             GOOD_FOR_DAY,
             GOOD_TILL_CANCEL
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public enum TypeCode
+        {
+            /// <summary>
+            /// Equity
+            /// </summary>
+            EQ,
+            /// <summary>
+            /// Option
+            /// </summary>
+            OPTN,
+            /// <summary>
+            /// Index
+            /// </summary>
+            INDX,
+            /// <summary>
+            /// Mutual Fund
+            /// </summary>
+            MF,
+            /// <summary>
+            /// Fixed Income
+            /// </summary>
+            FI
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public enum LongOrShort
+        {
+            /// <summary>
+            /// Bullish
+            /// </summary>
+            LONG,
+            /// <summary>
+            /// Bearish
+            /// </summary>
+            SHORT
         }
 	}
 }
