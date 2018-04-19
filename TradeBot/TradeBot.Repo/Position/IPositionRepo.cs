@@ -10,10 +10,10 @@ namespace TradeBot.Repo
 	{
         #region ETrade
 
-        List<Option> GetOptionChain(string underlying, OptionType chainType);
-		double GetOrderPrice(List<Option> optionChain);
+        OptionChainResponse GetOptionChain(string underlying, OptionType chainType);
+		double GetOrderPrice(OptionChainResponse optionChain);
 		double GetOptionBuyingPower();
-        Models.Position CreateNewPosition(string underlying, List<Option> optionChain, int numOfContracts, double currentPositionPrice);
+        Models.Position CreateNewPosition(string underlying, OptionChainResponse optionChain, int numOfContracts, double currentPositionPrice);
         AccountPosition Change(AccountPosition accountPosition, TradeDirection tradeDirection, double changeAmount);
         AccountPositionsResponse GetPositions(int accountId);
         Decision Evaluate(AccountPosition adjustedAccountPosition);

@@ -175,5 +175,16 @@
             Set_Least_Gain_6_Percent,
             HopeFor10PercentButTrap5Percent
         }
+
+        public enum ExchangeCode
+        {
+            CINC
+        }
+
+        public enum ExpirationType
+        {
+            MONTHLY
+        }
+
 	}
 }

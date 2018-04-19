@@ -29,7 +29,7 @@ namespace TradeBot.MockRepo
             return accountPosition;
         }
 
-        public Position CreateNewPosition(string underlying, List<Option> optionChain, int numOfContracts, double currentPositionPrice)
+        public Position CreateNewPosition(string underlying, OptionChainResponse optionChain, int numOfContracts, double currentPositionPrice)
         {
             return new Position
             {
@@ -64,12 +64,12 @@ namespace TradeBot.MockRepo
                     LimitPrice = 10,
                     OptionSymbol = new OptionSymbol
                     {
-                        Symbol = "TSLA",
+                        Symbol = Models.MockModelDefaults.Default.RootSymbol,
                         OptionType = AppEnums.OptionType.CALL,
-                        StrikePrice = 300,
-                        ExpirationYear = 2018,
-                        ExpirationMonth = 4,
-                        ExpirationDay = 20
+                        StrikePrice = Models.MockModelDefaults.Default.StrikePrice,
+                        ExpirationYear = Models.MockModelDefaults.Default.ExpirationYear,
+                        ExpirationMonth = Models.MockModelDefaults.Default.ExpirationMonth,
+                        ExpirationDay = Models.MockModelDefaults.Default.ExpirationDay
                     },
                     OrderAction = AppEnums.OrderAction.BUY_TO_OPEN
                 }
@@ -118,6 +118,10 @@ namespace TradeBot.MockRepo
             }
             else
             {
+                if (percent < 5)
+                {
+                    return AppEnums.Decision.Wait;
+                }
                 if (percent > 5)
                 {
                     // What does 5% look like, what's the book value, (i.e., if 5% = $1,000) then we will NOT give back more than 1% of that 5%.
@@ -140,6 +144,8 @@ namespace TradeBot.MockRepo
                 // positive
             }
 
+            throw new Exception("Something went wrong!");
+
         }
 
         public double GetOptionBuyingPower()
@@ -147,12 +153,58 @@ namespace TradeBot.MockRepo
             throw new System.NotImplementedException();
         }
 
-        public List<Option> GetOptionChain(string underlying, AppEnums.OptionType chainType)
+        public OptionChainResponse GetOptionChain(string underlying, AppEnums.OptionType chainType)
         {
-            throw new System.NotImplementedException();
+            return new OptionChainResponse
+            {
+                OptionPairCount = 2,
+                OptionPairs = new List<OptionPairCount>
+                {
+                    new OptionPairCount
+                    {
+                        OptionPairs = new List<Models.Broker.ETrade.Option>
+                        {
+                            new Models.Broker.ETrade.Option
+                            {
+                                OptionType = AppEnums.OptionType.CALL,
+                                RootSymbol = "TSLA",
+                                ExpirationDate = new DateTime(Models.MockModelDefaults.Date.Year, Models.MockModelDefaults.Date.Month, Models.MockModelDefaults.Date.Day),
+                                ExpirationType = AppEnums.ExpirationType.MONTHLY,
+                                Product = new Product
+                                {
+                                    ExchangeCode = AppEnums.ExchangeCode.CINC,
+                                    Symbol = Models.MockModelDefaults.Symbol.Name,
+                                    TypeCode = AppEnums.TypeCode.OPTN
+                                },
+                                StrikePrice = Models.MockModelDefaults.StrikePrice.Price
+                            }
+                        }
+                    },
+                    new OptionPairCount
+                    {
+                        OptionPairs = new List<Models.Broker.ETrade.Option>
+                        {
+                            new Models.Broker.ETrade.Option
+                            {
+                                OptionType = AppEnums.OptionType.PUT,
+                                RootSymbol = "TSLA",
+                                ExpirationDate = new DateTime(Models.MockModelDefaults.Date.Year, Models.MockModelDefaults.Date.Month, Models.MockModelDefaults.Date.Day),
+                                ExpirationType = AppEnums.ExpirationType.MONTHLY,
+                                Product = new Product
+                                {
+                                    ExchangeCode = AppEnums.ExchangeCode.CINC,
+                                    Symbol = Models.MockModelDefaults.Symbol.Name,
+                                    TypeCode = AppEnums.TypeCode.OPTN
+                                },
+                                StrikePrice = Models.MockModelDefaults.StrikePrice.Price
+                            }
+                        }
+                    }
+                }
+            };
         }
 
-        public double GetOrderPrice(List<Option> optionChain)
+        public double GetOrderPrice(OptionChainResponse optionChain)
         {
             throw new System.NotImplementedException();
         }
@@ -166,17 +218,17 @@ namespace TradeBot.MockRepo
                 AccountPositions = new List<AccountPosition> {
                     new AccountPosition {
                         CostBasis = 5.1572,
-                        Description = "TSLA Apr 20 '18 $300 Call",
+                        Description = Models.MockModelDefaults.Symbol.Name,
                         LongOrShort = AppEnums.LongOrShort.LONG,
                         Product = new Product
                         {
                             Symbol = "TSLA",
                             TypeCode = AppEnums.TypeCode.OPTN,
                             CallPut = AppEnums.OptionType.CALL,
-                            StrikePrice = 300,
-                            ExpirationYear = 2018,
-                            ExpirationMonth = 4,
-                            ExpirationDay = 20
+                            StrikePrice = Models.MockModelDefaults.StrikePrice.Price,
+                            ExpirationYear = Models.MockModelDefaults.Date.Year,
+                            ExpirationMonth = Models.MockModelDefaults.Date.Month,
+                            ExpirationDay = Models.MockModelDefaults.Date.Day
                         },
                         Quantity = 1,
                         CurrentPrice = 5.1572,

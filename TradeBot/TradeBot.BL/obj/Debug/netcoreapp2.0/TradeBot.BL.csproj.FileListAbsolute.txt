@@ -27,3 +27,4 @@ C:\_sandbox\_dev\trade_bot\TradeBot\TradeBot.BL\obj\Debug\netcoreapp2.0\TradeBot
 C:\_sandbox\_dev\trade_bot\TradeBot\TradeBot.BL\obj\Debug\netcoreapp2.0\TradeBot.BL.dll
 C:\_sandbox\_dev\trade_bot\TradeBot\TradeBot.BL\obj\Debug\netcoreapp2.0\TradeBot.BL.pdb
 C:\_dev\_git\trade_bot\TradeBot\TradeBot.BL\bin\Debug\netcoreapp2.0\TradeBot.Repo.dll
+C:\_dev\_git\trade_bot\TradeBot\TradeBot.BL\bin\Debug\netcoreapp2.0\TradeBot.Repo.pdb

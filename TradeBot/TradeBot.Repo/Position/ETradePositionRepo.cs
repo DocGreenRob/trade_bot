@@ -10,7 +10,7 @@ namespace TradeBot.Repo.Position
 {
 	public class ETradePositionRepo : IPositionRepo
 	{
-		public List<Option> GetOptionChain(string underlying, AppEnums.OptionType chainType)
+        public OptionChainResponse GetOptionChain(string underlying, AppEnums.OptionType chainType)
 		{
 			// Get Expiration Date
 			DateTime expirationDate = Utils.Utils.Utils.GetExpirationDate();
@@ -23,7 +23,7 @@ namespace TradeBot.Repo.Position
 			throw new NotImplementedException();
 		}
 
-		public double GetOrderPrice(List<Option> optionChain)
+        public double GetOrderPrice(OptionChainResponse optionChain)
 		{
 			// https://etws.etrade.com/order/rest/previewoptionorder
 			// https://developer.etrade.com/ctnt/dev-portal/getDetail?contentUri=V0_Documentation-OrderAPI-PreviewOptionOrder
@@ -37,7 +37,7 @@ namespace TradeBot.Repo.Position
 			throw new NotImplementedException();
 		}
 
-        public Models.Position CreateNewPosition(string underlying, List<Option> optionChain, int numOfContracts, double currentPositionPrice)
+        public Models.Position CreateNewPosition(string underlying, OptionChainResponse optionChain, int numOfContracts, double currentPositionPrice)
         {
             // https://developer.etrade.com/ctnt/dev-portal/getDetail?contentUri=V0_Documentation-OrderAPI-PlaceOptionOrder
             throw new NotImplementedException();

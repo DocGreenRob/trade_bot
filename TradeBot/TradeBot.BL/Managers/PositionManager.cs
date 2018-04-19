@@ -34,7 +34,7 @@ namespace TradeBot.BL.Managers
 		public Position OpenPosition(string underlying, PositionType positionType, TradeStrength tradeStrength)
         {
 			DateTime expirationDate;
-			List<Option> optionChain;
+            OptionChainResponse optionChain;
 
             // Create new option trade, this should:
             // 1. Check the current price of the Underlying (Get Option Chain)
@@ -59,8 +59,8 @@ namespace TradeBot.BL.Managers
         {
             throw new NotImplementedException();
         }
-        
-        private double GetCurrentPrice(string underlying, PositionType positionType, out DateTime expirationDate, out List<Option> optionChain)
+
+        private double GetCurrentPrice(string underlying, PositionType positionType, out DateTime expirationDate, out OptionChainResponse optionChain)
 		{
 			expirationDate = Utils.Utils.Utils.GetExpirationDate();
 
@@ -128,7 +128,7 @@ namespace TradeBot.BL.Managers
             throw new NotImplementedException();
         }
 
-        private Position CreateNewPosition(string underlying, List<Option> optionChain, int numOfContracts, double currentPositionPrice)
+        private Position CreateNewPosition(string underlying, OptionChainResponse optionChain, int numOfContracts, double currentPositionPrice)
         {
             return _positionRepo.CreateNewPosition(underlying, optionChain, numOfContracts, currentPositionPrice);
         }

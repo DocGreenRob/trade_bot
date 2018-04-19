@@ -7,3 +7,5 @@ C:\_dev\_git\trade_bot\TradeBot\TradeBot.Models\obj\Debug\netcoreapp2.0\TradeBot
 C:\_dev\_git\trade_bot\TradeBot\TradeBot.Models\obj\Debug\netcoreapp2.0\TradeBot.Models.AssemblyInfo.cs
 C:\_dev\_git\trade_bot\TradeBot\TradeBot.Models\obj\Debug\netcoreapp2.0\TradeBot.Models.dll
 C:\_dev\_git\trade_bot\TradeBot\TradeBot.Models\obj\Debug\netcoreapp2.0\TradeBot.Models.pdb
+C:\_dev\_git\trade_bot\TradeBot\TradeBot.Models\bin\Debug\netcoreapp2.0\TradeBot.Utils.dll
+C:\_dev\_git\trade_bot\TradeBot\TradeBot.Models\bin\Debug\netcoreapp2.0\TradeBot.Utils.pdb
