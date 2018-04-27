@@ -13,7 +13,7 @@ namespace TradeBot.Repo
         OptionChainResponse GetOptionChain(string underlying, OptionType chainType);
 		double GetOrderPrice(OptionChainResponse optionChain);
 		double GetOptionBuyingPower();
-        Models.Position CreateNewPosition(string underlying, OptionChainResponse optionChain, int numOfContracts, double currentPositionPrice);
+        Models.Position CreateNewPosition(string underlying, OptionChainResponse optionChain, int numOfContracts, double currentPositionPrice, AppEnums.OptionType optionType);
         AccountPosition Change(AccountPosition accountPosition, TradeDirection tradeDirection, double changeAmount);
         AccountPositionsResponse GetPositions(int accountId);
         Decision Evaluate(AccountPosition adjustedAccountPosition);

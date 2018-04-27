@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using TradeBot.Utils.Enum;
 using static TradeBot.Utils.Enum.AppEnums;
 
 namespace TradeBot.Models.Broker.ETrade
@@ -108,5 +108,8 @@ namespace TradeBot.Models.Broker.ETrade
         /// The order action.
         /// </value>
         public OrderAction OrderAction { get; set; }
+        public PriceType PriceType { get; set; }
+        public int PreviewId { get; set; }
+        public DateTime PreviewTime { get; set; }
     }
 }

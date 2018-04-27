@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2020
+VisualStudioVersion = 15.0.27130.2024
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TradeBot", "TradeBot\TradeBot.csproj", "{73F3D537-D285-42CD-8407-A00F0730E51B}"
 EndProject
@@ -17,9 +17,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TradeBot.Models", "TradeBot
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TradeBot.Test", "TradeBot.Test\TradeBot.Test.csproj", "{1C9E2EE1-16D2-4972-9CA5-92C5CE12A859}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradeBot.Repo", "TradeBot.Repo\TradeBot.Repo.csproj", "{853EF5D9-D0A3-439B-A592-1D702625E9C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TradeBot.Repo", "TradeBot.Repo\TradeBot.Repo.csproj", "{853EF5D9-D0A3-439B-A592-1D702625E9C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradeBot.Console", "TradeBot.Console\TradeBot.Console.csproj", "{4084A49A-25A5-4AA7-BD6E-3950532D3E49}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TradeBot.Console", "TradeBot.Console\TradeBot.Console.csproj", "{4084A49A-25A5-4AA7-BD6E-3950532D3E49}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Artifacts", "Artifacts", "{5E56D836-653F-4211-8AAD-FC20355693EA}"
+	ProjectSection(SolutionItems) = preProject
+		ReadMe.txt = ReadMe.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

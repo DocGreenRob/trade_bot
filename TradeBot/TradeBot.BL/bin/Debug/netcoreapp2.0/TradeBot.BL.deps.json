@@ -1,32 +1,41 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v2.0",
-    "signature": "3f82d9212337d1d9637fe29fe0ff1da931a3d331"
+    "signature": "5670bad6e28102ae9bb5a6815a021a13c2651cd5"
   },
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v2.0": {
       "TradeBot.BL/1.0.0": {
         "dependencies": {
+          "Elmah.Io.Extensions.Logging": "3.2.27",
           "Microsoft.Extensions.Configuration.Json": "2.0.1",
           "TradeBot.MockRepo": "1.0.0",
           "TradeBot.Models": "1.0.0",
           "TradeBot.Repo": "1.0.0",
           "TradeBot.Utils": "1.0.0",
-          "elmah": "1.2.2"
+          "Microsoft.AspNetCore": "2.0.1.0",
+          "Microsoft.AspNetCore.Hosting.Abstractions": "2.0.1.0"
         },
         "runtime": {
           "TradeBot.BL.dll": {}
         }
       },
-      "elmah/1.2.2": {
+      "Elmah.Io.Client/3.2.50": {
         "dependencies": {
-          "elmah.corelibrary": "1.2.2"
+          "Microsoft.Rest.ClientRuntime": "2.3.10"
+        },
+        "runtime": {
+          "lib/netstandard1.4/Elmah.Io.Client.dll": {}
         }
       },
-      "elmah.corelibrary/1.2.2": {
+      "Elmah.Io.Extensions.Logging/3.2.27": {
+        "dependencies": {
+          "Elmah.Io.Client": "3.2.50",
+          "Microsoft.Extensions.Logging": "2.0.0"
+        },
         "runtime": {
-          "lib/Elmah.dll": {}
+          "lib/netstandard2.0/Elmah.Io.Extensions.Logging.dll": {}
         }
       },
       "Microsoft.CSharp/4.3.0": {
@@ -84,6 +93,11 @@
           "lib/netstandard2.0/Microsoft.Extensions.Configuration.Json.dll": {}
         }
       },
+      "Microsoft.Extensions.DependencyInjection.Abstractions/2.0.0": {
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll": {}
+        }
+      },
       "Microsoft.Extensions.FileProviders.Abstractions/2.0.1": {
         "dependencies": {
           "Microsoft.Extensions.Primitives": "2.0.0"
@@ -106,6 +120,30 @@
           "lib/netstandard2.0/Microsoft.Extensions.FileSystemGlobbing.dll": {}
         }
       },
+      "Microsoft.Extensions.Logging/2.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "2.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "2.0.0",
+          "Microsoft.Extensions.Options": "2.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.Extensions.Logging.dll": {}
+        }
+      },
+      "Microsoft.Extensions.Logging.Abstractions/2.0.0": {
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.Extensions.Logging.Abstractions.dll": {}
+        }
+      },
+      "Microsoft.Extensions.Options/2.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "2.0.0",
+          "Microsoft.Extensions.Primitives": "2.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.Extensions.Options.dll": {}
+        }
+      },
       "Microsoft.Extensions.Primitives/2.0.0": {
         "dependencies": {
           "System.Runtime.CompilerServices.Unsafe": "4.4.0"
@@ -115,6 +153,14 @@
         }
       },
       "Microsoft.NETCore.Targets/1.1.0": {},
+      "Microsoft.Rest.ClientRuntime/2.3.10": {
+        "dependencies": {
+          "Newtonsoft.Json": "10.0.1"
+        },
+        "runtime": {
+          "lib/netstandard1.4/Microsoft.Rest.ClientRuntime.dll": {}
+        }
+      },
       "Newtonsoft.Json/10.0.1": {
         "dependencies": {
           "Microsoft.CSharp": "4.3.0",
@@ -552,6 +598,16 @@
         "runtime": {
           "TradeBot.Utils.dll": {}
         }
+      },
+      "Microsoft.AspNetCore/2.0.1.0": {
+        "runtime": {
+          "Microsoft.AspNetCore.dll": {}
+        }
+      },
+      "Microsoft.AspNetCore.Hosting.Abstractions/2.0.1.0": {
+        "runtime": {
+          "Microsoft.AspNetCore.Hosting.Abstractions.dll": {}
+        }
       }
     }
   },
@@ -561,19 +617,19 @@
       "serviceable": false,
       "sha512": ""
     },
-    "elmah/1.2.2": {
+    "Elmah.Io.Client/3.2.50": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-UGnc/NHz0SHNc5eWaW+NynuYWFn+KM2NEoBJbavDt6s8pSBZQgDkKaaqvEV43TiF5GB1uDVjXLx1yjdfP78UPQ==",
-      "path": "elmah/1.2.2",
-      "hashPath": "elmah.1.2.2.nupkg.sha512"
+      "sha512": "sha512-qvCoEPBv1M1TAQNVmlSgKd3Kw8SqBzCn/pwii4mq1E5Qhy+ThmEYyvzNStO0tpfsjj1UrfwM8QFewmlDhWz8ew==",
+      "path": "elmah.io.client/3.2.50",
+      "hashPath": "elmah.io.client.3.2.50.nupkg.sha512"
     },
-    "elmah.corelibrary/1.2.2": {
+    "Elmah.Io.Extensions.Logging/3.2.27": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-OEx4ds9r2bw2/45VZwfw11lLv4y+mC2FUZxp7LsjmauFxj92K1kx8hafSBvls+V9s0WH0wv84B1LfWN/EaGfkg==",
-      "path": "elmah.corelibrary/1.2.2",
-      "hashPath": "elmah.corelibrary.1.2.2.nupkg.sha512"
+      "sha512": "sha512-+t9VWPhR8OKwok/O1W4WWgKk2zZx6sdzr9nQLZwoI43dosXzdbsOCXt80rf80qq7ne06VI3DesHGdyUYvWR6vw==",
+      "path": "elmah.io.extensions.logging/3.2.27",
+      "hashPath": "elmah.io.extensions.logging.3.2.27.nupkg.sha512"
     },
     "Microsoft.CSharp/4.3.0": {
       "type": "package",
@@ -610,6 +666,13 @@
       "path": "microsoft.extensions.configuration.json/2.0.1",
       "hashPath": "microsoft.extensions.configuration.json.2.0.1.nupkg.sha512"
     },
+    "Microsoft.Extensions.DependencyInjection.Abstractions/2.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-eUdJ0Q/GfVyUJc0Jal5L1QZLceL78pvEM9wEKcHeI24KorqMDoVX+gWsMGLulQMfOwsUaPtkpQM2pFERTzSfSg==",
+      "path": "microsoft.extensions.dependencyinjection.abstractions/2.0.0",
+      "hashPath": "microsoft.extensions.dependencyinjection.abstractions.2.0.0.nupkg.sha512"
+    },
     "Microsoft.Extensions.FileProviders.Abstractions/2.0.1": {
       "type": "package",
       "serviceable": true,
@@ -631,6 +694,27 @@
       "path": "microsoft.extensions.filesystemglobbing/2.0.1",
       "hashPath": "microsoft.extensions.filesystemglobbing.2.0.1.nupkg.sha512"
     },
+    "Microsoft.Extensions.Logging/2.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-VP10syWV/vxYYMKgZ2eDESmUsz3gPxvBn5J6tkVN8lI4M+dF43RN8fWsEPbcAneDmZrHl3Pv23z05nmyGkJlpg==",
+      "path": "microsoft.extensions.logging/2.0.0",
+      "hashPath": "microsoft.extensions.logging.2.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Logging.Abstractions/2.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-6ZCllUYGFukkymSTx3Yr0G/ajRxoNJp7/FqSxSB4fGISST54ifBhgu4Nc0ItGi3i6DqwuNd8SUyObmiC++AO2Q==",
+      "path": "microsoft.extensions.logging.abstractions/2.0.0",
+      "hashPath": "microsoft.extensions.logging.abstractions.2.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Options/2.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-sAKBgjl2gWsECBLLR9K54T7/uZaP2n9GhMYHay/oOLfvpvX0+iNAlQ2NJgVE352C9Fs5CDV3VbNTK8T2aNKQFA==",
+      "path": "microsoft.extensions.options/2.0.0",
+      "hashPath": "microsoft.extensions.options.2.0.0.nupkg.sha512"
+    },
     "Microsoft.Extensions.Primitives/2.0.0": {
       "type": "package",
       "serviceable": true,
@@ -644,6 +728,13 @@
       "sha512": "sha512-aOZA3BWfz9RXjpzt0sRJJMjAscAUm3Hoa4UWAfceV9UTYxgwZ1lZt5nO2myFf+/jetYQo4uTP7zS8sJY67BBxg==",
       "path": "microsoft.netcore.targets/1.1.0",
       "hashPath": "microsoft.netcore.targets.1.1.0.nupkg.sha512"
+    },
+    "Microsoft.Rest.ClientRuntime/2.3.10": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-JO9CzV1hvjtrIzq06gJ5nNv7GV24Xz3Y3O9vx7fCe7ndNA0NmD3fZ9JUgFir2UvJ2/+9vvCo/6RXjyfywvQQIw==",
+      "path": "microsoft.rest.clientruntime/2.3.10",
+      "hashPath": "microsoft.rest.clientruntime.2.3.10.nupkg.sha512"
     },
     "Newtonsoft.Json/10.0.1": {
       "type": "package",
@@ -963,6 +1054,16 @@
     },
     "TradeBot.Utils/1.0.0": {
       "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.AspNetCore/2.0.1.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.AspNetCore.Hosting.Abstractions/2.0.1.0": {
+      "type": "reference",
       "serviceable": false,
       "sha512": ""
     }

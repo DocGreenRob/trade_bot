@@ -1,5 +1,6 @@
 ﻿
 using System.Collections.Generic;
+
 using TradeBot.Models;
 using TradeBot.Models.Broker.ETrade;
 using TradeBot.Utils.Enum;
@@ -13,7 +14,7 @@ namespace TradeBot.Repo.Position
             throw new System.NotImplementedException();
         }
 
-        public Models.Position CreateNewPosition(string underlying, List<Option> optionChain, int numOfContracts, double currentPositionPrice)
+        public Models.Position CreateNewPosition(string underlying, OptionChainResponse optionChain, int numOfContracts, double currentPositionPrice, AppEnums.OptionType optionType)
         {
             throw new System.NotImplementedException();
         }
@@ -28,12 +29,12 @@ namespace TradeBot.Repo.Position
             throw new System.NotImplementedException();
         }
 
-        public List<Option> GetOptionChain(string underlying, AppEnums.OptionType chainType)
+        public OptionChainResponse GetOptionChain(string underlying, AppEnums.OptionType chainType)
         {
             throw new System.NotImplementedException();
         }
 
-        public double GetOrderPrice(List<Option> optionChain)
+        public double GetOrderPrice(OptionChainResponse optionChain)
         {
             throw new System.NotImplementedException();
         }

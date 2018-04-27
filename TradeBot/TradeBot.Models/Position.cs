@@ -55,6 +55,8 @@ namespace TradeBot.Models
         public OptionOrderResponse OptionOrderResponse { get; set; }
 
         public AccountPositionsResponse AccountPositionsResponse { get; set; }
+
+        public PositionBehavior PositionBehavior { get; set; }
         #endregion
 
     }

@@ -37,7 +37,7 @@ namespace TradeBot.Repo.Position
 			throw new NotImplementedException();
 		}
 
-        public Models.Position CreateNewPosition(string underlying, OptionChainResponse optionChain, int numOfContracts, double currentPositionPrice)
+        public Models.Position CreateNewPosition(string underlying, OptionChainResponse optionChain, int numOfContracts, double currentPositionPrice, AppEnums.OptionType optionType)
         {
             // https://developer.etrade.com/ctnt/dev-portal/getDetail?contentUri=V0_Documentation-OrderAPI-PlaceOptionOrder
             throw new NotImplementedException();

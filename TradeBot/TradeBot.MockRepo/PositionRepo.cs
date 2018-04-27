@@ -4,6 +4,7 @@ using TradeBot.Models;
 using TradeBot.Repo;
 using TradeBot.Utils.Enum;
 using TradeBot.Models.Broker.ETrade;
+using System.Linq;
 
 namespace TradeBot.MockRepo
 {
@@ -29,7 +30,7 @@ namespace TradeBot.MockRepo
             return accountPosition;
         }
 
-        public Position CreateNewPosition(string underlying, OptionChainResponse optionChain, int numOfContracts, double currentPositionPrice)
+        public Position CreateNewPosition(string underlying, OptionChainResponse optionChain, int numOfContracts, double currentPositionPrice, AppEnums.OptionType optionType) // ok
         {
             return new Position
             {
@@ -37,16 +38,17 @@ namespace TradeBot.MockRepo
                 InstrumentType = AppEnums.InstrumentType.Option,
                 EntryTime = DateTime.Now,
                 UnderlyingPriceAtEntry = currentPositionPrice,
-                Underlying = new Underlying {
-                    Name = "TSLA"
+                Underlying = new Underlying
+                {
+                    Name = Models.MockModelDefaults.Default.RootSymbol
                 },
                 ProfitLossOpen = 0,
                 OptionOrderResponse = new OptionOrderResponse
                 {
-                    AccountId = 999999999,
+                    AccountId = Models.MockModelDefaults.Default.AccountNumber,
                     AllOrNone = false,
                     EstimatedCommission = 5.95,
-                    EstimatedTotalAmount = 521.64,
+                    EstimatedTotalAmount = Models.MockModelDefaults.Default.CostBasis * 100,
                     Messages = new List<Message>
                     {
                         new Message
@@ -65,7 +67,7 @@ namespace TradeBot.MockRepo
                     OptionSymbol = new OptionSymbol
                     {
                         Symbol = Models.MockModelDefaults.Default.RootSymbol,
-                        OptionType = AppEnums.OptionType.CALL,
+                        OptionType = optionType,
                         StrikePrice = Models.MockModelDefaults.Default.StrikePrice,
                         ExpirationYear = Models.MockModelDefaults.Default.ExpirationYear,
                         ExpirationMonth = Models.MockModelDefaults.Default.ExpirationMonth,
@@ -88,7 +90,7 @@ namespace TradeBot.MockRepo
             History.Add(adjustedAccountPosition, changeInDollars, percent);
 
             // negative
-            if(percent < 0)
+            if (percent < 0)
             {
                 if (percent > -5)
                 {
@@ -150,7 +152,41 @@ namespace TradeBot.MockRepo
 
         public double GetOptionBuyingPower()
         {
-            throw new System.NotImplementedException();
+            AccountBalanceResponse accountBalanceResponse = new AccountBalanceResponse
+            {
+                AccountId = Models.MockModelDefaults.Default.AccountNumber,
+                AccountType = AppEnums.AccountType.MARGIN,
+                OptionLevel = AppEnums.OptionLevel.LEVEL_4,
+                AccountBalance = new AccountBalance
+                {
+                    CashAvailableForWithdrawal = 1000,
+                    CashCall = 0,
+                    FundsWithheldFromPurchasePower = 0,
+                    FundsWithheldFromWithdrawal = 0,
+                    NetAccountValue = 1000,
+                    NetCash = 1000,
+                    SweepDepositAmount = 0,
+                    TotalLongValue = 0,
+                    TotalSecuritiesMktValue = 0,
+                    TotalCash = 1000
+                },
+                MarginAccountBalance = new MarginAccountBalance
+                {
+                    FedCall = 0,
+                    MarginBalance = 1000,
+                    MarginBalanceWithdrawal = 1000,
+                    MarginEquity = 1000,
+                    MarginEquityPct = 0,
+                    MarginableSecurities = 2000,
+                    MaxAvailableForWithdrawal = 1000,
+                    MinEquityCall = 2500,
+                    NonMarginableSecuritiesAndOptions = 1000,
+                    TotalShortValue = 0,
+                    ShortReserve = 0
+                }
+            };
+
+            return accountBalanceResponse.AccountBalance.NetCash;
         }
 
         public OptionChainResponse GetOptionChain(string underlying, AppEnums.OptionType chainType)
@@ -167,16 +203,16 @@ namespace TradeBot.MockRepo
                             new Models.Broker.ETrade.Option
                             {
                                 OptionType = AppEnums.OptionType.CALL,
-                                RootSymbol = "TSLA",
-                                ExpirationDate = new DateTime(Models.MockModelDefaults.Date.Year, Models.MockModelDefaults.Date.Month, Models.MockModelDefaults.Date.Day),
+                                RootSymbol = Models.MockModelDefaults.Default.RootSymbol,
+                                ExpirationDate = new DateTime(Models.MockModelDefaults.Default.ExpirationYear, Models.MockModelDefaults.Default.ExpirationMonth, Models.MockModelDefaults.Default.ExpirationDay),
                                 ExpirationType = AppEnums.ExpirationType.MONTHLY,
                                 Product = new Product
                                 {
                                     ExchangeCode = AppEnums.ExchangeCode.CINC,
-                                    Symbol = Models.MockModelDefaults.Symbol.Name,
+                                    Symbol = Models.MockModelDefaults.Default.SymbolName,
                                     TypeCode = AppEnums.TypeCode.OPTN
                                 },
-                                StrikePrice = Models.MockModelDefaults.StrikePrice.Price
+                                StrikePrice = Models.MockModelDefaults.Default.StrikePrice
                             }
                         }
                     },
@@ -187,16 +223,16 @@ namespace TradeBot.MockRepo
                             new Models.Broker.ETrade.Option
                             {
                                 OptionType = AppEnums.OptionType.PUT,
-                                RootSymbol = "TSLA",
-                                ExpirationDate = new DateTime(Models.MockModelDefaults.Date.Year, Models.MockModelDefaults.Date.Month, Models.MockModelDefaults.Date.Day),
+                                RootSymbol = Models.MockModelDefaults.Default.RootSymbol,
+                                ExpirationDate = new DateTime(Models.MockModelDefaults.Default.ExpirationYear, Models.MockModelDefaults.Default.ExpirationMonth, Models.MockModelDefaults.Default.ExpirationDay),
                                 ExpirationType = AppEnums.ExpirationType.MONTHLY,
                                 Product = new Product
                                 {
                                     ExchangeCode = AppEnums.ExchangeCode.CINC,
-                                    Symbol = Models.MockModelDefaults.Symbol.Name,
+                                    Symbol = Models.MockModelDefaults.Default.RootSymbol,
                                     TypeCode = AppEnums.TypeCode.OPTN
                                 },
-                                StrikePrice = Models.MockModelDefaults.StrikePrice.Price
+                                StrikePrice = Models.MockModelDefaults.Default.StrikePrice
                             }
                         }
                     }
@@ -206,36 +242,65 @@ namespace TradeBot.MockRepo
 
         public double GetOrderPrice(OptionChainResponse optionChain)
         {
-            throw new System.NotImplementedException();
+            OptionOrderResponse optionOrderResponse = new OptionOrderResponse
+            {
+                AccountId = Models.MockModelDefaults.Default.AccountNumber,
+                AllOrNone = false,
+                EstimatedCommission = 5.95,
+                EstimatedTotalAmount = 521.64,
+                PreviewTime = DateTime.Now.AddSeconds(-5),
+                PreviewId = 123,
+                Quantity = 1,
+                ReserveOrder = false,
+                ReserveQuantity = 0,
+                OrderTerm = AppEnums.OrderTerm.GOOD_FOR_DAY,
+                OptionSymbol = new OptionSymbol
+                {
+                    Symbol = Models.MockModelDefaults.Default.RootSymbol,
+                    OptionType = AppEnums.OptionType.CALL,
+                    ExpirationYear = Models.MockModelDefaults.Default.ExpirationYear,
+                    ExpirationMonth = Models.MockModelDefaults.Default.ExpirationMonth,
+                    ExpirationDay = Models.MockModelDefaults.Default.ExpirationDay
+                },
+                OrderAction = AppEnums.OrderAction.BUY_TO_OPEN,
+                PriceType = AppEnums.PriceType.MARKET
+            };
+
+            return optionOrderResponse.EstimatedTotalAmount;
         }
 
-        public AccountPositionsResponse GetPositions(int accountId)
+        public AccountPositionsResponse GetPositions(int accountId)  // ok
         {
-            return new AccountPositionsResponse
+            // determine number of positions to open
+            int positions = Models.MockModelDefaults.Default.Positions.Count;
+
+            AccountPositionsResponse accountPositionsResponse = new AccountPositionsResponse { AccountId = accountId, Count = positions, AccountPositions = new List<AccountPosition>() };
+
+            for (int i = 0; i < positions; i++)
             {
-                AccountId = accountId,
-                Count = 1,
-                AccountPositions = new List<AccountPosition> {
-                    new AccountPosition {
-                        CostBasis = 5.1572,
-                        Description = Models.MockModelDefaults.Symbol.Name,
-                        LongOrShort = AppEnums.LongOrShort.LONG,
-                        Product = new Product
-                        {
-                            Symbol = "TSLA",
-                            TypeCode = AppEnums.TypeCode.OPTN,
-                            CallPut = AppEnums.OptionType.CALL,
-                            StrikePrice = Models.MockModelDefaults.StrikePrice.Price,
-                            ExpirationYear = Models.MockModelDefaults.Date.Year,
-                            ExpirationMonth = Models.MockModelDefaults.Date.Month,
-                            ExpirationDay = Models.MockModelDefaults.Date.Day
-                        },
-                        Quantity = 1,
-                        CurrentPrice = 5.1572,
-                        MarketValue = 515.69
-                    }
-                }
-            };
+                AccountPosition accountPosition = new AccountPosition
+                {
+                    CostBasis = Models.MockModelDefaults.Default.CostBasis,
+                    Description = Models.MockModelDefaults.Default.SymbolName,
+                    LongOrShort = Models.MockModelDefaults.Default.Positions.ElementAt(i).OptionOrderResponse.OptionSymbol.OptionType == AppEnums.OptionType.CALL ? AppEnums.LongOrShort.LONG : AppEnums.LongOrShort.SHORT,
+                    Product = new Product
+                    {
+                        Symbol = Models.MockModelDefaults.Default.RootSymbol,
+                        TypeCode = AppEnums.TypeCode.OPTN,
+                        CallPut = Models.MockModelDefaults.Default.Positions.ElementAt(i).OptionOrderResponse.OptionSymbol.OptionType,
+                        StrikePrice = Models.MockModelDefaults.Default.StrikePrice,
+                        ExpirationYear = Models.MockModelDefaults.Default.ExpirationYear,
+                        ExpirationMonth = Models.MockModelDefaults.Default.ExpirationMonth,
+                        ExpirationDay = Models.MockModelDefaults.Default.ExpirationDay
+                    },
+                    Quantity = 1,
+                    CurrentPrice = Models.MockModelDefaults.Default.CostBasis,
+                    MarketValue = Models.MockModelDefaults.Default.CostBasis * 100
+                };
+
+                accountPositionsResponse.AccountPositions.Add(accountPosition);
+            }
+            return accountPositionsResponse;
         }
     }
 }

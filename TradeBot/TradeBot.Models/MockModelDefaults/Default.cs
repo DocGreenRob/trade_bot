@@ -1,9 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
+
+using TradeBot.Models.Broker.ETrade;
+using static TradeBot.Utils.Enum.AppEnums;
 
 namespace TradeBot.Models.MockModelDefaults
 {
     public static class Default
     {
+        public static int AccountNumber { get; set; }
         public static string RootSymbol { get; set; }
         public static double OptionPrice { get; set; }
 
@@ -21,5 +26,14 @@ namespace TradeBot.Models.MockModelDefaults
             ExpirationDay = dateTime.Day;
             ExpirationYear = dateTime.Year;
         }
+
+        public static OptionType OptionType { get; set; }
+
+        public static List<Position> Positions { get; set; }
+        public static double CostBasis { get; set; }
+
+        
     }
+
+    
 }
