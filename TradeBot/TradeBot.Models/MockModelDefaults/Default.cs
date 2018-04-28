@@ -31,8 +31,6 @@ namespace TradeBot.Models.MockModelDefaults
 
         public static List<Position> Positions { get; set; }
         public static double CostBasis { get; set; }
-
-        
     }
 
     

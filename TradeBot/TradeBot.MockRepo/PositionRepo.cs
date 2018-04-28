@@ -278,24 +278,25 @@ namespace TradeBot.MockRepo
 
             for (int i = 0; i < positions; i++)
             {
+                double costBasis = Models.MockModelDefaults.Default.Positions.ElementAt(i).OptionOrderResponse.EstimatedTotalAmount / 100;
                 AccountPosition accountPosition = new AccountPosition
                 {
-                    CostBasis = Models.MockModelDefaults.Default.CostBasis,
-                    Description = Models.MockModelDefaults.Default.SymbolName,
+                    CostBasis = costBasis,
+                    Description = Models.MockModelDefaults.Default.Positions.ElementAt(i).Description,
                     LongOrShort = Models.MockModelDefaults.Default.Positions.ElementAt(i).OptionOrderResponse.OptionSymbol.OptionType == AppEnums.OptionType.CALL ? AppEnums.LongOrShort.LONG : AppEnums.LongOrShort.SHORT,
                     Product = new Product
                     {
-                        Symbol = Models.MockModelDefaults.Default.RootSymbol,
+                        Symbol = Models.MockModelDefaults.Default.Positions.ElementAt(i).OptionOrderResponse.OptionSymbol.Symbol,
                         TypeCode = AppEnums.TypeCode.OPTN,
                         CallPut = Models.MockModelDefaults.Default.Positions.ElementAt(i).OptionOrderResponse.OptionSymbol.OptionType,
-                        StrikePrice = Models.MockModelDefaults.Default.StrikePrice,
-                        ExpirationYear = Models.MockModelDefaults.Default.ExpirationYear,
-                        ExpirationMonth = Models.MockModelDefaults.Default.ExpirationMonth,
-                        ExpirationDay = Models.MockModelDefaults.Default.ExpirationDay
+                        StrikePrice = Models.MockModelDefaults.Default.Positions.ElementAt(i).OptionOrderResponse.OptionSymbol.StrikePrice,
+                        ExpirationYear = Models.MockModelDefaults.Default.Positions.ElementAt(i).OptionOrderResponse.OptionSymbol.ExpirationYear,
+                        ExpirationMonth = Models.MockModelDefaults.Default.Positions.ElementAt(i).OptionOrderResponse.OptionSymbol.ExpirationMonth,
+                        ExpirationDay = Models.MockModelDefaults.Default.Positions.ElementAt(i).OptionOrderResponse.OptionSymbol.ExpirationDay
                     },
                     Quantity = 1,
-                    CurrentPrice = Models.MockModelDefaults.Default.CostBasis,
-                    MarketValue = Models.MockModelDefaults.Default.CostBasis * 100
+                    CurrentPrice = costBasis,
+                    MarketValue = costBasis * 100
                 };
 
                 accountPositionsResponse.AccountPositions.Add(accountPosition);

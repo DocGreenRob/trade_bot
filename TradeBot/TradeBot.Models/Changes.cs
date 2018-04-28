@@ -2,9 +2,9 @@
 
 namespace TradeBot.Models.Broker.ETrade
 {
-    public class Changes
+    public class Change
     {
         public TradeDirection TradeDirection { get; set; }
-        public double Change { get; set; }
+        public double Amount { get; set; }
     }
 }

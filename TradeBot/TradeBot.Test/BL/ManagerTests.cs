@@ -116,7 +116,7 @@ namespace TradeBot.Test.BL
         /// Determines whether this instance [can open multiple positions for same root symbol (i.e., Strangle)].
         /// </summary>
         [TestMethod]
-        public void Can_Open_Multiple_Positions_For_Same_Root_Symbol()
+        public void Can_Create_Strangle()
         {
             // Arrange
             // Act
@@ -130,6 +130,37 @@ namespace TradeBot.Test.BL
             Assert.AreEqual(2, positionsOfInterest.Count);
 
             Assert.AreEqual(2, Models.MockModelDefaults.Default.Positions.Count);
+
+            // Validate the Mocks
+            // Strike Price
+            Assert.AreEqual(322.5, Models.MockModelDefaults.Default.Positions.ElementAt(0).OptionOrderResponse.OptionSymbol.StrikePrice);
+            // Option Type (CALL / PUT)
+            Assert.AreEqual(OptionType.CALL, Models.MockModelDefaults.Default.Positions.ElementAt(0).OptionOrderResponse.OptionSymbol.OptionType);
+            // Price
+            Assert.AreEqual(4.05, (Models.MockModelDefaults.Default.Positions.ElementAt(0).OptionOrderResponse.EstimatedTotalAmount / 100));
+
+            // Strike Price
+            Assert.AreEqual(320, Models.MockModelDefaults.Default.Positions.ElementAt(1).OptionOrderResponse.OptionSymbol.StrikePrice);
+            // Option Type (CALL / PUT)
+            Assert.AreEqual(OptionType.PUT, Models.MockModelDefaults.Default.Positions.ElementAt(1).OptionOrderResponse.OptionSymbol.OptionType);
+            // Price
+            Assert.AreEqual(3.4, (Models.MockModelDefaults.Default.Positions.ElementAt(1).OptionOrderResponse.EstimatedTotalAmount / 100));
+
+
+            // Account Positions
+            // Strike Price
+            Assert.AreEqual(322.5, accountPositionsResponse.AccountPositions.ElementAt(0).Product.StrikePrice);
+            // Option Type (CALL / PUT)
+            Assert.AreEqual(OptionType.CALL, accountPositionsResponse.AccountPositions.ElementAt(0).Product.CallPut);
+            // Price
+            Assert.AreEqual(4.05, accountPositionsResponse.AccountPositions.ElementAt(0).CostBasis);
+
+            // Strike Price
+            Assert.AreEqual(320, accountPositionsResponse.AccountPositions.ElementAt(1).Product.StrikePrice);
+            // Option Type (CALL / PUT)
+            Assert.AreEqual(OptionType.PUT, accountPositionsResponse.AccountPositions.ElementAt(1).Product.CallPut);
+            // Price
+            Assert.AreEqual(3.4, accountPositionsResponse.AccountPositions.ElementAt(1).CostBasis);
         }
 
         #region private methods
@@ -140,6 +171,7 @@ namespace TradeBot.Test.BL
             // Create Position # 1 (CALL)
             SetTestDefaults(symbol, callStrike, OptionType.CALL, callCostBasis);
             Models.MockModelDefaults.Default.Positions.Add(positionMgr.OpenPosition(Models.MockModelDefaults.Default.RootSymbol, PositionType.Strangle, TradeStrength.Light, OptionType.CALL));
+            Models.MockModelDefaults.Default.Positions.ElementAt(0).Description = Models.MockModelDefaults.Default.SymbolName;
 
             // Create Position # 2 (PUT)
             SetTestDefaults(symbol, putStrike, OptionType.PUT, putCostBasis);
@@ -149,15 +181,15 @@ namespace TradeBot.Test.BL
             AccountPositionsResponse accountPositionsResponse = positionMgr.GetPositions(Models.MockModelDefaults.Default.AccountNumber);
 
             // Find my positions of interest (i.e., the two I just opened above) in my list of AccountPositons returned within the AccountPositionResponse object
-            List<Position> mockPosition = Models.MockModelDefaults.Default.Positions.Where(c => c.Underlying.Name.ToLower() == "ba").ToList();
-            List<AccountPosition> positionsOfInterest = accountPositionsResponse.AccountPositions.Where(a => a.Product.Symbol.ToLower() == "ba").ToList();
+            List<Position> mockPosition = Models.MockModelDefaults.Default.Positions.Where(c => c.Underlying.Name.ToLower() == symbol.ToLower()).ToList();
+            List<AccountPosition> positionsOfInterest = accountPositionsResponse.AccountPositions.Where(a => a.Product.Symbol.ToLower() == symbol.ToLower()).ToList();
 
             return new Tuple<AccountPositionsResponse, List<AccountPosition>>(accountPositionsResponse, positionsOfInterest);
         }
         #endregion
 
         [TestMethod]
-        public void Can_Evaluate_Single_Strangle_And_Close_Position_Based_On_Decision_BA()
+        public void Can_Evaluate_Naked_Option_And_Close_Position_Based_On_Decision_BA()
         {
             SetTestDefaults("BA", 322.5, OptionType.CALL, 4.05);
 
@@ -227,180 +259,248 @@ namespace TradeBot.Test.BL
         }
 
         /// <summary>
-        /// Determines whether this instance [can evaluate strangle and close position based on decision ba].  Here we want to evaluate a Strange and close 1 side of the position because some conditions have been met, but keep the other side of the position going until some other condition is met.
+        /// Determines whether this instance [can evaluate strangle and close position based on decision ba].  Here we want to evaluate a Strange and close 1 side of the position because some conditions have been met, but keep the other side of the position going until some other condition is met and then close it.
+        /// Link: https://docs.google.com/spreadsheets/d/1IDjvIR7H8q15eeP0awyHCkjbuLwf1xnlNSUnzhdbTGI/edit#gid=1396774657
         /// </summary>
         [TestMethod]
         public void Can_Evaluate_Strangle_And_Close_Position_Based_On_Decision_BA()
         {
-
             // Arrange
             Tuple<AccountPositionsResponse, List<AccountPosition>> result = CreateStrangle("BA", 322.5, 320, 4.05, 3.4);
             AccountPositionsResponse accountPositionsResponse = result.Item1;
             List<AccountPosition> positionsOfInterest = result.Item2;
 
-            
-            // 1 liner attempt
-
-            //Models.MockModelDefaults.Default.Positions
-            //    .ForEach(p => 
-            //    p.PositionBehavior = new PositionBehavior
-            //    {
-            //        AccountPosition = ,
-                    
-            //    }
-            //    );
-
-
             int controlVariable = Models.MockModelDefaults.Default.Positions.Count;
             for (int i = 0; i < controlVariable; i++)
             {
-                
+
                 // if CALL
-                List<Changes> changes = new List<Changes>();
+                List<Change> changes = new List<Change>();
                 AccountPosition accountPosition = new AccountPosition();
                 if (i == 0)
                 {
-                    changes = new List<Changes>
+                    changes = new List<Change>
                     {
-                        new Changes
+                        new Change
                         {
                             TradeDirection = TradeDirection.Down,
-                            Change = 7.41
+                            Amount =  7.41
                         },
-                        new Changes
+                        new Change
                         {
                             TradeDirection = TradeDirection.Up,
-                            Change = 2.47
+                            Amount =  2.47
                         },
-                        new Changes
+                        new Change
                         {
                             TradeDirection = TradeDirection.Up,
-                            Change = 4.94
+                            Amount =  4.94
                         },
-                        new Changes
+                        new Change
                         {
                             TradeDirection = TradeDirection.Down,
-                            Change = 6.17
+                            Amount =  6.17
                         },
-                        new Changes
+                        new Change
                         {
                             TradeDirection = TradeDirection.Sideways,
-                            Change = 0
+                            Amount =  0
                         },
-                        new Changes
+                        new Change
                         {
                             TradeDirection = TradeDirection.Down,
-                            Change = 17.28
+                            Amount =  17.28
                         },
-                        new Changes
+                        new Change
                         {
                             TradeDirection = TradeDirection.Down,
-                            Change = 14.32
+                            Amount =  14.32
                         },
-                        new Changes
+                        new Change
                         {
                             TradeDirection = TradeDirection.Down,
-                            Change = 10.86
+                            Amount =  10.86
                         },
-                        new Changes
+                        new Change
                         {
                             TradeDirection = TradeDirection.Down,
-                            Change = 17.04
+                            Amount =  17.04
                         },
-                        new Changes
+                        new Change
                         {
                             TradeDirection = TradeDirection.Up,
-                            Change = 2.47
+                            Amount =  2.47
                         },
-                        new Changes
+                        new Change
                         {
                             TradeDirection = TradeDirection.Up,
-                            Change = 7.41
+                            Amount =  7.41
                         },
-                        new Changes
+                        new Change
                         {
                             TradeDirection = TradeDirection.Up,
-                            Change = 5.43
+                            Amount =  5.43
                         },
-                        new Changes
+                        new Change
                         {
                             TradeDirection = TradeDirection.Down,
-                            Change = 3.70
+                            Amount =  3.70
                         },
-                        new Changes
+                        new Change
                         {
                             TradeDirection = TradeDirection.Down,
-                            Change = 4.20
+                            Amount =  4.20
                         },
-                        new Changes
+                        new Change
                         {
                             TradeDirection = TradeDirection.Up,
-                            Change = 7.16
+                            Amount =  7.16
                         },
-                        new Changes
+                        new Change
                         {
                             TradeDirection = TradeDirection.Up,
-                            Change = 4.69
+                            Amount =  4.69
                         },
-                        new Changes
+                        new Change
                         {
                             TradeDirection = TradeDirection.Up,
-                            Change = 2.96
+                            Amount =  2.96
                         },
-                        new Changes
+                        new Change
                         {
                             TradeDirection = TradeDirection.Up,
-                            Change = 13.58
+                            Amount =  13.58
                         }
                     };
-
-                    Position p = Models.MockModelDefaults.Default.Positions.ElementAt(i);
-                    accountPosition = positionsOfInterest.Where(pi => pi.Product.StrikePrice == p.OptionOrderResponse.OptionSymbol.StrikePrice && p.OptionOrderResponse.OptionSymbol.OptionType == OptionType.CALL).FirstOrDefault();
                 }
                 else
                 {
-
+                    changes = new List<Change>
+                    {
+                        new Change
+                        {
+                            TradeDirection = TradeDirection.Down,
+                            Amount =  2.47
+                        },
+                        new Change
+                        {
+                            TradeDirection = TradeDirection.Down,
+                            Amount =  8.64
+                        },
+                        new Change
+                        {
+                            TradeDirection = TradeDirection.Down,
+                            Amount =  4.69
+                        },
+                        new Change
+                        {
+                            TradeDirection = TradeDirection.Up,
+                            Amount =  2.47
+                        },
+                        new Change
+                        {
+                            TradeDirection = TradeDirection.Down,
+                            Amount =  0.74
+                        },
+                        new Change
+                        {
+                            TradeDirection = TradeDirection.Up,
+                            Amount =  19.01
+                        },
+                        new Change
+                        {
+                            TradeDirection = TradeDirection.Up,
+                            Amount =  17.28
+                        },
+                        new Change
+                        {
+                            TradeDirection = TradeDirection.Up,
+                            Amount =  12.35
+                        },
+                        new Change
+                        {
+                            TradeDirection = TradeDirection.Up,
+                            Amount =  24.69
+                        },
+                        new Change
+                        {
+                            TradeDirection = TradeDirection.Up,
+                            Amount =  71.60
+                        },
+                        new Change
+                        {
+                            TradeDirection = TradeDirection.Down,
+                            Amount =  3.70
+                        },
+                        new Change
+                        {
+                            TradeDirection = TradeDirection.Down,
+                            Amount =  23.46
+                        },
+                        new Change
+                        {
+                            TradeDirection = TradeDirection.Down,
+                            Amount =  28.40
+                        },
+                        new Change
+                        {
+                            TradeDirection = TradeDirection.Up,
+                            Amount =  14.81
+                        },
+                        new Change
+                        {
+                            TradeDirection = TradeDirection.Up,
+                            Amount =  16.05
+                        },
+                        new Change
+                        {
+                            TradeDirection = TradeDirection.Down,
+                            Amount =  23.46
+                        },
+                        new Change
+                        {
+                            TradeDirection = TradeDirection.Down,
+                            Amount =  19.75
+                        },
+                        new Change
+                        {
+                            TradeDirection = TradeDirection.Down,
+                            Amount =  8.64
+                        }
+                    };
                 }
 
-                
+                Position position = Models.MockModelDefaults.Default.Positions.ElementAt(i);
+                accountPosition = positionsOfInterest.Where(pi => pi.Product.StrikePrice == position.OptionOrderResponse.OptionSymbol.StrikePrice && position.OptionOrderResponse.OptionSymbol.OptionType == (i == 0 ? OptionType.CALL : OptionType.PUT)).FirstOrDefault();
+
                 PositionBehavior positionBehavior = new PositionBehavior
                 {
                     AccountPosition = accountPosition,
                     Changes = changes
                 };
 
-                Models.MockModelDefaults.Default.Positions.ElementAt(i).PositionBehavior = positionBehavior;
+                Models.MockModelDefaults.Default.Positions.ElementAt(i).PositionBehavior = positionBehavior;                
             }
 
-            foreach (AccountPosition accountPosition in positionsOfInterest)
+            // Act & Assert
+
+            // Now run through the "PositionAnalyzer"
+
+            // it should evaluate the positions as a whole and respond to each message accordingly - but it must have the logic to output the appropriate Decision as per the price action
+            int changes = Models.MockModelDefaults.Default.Positions.FirstOrDefault().PositionBehavior.Changes.Count;
+
+            for (int i = 0; i < changes; i++)
             {
-                //TradeDirection tradeDirection;
-                //if (accountPosition.Product.CallPut == OptionType.CALL)
-                //    tradeDirection = TradeDirection.Up;
-                //else
-                //    tradeDirection = TradeDirection.Down;
+                PositionBehavior callPositionBehavior = Models.MockModelDefaults.Default.Positions.ElementAt(0).PositionBehavior;
+                PositionBehavior putPositionBehavior = Models.MockModelDefaults.Default.Positions.ElementAt(1).PositionBehavior;
 
-                //// Simulate Position Change
-                //// Simulates checking the position via the API (getting the most current status of the position)
-                //AccountPosition adjustedAccountPosition = positionMgr.Change(accountPosition, tradeDirection, .02);
 
-                //// 50 * 1.5 = 75
-                //// 50 * 1.0 = 50 ; so 1.0 = 100%
-                //// 50 * .20 = 10 ; so .20 = 20%
-                //// 50 * .02 = 1 ; so .02 = 2%
 
-                //// Act
-                //// ---
-                //// Evaluate Position
-                //Decision decision = positionMgr.Evaluate(adjustedAccountPosition);
 
-                //// Assert
-                //// ------
-                //Assert.AreEqual(decision, Decision.Wait);
-
-                // TBD
+                PositionAnalyzer.GetDecision()
             }
-
+            
+            Assert.Equals(true, false);
         }
 
         //      /// <summary>

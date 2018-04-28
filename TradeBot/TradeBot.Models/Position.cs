@@ -57,6 +57,10 @@ namespace TradeBot.Models
         public AccountPositionsResponse AccountPositionsResponse { get; set; }
 
         public PositionBehavior PositionBehavior { get; set; }
+
+        public double CostBasis { get; set; }
+
+        public string Description { get; set; }
         #endregion
 
     }

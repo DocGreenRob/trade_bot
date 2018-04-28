@@ -7,6 +7,6 @@ namespace TradeBot.Models.Broker.ETrade
     public class PositionBehavior
     {
         public AccountPosition AccountPosition { get; set; }
-        public List<Changes> Changes { get; set; }
+        public List<Change> Changes { get; set; }
     }
 }

@@ -37,7 +37,7 @@ namespace TradeBot.BL.Managers
             // 1. Need to Authenticate with Broker
         }
 
-        public Position OpenPosition(string underlying, PositionType positionType, TradeStrength tradeStrength, OptionType optionType) // ok
+        public Position OpenPosition(string underlying, PositionType positionType, TradeStrength tradeStrength, OptionType optionType)
         {
 			DateTime expirationDate;
             OptionChainResponse optionChain;
@@ -46,38 +46,38 @@ namespace TradeBot.BL.Managers
             // 1. Check the current price of the Underlying (Get Option Chain)
 
             // currentPositionPrice = THe price of the Position (the Trade).
-            double currentPositionPrice = GetCurrentPrice(underlying, positionType, out expirationDate, out optionChain); // ok
+            double currentPositionPrice = GetCurrentPrice(underlying, positionType, out expirationDate, out optionChain);
 
             // 2. Check account value (to determine how many contracts to buy)
-            int numOfContracts = DetermineNumberOfContracts(currentPositionPrice, tradeStrength); // ok
+            int numOfContracts = DetermineNumberOfContracts(currentPositionPrice, tradeStrength);
 
             if (numOfContracts > 0)
 			{
                 // 3. Place trade &
                 // 4. Return results of the above (order number, position number, position id)
-                return CreateNewPosition(underlying, optionChain, numOfContracts, currentPositionPrice, optionType); // ok
+                return CreateNewPosition(underlying, optionChain, numOfContracts, currentPositionPrice, optionType);
             }
 
             throw new Exception("Don't have enough funds to open a position of this size.");
 		}
 
-        public AccountPositionsResponse GetPositions(int accountId)  // ok
+        public AccountPositionsResponse GetPositions(int accountId)
         {
             return _positionRepo.GetPositions(accountId);
         }
 
-        private double GetCurrentPrice(string underlying, PositionType positionType, out DateTime expirationDate, out OptionChainResponse optionChain) // ok
+        private double GetCurrentPrice(string underlying, PositionType positionType, out DateTime expirationDate, out OptionChainResponse optionChain)
         {
-			expirationDate = Utils.Utils.Utils.GetExpirationDate(); // ok
+			expirationDate = Utils.Utils.Utils.GetExpirationDate();
 
             // 1. Get the option chain for the underlying
             if (positionType == PositionType.Strangle)
 			{
 				// 1. need to know price of underlying so I can
-				optionChain = _positionRepo.GetOptionChain(underlying, OptionType.CALLPUT); // ok
+				optionChain = _positionRepo.GetOptionChain(underlying, OptionType.CALLPUT);
 
                 // Get the price of the order
-                return _positionRepo.GetOrderPrice(optionChain); // ok
+                return _positionRepo.GetOrderPrice(optionChain);
             }
 
 			throw new NotImplementedException();
