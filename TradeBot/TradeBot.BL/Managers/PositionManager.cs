@@ -11,6 +11,7 @@ using TradeBot.Utils.ExtensionMethods;
 using TradeBot.Utils.Enum;
 using TradeBot.Models.Broker.ETrade;
 using Microsoft.Extensions.Logging;
+using System.Linq;
 
 namespace TradeBot.BL.Managers
 {
@@ -137,6 +138,37 @@ namespace TradeBot.BL.Managers
         private Position CreateNewPosition(string underlying, OptionChainResponse optionChain, int numOfContracts, double currentPositionPrice, AppEnums.OptionType optionType)
         {
             return _positionRepo.CreateNewPosition(underlying, optionChain, numOfContracts, currentPositionPrice, optionType);
+        }
+
+        public void GetDecision()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void GetDecision(PositionBehavior callPositionBehavior, PositionBehavior putPositionBehavior)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void GetDecision(Tuple<PositionBehavior, List<Change>> callTuple, Tuple<PositionBehavior, List<Change>> putTuple)
+        {
+            // Call Position
+            PositionBehavior callPositionBehavior = callTuple.Item1;
+            List<Change> callChanges = callTuple.Item2;
+
+            // Put Position
+            PositionBehavior putPositionBehavior = putTuple.Item1;
+            List<Change> putChanges = putTuple.Item2;
+
+            // from the above, we will build the All position
+
+            // Is it the 3rd minute or less?
+            if (callChanges.Last().DateTime.TradeMinutes() <= 3)
+            {
+
+            }
+
+            throw new NotImplementedException();
         }
     }
 }

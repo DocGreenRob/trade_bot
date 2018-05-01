@@ -30,13 +30,13 @@ namespace TradeBot.MockRepo
             return accountPosition;
         }
 
-        public Position CreateNewPosition(string underlying, OptionChainResponse optionChain, int numOfContracts, double currentPositionPrice, AppEnums.OptionType optionType) // ok
+        public Position CreateNewPosition(string underlying, OptionChainResponse optionChain, int numOfContracts, double currentPositionPrice, AppEnums.OptionType optionType)
         {
             return new Position
             {
                 PositionId = 1,
                 InstrumentType = AppEnums.InstrumentType.Option,
-                EntryTime = DateTime.Now,
+                EntryTime = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 9,30,0),
                 UnderlyingPriceAtEntry = currentPositionPrice,
                 Underlying = new Underlying
                 {

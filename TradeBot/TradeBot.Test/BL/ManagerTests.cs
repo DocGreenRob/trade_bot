@@ -119,8 +119,9 @@ namespace TradeBot.Test.BL
         public void Can_Create_Strangle()
         {
             // Arrange
+            PositionManager positionManager;
             // Act
-            Tuple<AccountPositionsResponse, List<AccountPosition>> result = CreateStrangle("BA", 322.5, 320, 4.05, 3.4);
+            Tuple<AccountPositionsResponse, List<AccountPosition>> result = CreateStrangle("BA", 322.5, 320, 4.05, 3.4, out positionManager);
 
             // Assert
             AccountPositionsResponse accountPositionsResponse = result.Item1;
@@ -164,9 +165,10 @@ namespace TradeBot.Test.BL
         }
 
         #region private methods
-        private Tuple<AccountPositionsResponse, List<AccountPosition>> CreateStrangle(string symbol, double callStrike, double putStrike, double callCostBasis, double putCostBasis)
+        private Tuple<AccountPositionsResponse, List<AccountPosition>> CreateStrangle(string symbol, double callStrike, double putStrike, double callCostBasis, double putCostBasis, out PositionManager positionManager)
         {
             PositionManager positionMgr = new PositionManager(positionRepo, Broker.ETrade);
+            positionManager = positionMgr;
 
             // Create Position # 1 (CALL)
             SetTestDefaults(symbol, callStrike, OptionType.CALL, callCostBasis);
@@ -266,13 +268,15 @@ namespace TradeBot.Test.BL
         public void Can_Evaluate_Strangle_And_Close_Position_Based_On_Decision_BA()
         {
             // Arrange
-            Tuple<AccountPositionsResponse, List<AccountPosition>> result = CreateStrangle("BA", 322.5, 320, 4.05, 3.4);
+            PositionManager positionMgr;
+            Tuple<AccountPositionsResponse, List<AccountPosition>> result = CreateStrangle("BA", 322.5, 320, 4.05, 3.4, out positionMgr);
             AccountPositionsResponse accountPositionsResponse = result.Item1;
             List<AccountPosition> positionsOfInterest = result.Item2;
 
             int controlVariable = Models.MockModelDefaults.Default.Positions.Count;
             for (int i = 0; i < controlVariable; i++)
             {
+                Position position = Models.MockModelDefaults.Default.Positions.ElementAt(i);
 
                 // if CALL
                 List<Change> changes = new List<Change>();
@@ -284,92 +288,110 @@ namespace TradeBot.Test.BL
                         new Change
                         {
                             TradeDirection = TradeDirection.Down,
-                            Amount =  7.41
+                            Amount =  7.41,
+                            DateTime = position.EntryTime.AddMinutes(1)
                         },
                         new Change
                         {
                             TradeDirection = TradeDirection.Up,
-                            Amount =  2.47
+                            Amount =  2.47,
+                            DateTime = position.EntryTime.AddMinutes(2)
                         },
                         new Change
                         {
                             TradeDirection = TradeDirection.Up,
-                            Amount =  4.94
+                            Amount =  4.94,
+                            DateTime = position.EntryTime.AddMinutes(3)
                         },
                         new Change
                         {
                             TradeDirection = TradeDirection.Down,
-                            Amount =  6.17
+                            Amount =  6.17,
+                            DateTime = position.EntryTime.AddMinutes(4)
                         },
                         new Change
                         {
                             TradeDirection = TradeDirection.Sideways,
-                            Amount =  0
+                            Amount =  0,
+                            DateTime = position.EntryTime.AddMinutes(5)
                         },
                         new Change
                         {
                             TradeDirection = TradeDirection.Down,
-                            Amount =  17.28
+                            Amount =  17.28,
+                            DateTime = position.EntryTime.AddMinutes(6)
                         },
                         new Change
                         {
                             TradeDirection = TradeDirection.Down,
-                            Amount =  14.32
+                            Amount =  14.32,
+                            DateTime = position.EntryTime.AddMinutes(7)
                         },
                         new Change
                         {
                             TradeDirection = TradeDirection.Down,
-                            Amount =  10.86
+                            Amount =  10.86,
+                            DateTime = position.EntryTime.AddMinutes(8)
                         },
                         new Change
                         {
                             TradeDirection = TradeDirection.Down,
-                            Amount =  17.04
+                            Amount =  17.04,
+                            DateTime = position.EntryTime.AddMinutes(9)
                         },
                         new Change
                         {
                             TradeDirection = TradeDirection.Up,
-                            Amount =  2.47
+                            Amount =  2.47,
+                            DateTime = position.EntryTime.AddMinutes(10)
                         },
                         new Change
                         {
                             TradeDirection = TradeDirection.Up,
-                            Amount =  7.41
+                            Amount =  7.41,
+                            DateTime = position.EntryTime.AddMinutes(11)
                         },
                         new Change
                         {
                             TradeDirection = TradeDirection.Up,
-                            Amount =  5.43
+                            Amount =  5.43,
+                            DateTime = position.EntryTime.AddMinutes(12)
                         },
                         new Change
                         {
                             TradeDirection = TradeDirection.Down,
-                            Amount =  3.70
+                            Amount =  3.70,
+                            DateTime = position.EntryTime.AddMinutes(13)
                         },
                         new Change
                         {
                             TradeDirection = TradeDirection.Down,
-                            Amount =  4.20
+                            Amount =  4.20,
+                            DateTime = position.EntryTime.AddMinutes(14)
                         },
                         new Change
                         {
                             TradeDirection = TradeDirection.Up,
-                            Amount =  7.16
+                            Amount =  7.16,
+                            DateTime = position.EntryTime.AddMinutes(15)
                         },
                         new Change
                         {
                             TradeDirection = TradeDirection.Up,
-                            Amount =  4.69
+                            Amount =  4.69,
+                            DateTime = position.EntryTime.AddMinutes(16)
                         },
                         new Change
                         {
                             TradeDirection = TradeDirection.Up,
-                            Amount =  2.96
+                            Amount =  2.96,
+                            DateTime = position.EntryTime.AddMinutes(17)
                         },
                         new Change
                         {
                             TradeDirection = TradeDirection.Up,
-                            Amount =  13.58
+                            Amount =  13.58,
+                            DateTime = position.EntryTime.AddMinutes(18)
                         }
                     };
                 }
@@ -380,97 +402,115 @@ namespace TradeBot.Test.BL
                         new Change
                         {
                             TradeDirection = TradeDirection.Down,
-                            Amount =  2.47
+                            Amount =  2.47,
+                            DateTime = position.EntryTime.AddMinutes(1)
                         },
                         new Change
                         {
                             TradeDirection = TradeDirection.Down,
-                            Amount =  8.64
+                            Amount =  8.64,
+                            DateTime = position.EntryTime.AddMinutes(2)
                         },
                         new Change
                         {
                             TradeDirection = TradeDirection.Down,
-                            Amount =  4.69
+                            Amount =  4.69,
+                            DateTime = position.EntryTime.AddMinutes(3)
                         },
                         new Change
                         {
                             TradeDirection = TradeDirection.Up,
-                            Amount =  2.47
+                            Amount =  2.47,
+                            DateTime = position.EntryTime.AddMinutes(4)
                         },
                         new Change
                         {
                             TradeDirection = TradeDirection.Down,
-                            Amount =  0.74
+                            Amount =  0.74,
+                            DateTime = position.EntryTime.AddMinutes(5)
                         },
                         new Change
                         {
                             TradeDirection = TradeDirection.Up,
-                            Amount =  19.01
+                            Amount =  19.01,
+                            DateTime = position.EntryTime.AddMinutes(6)
                         },
                         new Change
                         {
                             TradeDirection = TradeDirection.Up,
-                            Amount =  17.28
+                            Amount =  17.28,
+                            DateTime = position.EntryTime.AddMinutes(7)
                         },
                         new Change
                         {
                             TradeDirection = TradeDirection.Up,
-                            Amount =  12.35
+                            Amount =  12.35,
+                            DateTime = position.EntryTime.AddMinutes(8)
                         },
                         new Change
                         {
                             TradeDirection = TradeDirection.Up,
-                            Amount =  24.69
+                            Amount =  24.69,
+                            DateTime = position.EntryTime.AddMinutes(9)
                         },
                         new Change
                         {
                             TradeDirection = TradeDirection.Up,
-                            Amount =  71.60
+                            Amount =  71.60,
+                            DateTime = position.EntryTime.AddMinutes(10)
                         },
                         new Change
                         {
                             TradeDirection = TradeDirection.Down,
-                            Amount =  3.70
+                            Amount =  3.70,
+                            DateTime = position.EntryTime.AddMinutes(11)
                         },
                         new Change
                         {
                             TradeDirection = TradeDirection.Down,
-                            Amount =  23.46
+                            Amount =  23.46,
+                            DateTime = position.EntryTime.AddMinutes(12)
                         },
                         new Change
                         {
                             TradeDirection = TradeDirection.Down,
-                            Amount =  28.40
+                            Amount =  28.40,
+                            DateTime = position.EntryTime.AddMinutes(13)
                         },
                         new Change
                         {
                             TradeDirection = TradeDirection.Up,
-                            Amount =  14.81
+                            Amount =  14.81,
+                            DateTime = position.EntryTime.AddMinutes(14)
                         },
                         new Change
                         {
                             TradeDirection = TradeDirection.Up,
-                            Amount =  16.05
+                            Amount =  16.05,
+                            DateTime = position.EntryTime.AddMinutes(15)
                         },
                         new Change
                         {
                             TradeDirection = TradeDirection.Down,
-                            Amount =  23.46
+                            Amount =  23.46,
+                            DateTime = position.EntryTime.AddMinutes(16)
                         },
                         new Change
                         {
                             TradeDirection = TradeDirection.Down,
-                            Amount =  19.75
+                            Amount =  19.75,
+                            DateTime = position.EntryTime.AddMinutes(17)
                         },
                         new Change
                         {
                             TradeDirection = TradeDirection.Down,
-                            Amount =  8.64
+                            Amount =  8.64,
+                            DateTime = position.EntryTime.AddMinutes(18)
                         }
                     };
                 }
 
-                Position position = Models.MockModelDefaults.Default.Positions.ElementAt(i);
+
                 accountPosition = positionsOfInterest.Where(pi => pi.Product.StrikePrice == position.OptionOrderResponse.OptionSymbol.StrikePrice && position.OptionOrderResponse.OptionSymbol.OptionType == (i == 0 ? OptionType.CALL : OptionType.PUT)).FirstOrDefault();
 
                 PositionBehavior positionBehavior = new PositionBehavior
@@ -479,7 +519,7 @@ namespace TradeBot.Test.BL
                     Changes = changes
                 };
 
-                Models.MockModelDefaults.Default.Positions.ElementAt(i).PositionBehavior = positionBehavior;                
+                Models.MockModelDefaults.Default.Positions.ElementAt(i).PositionBehavior = positionBehavior;
             }
 
             // Act & Assert
@@ -487,17 +527,33 @@ namespace TradeBot.Test.BL
             // Now run through the "PositionAnalyzer"
 
             // it should evaluate the positions as a whole and respond to each message accordingly - but it must have the logic to output the appropriate Decision as per the price action
-            int changes = Models.MockModelDefaults.Default.Positions.FirstOrDefault().PositionBehavior.Changes.Count;
+            int changesCount = Models.MockModelDefaults.Default.Positions.FirstOrDefault().PositionBehavior.Changes.Count;
 
-            for (int i = 0; i < changes; i++)
+            Position callPosition = Models.MockModelDefaults.Default.Positions.ElementAt(0);
+            Position putPosition = Models.MockModelDefaults.Default.Positions.ElementAt(1);
+
+            PositionBehavior callPositionBehavior = Models.MockModelDefaults.Default.Positions.ElementAt(0).PositionBehavior;
+            PositionBehavior putPositionBehavior = Models.MockModelDefaults.Default.Positions.ElementAt(1).PositionBehavior;
+
+
+            for (int i = 0; i < changesCount; i++)
             {
-                PositionBehavior callPositionBehavior = Models.MockModelDefaults.Default.Positions.ElementAt(0).PositionBehavior;
-                PositionBehavior putPositionBehavior = Models.MockModelDefaults.Default.Positions.ElementAt(1).PositionBehavior;
+                int n = i + 1;
 
+                // Simulate Position Change
+                // Simulates checking the position via the API (getting the most current status of the position)
+                Change callChange = callPositionBehavior.Changes.ElementAt(i);
+                AccountPosition callAdjustedAccountPosition = positionMgr.Change(callPosition.AccountPositionsResponse.AccountPositions.FirstOrDefault(), callChange.TradeDirection, callChange.Amount);
 
-                PositionAnalyzer.GetDecision()
+                // Here we want to simulate getting a decision every minute.  So, since our object is fully built, and backward looking (we have mocked the data for the a future time) then here,
+                // as we loop through our "changesCount" we will allow our decision maker utility to act as though it is real time.  Of course in real-time we will not know the future so it will be real time
+                // I think that however I may change the signature but the guts should remain the same.
+                Tuple<PositionBehavior, List<Change>> callTuple = new Tuple<PositionBehavior, List<Change>>(callPositionBehavior, callPositionBehavior.Changes.Take(n).ToList());
+                Tuple<PositionBehavior, List<Change>> putTuple = new Tuple<PositionBehavior, List<Change>>(putPositionBehavior, putPositionBehavior.Changes.Take(n).ToList());
+
+                positionMgr.GetDecision(callTuple, putTuple);
             }
-            
+
             Assert.Equals(true, false);
         }
 
