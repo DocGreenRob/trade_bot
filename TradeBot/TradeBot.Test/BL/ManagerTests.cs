@@ -495,8 +495,6 @@ namespace TradeBot.Test.BL
                 PositionBehavior putPositionBehavior = Models.MockModelDefaults.Default.Positions.ElementAt(1).PositionBehavior;
 
 
-
-
                 PositionAnalyzer.GetDecision()
             }
             

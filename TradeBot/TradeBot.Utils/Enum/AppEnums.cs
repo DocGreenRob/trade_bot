@@ -260,5 +260,30 @@
             LEVEL_3,
             LEVEL_4
         }
+
+        public enum Interval
+        {
+            Min_1,
+            Min_5,
+            Min_15,
+            Min_30,
+            Hr_1,
+            Hr_4,
+            Day,
+            Week
+        }
+
+        public enum StochType
+        {
+            /// <summary>
+            /// Slow (Purple/Pinkish)
+            /// </summary>
+            Full_D,
+            /// <summary>
+            /// Fast (Off Red)
+            /// </summary>
+            Full_K
+        }
+
     }
 }
