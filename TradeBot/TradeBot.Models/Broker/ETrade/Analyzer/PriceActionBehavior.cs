@@ -22,8 +22,8 @@ namespace TradeBot.Models.Broker.ETrade.Analyzer
                 {
                     new Stochastic
                     {
-                        Interval = Utils.Enum.AppEnums.Interval.Min_15,
-                        Type = Utils.Enum.AppEnums.StochType.Full_D,
+                        Interval = Enum.AppEnums.Interval.Min_15,
+                        Type = Enum.AppEnums.StochType.Full_D,
                         Value = 1
                     },
                     new EMA

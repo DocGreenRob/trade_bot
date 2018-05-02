@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using TradeBot.Utils.Enum;
-using static TradeBot.Utils.Enum.AppEnums;
+using TradeBot.Models.Enum;
+using static TradeBot.Models.Enum.AppEnums;
 
 namespace TradeBot.Models.Broker.ETrade
 {

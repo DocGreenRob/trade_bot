@@ -5,8 +5,8 @@ C:\_dev\_git\trade_bot\TradeBot\TradeBot.MockRepo\bin\Debug\netcoreapp2.0\TradeB
 C:\_dev\_git\trade_bot\TradeBot\TradeBot.MockRepo\bin\Debug\netcoreapp2.0\TradeBot.Repo.dll
 C:\_dev\_git\trade_bot\TradeBot\TradeBot.MockRepo\bin\Debug\netcoreapp2.0\TradeBot.Utils.dll
 C:\_dev\_git\trade_bot\TradeBot\TradeBot.MockRepo\bin\Debug\netcoreapp2.0\TradeBot.Repo.pdb
-C:\_dev\_git\trade_bot\TradeBot\TradeBot.MockRepo\bin\Debug\netcoreapp2.0\TradeBot.Utils.pdb
 C:\_dev\_git\trade_bot\TradeBot\TradeBot.MockRepo\bin\Debug\netcoreapp2.0\TradeBot.Models.pdb
+C:\_dev\_git\trade_bot\TradeBot\TradeBot.MockRepo\bin\Debug\netcoreapp2.0\TradeBot.Utils.pdb
 C:\_dev\_git\trade_bot\TradeBot\TradeBot.MockRepo\obj\Debug\netcoreapp2.0\TradeBot.MockRepo.csprojResolveAssemblyReference.cache
 C:\_dev\_git\trade_bot\TradeBot\TradeBot.MockRepo\obj\Debug\netcoreapp2.0\TradeBot.MockRepo.csproj.CoreCompileInputs.cache
 C:\_dev\_git\trade_bot\TradeBot\TradeBot.MockRepo\obj\Debug\netcoreapp2.0\TradeBot.MockRepo.AssemblyInfoInputs.cache

@@ -196,6 +196,16 @@
         "build": {
           "build/netstandard2.0/NETStandard.Library.targets": {}
         }
+      },
+      "TradeBot.Models/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v2.0",
+        "compile": {
+          "bin/placeholder/TradeBot.Models.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/TradeBot.Models.dll": {}
+        }
       }
     }
   },
@@ -656,11 +666,17 @@
         "netstandard.library.2.0.0.nupkg.sha512",
         "netstandard.library.nuspec"
       ]
+    },
+    "TradeBot.Models/1.0.0": {
+      "type": "project",
+      "path": "../TradeBot.Models/TradeBot.Models.csproj",
+      "msbuildProject": "../TradeBot.Models/TradeBot.Models.csproj"
     }
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v2.0": [
-      "Microsoft.NETCore.App >= 2.0.0"
+      "Microsoft.NETCore.App >= 2.0.0",
+      "TradeBot.Models >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -698,7 +714,11 @@
       },
       "frameworks": {
         "netcoreapp2.0": {
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\_dev\\_git\\trade_bot\\TradeBot\\TradeBot.Models\\TradeBot.Models.csproj": {
+              "projectPath": "C:\\_dev\\_git\\trade_bot\\TradeBot\\TradeBot.Models\\TradeBot.Models.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

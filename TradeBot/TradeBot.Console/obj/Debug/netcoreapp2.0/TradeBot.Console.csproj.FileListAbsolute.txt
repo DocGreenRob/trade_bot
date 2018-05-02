@@ -16,8 +16,10 @@ C:\_dev\_git\trade_bot\TradeBot\TradeBot.Console\bin\Debug\netcoreapp2.0\TradeBo
 C:\_dev\_git\trade_bot\TradeBot\TradeBot.Console\bin\Debug\netcoreapp2.0\TradeBot.Console.runtimeconfig.dev.json
 C:\_dev\_git\trade_bot\TradeBot\TradeBot.Console\bin\Debug\netcoreapp2.0\TradeBot.Console.dll
 C:\_dev\_git\trade_bot\TradeBot\TradeBot.Console\bin\Debug\netcoreapp2.0\TradeBot.Console.pdb
+C:\_dev\_git\trade_bot\TradeBot\TradeBot.Console\bin\Debug\netcoreapp2.0\TradeBot.Models.dll
 C:\_dev\_git\trade_bot\TradeBot\TradeBot.Console\bin\Debug\netcoreapp2.0\TradeBot.Utils.dll
 C:\_dev\_git\trade_bot\TradeBot\TradeBot.Console\bin\Debug\netcoreapp2.0\TradeBot.Utils.pdb
+C:\_dev\_git\trade_bot\TradeBot\TradeBot.Console\bin\Debug\netcoreapp2.0\TradeBot.Models.pdb
 C:\_dev\_git\trade_bot\TradeBot\TradeBot.Console\obj\Debug\netcoreapp2.0\TradeBot.Console.csprojResolveAssemblyReference.cache
 C:\_dev\_git\trade_bot\TradeBot\TradeBot.Console\obj\Debug\netcoreapp2.0\TradeBot.Console.csproj.CoreCompileInputs.cache
 C:\_dev\_git\trade_bot\TradeBot\TradeBot.Console\obj\Debug\netcoreapp2.0\TradeBot.Console.AssemblyInfoInputs.cache

@@ -1,8 +1,9 @@
 ﻿using System;
-
+using System.Collections.Generic;
 using TradeBot.Models.Broker.ETrade;
+using TradeBot.Models.Broker.ETrade.Analyzer;
 using TradeBot.Models.Interfaces;
-using static TradeBot.Utils.Enum.AppEnums;
+using static TradeBot.Models.Enum.AppEnums;
 
 namespace TradeBot.Models
 {
@@ -44,6 +45,11 @@ namespace TradeBot.Models
         /// The underlying.
         /// </value>
         public Underlying Underlying { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public PriceActionBehavior PriceActionBehavior { get; set; }
+        public List<Flag> Flags { get; set; }
 
         #region ETrade Properties        
         /// <summary>

@@ -200,9 +200,6 @@
       "TradeBot.Models/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v2.0",
-        "dependencies": {
-          "TradeBot.Utils": "1.0.0"
-        },
         "compile": {
           "bin/placeholder/TradeBot.Models.dll": {}
         },
@@ -227,6 +224,9 @@
       "TradeBot.Utils/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v2.0",
+        "dependencies": {
+          "TradeBot.Models": "1.0.0"
+        },
         "compile": {
           "bin/placeholder/TradeBot.Utils.dll": {}
         },

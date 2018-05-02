@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 using TradeBot.Models.Broker.ETrade;
-using static TradeBot.Utils.Enum.AppEnums;
+using static TradeBot.Models.Enum.AppEnums;
 
 namespace TradeBot.Models.MockModelDefaults
 {

@@ -1,4 +1,4 @@
-﻿namespace TradeBot.Utils.Enum
+﻿namespace TradeBot.Models.Enum
 {
     public static class AppEnums
     {

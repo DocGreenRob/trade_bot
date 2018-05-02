@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 using TradeBot.BL.Managers;
 using TradeBot.Models;
 using TradeBot.Models.Broker.ETrade;
-using static TradeBot.Utils.Enum.AppEnums;
+using static TradeBot.Models.Enum.AppEnums;
 
 namespace TradeBot.Controllers
 {
@@ -104,7 +104,7 @@ namespace TradeBot.Controllers
                         // Act
                         // ---
                         // Evaluate Position
-                        Decision decision = positionMgr.Evaluate(adjustedAccountPosition);
+                        Decision decision = positionMgr.Evaluate(new Models.Broker.ETrade.Analyzer.Trade());
 
                         // Assert
                         // ------

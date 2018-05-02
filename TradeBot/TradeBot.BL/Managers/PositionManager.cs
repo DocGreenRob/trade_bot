@@ -6,12 +6,13 @@ using Microsoft.Extensions.Configuration;
 
 using TradeBot.Repo;
 using TradeBot.Models;
-using static TradeBot.Utils.Enum.AppEnums;
+using static TradeBot.Models.Enum.AppEnums;
 using TradeBot.Utils.ExtensionMethods;
-using TradeBot.Utils.Enum;
+using TradeBot.Models.Enum;
 using TradeBot.Models.Broker.ETrade;
 using Microsoft.Extensions.Logging;
 using System.Linq;
+using TradeBot.Models.Broker.ETrade.Analyzer;
 
 namespace TradeBot.BL.Managers
 {
@@ -47,7 +48,7 @@ namespace TradeBot.BL.Managers
             // 1. Check the current price of the Underlying (Get Option Chain)
 
             // currentPositionPrice = THe price of the Position (the Trade).
-            double currentPositionPrice = GetCurrentPrice(underlying, positionType, out expirationDate, out optionChain);
+            double currentPositionPrice = GetCurrentPrice(underlying, positionType, optionType, out expirationDate, out optionChain);
 
             // 2. Check account value (to determine how many contracts to buy)
             int numOfContracts = DetermineNumberOfContracts(currentPositionPrice, tradeStrength);
@@ -67,7 +68,7 @@ namespace TradeBot.BL.Managers
             return _positionRepo.GetPositions(accountId);
         }
 
-        private double GetCurrentPrice(string underlying, PositionType positionType, out DateTime expirationDate, out OptionChainResponse optionChain)
+        private double GetCurrentPrice(string underlying, PositionType positionType, OptionType optionType, out DateTime expirationDate, out OptionChainResponse optionChain)
         {
 			expirationDate = Utils.Utils.Utils.GetExpirationDate();
 
@@ -81,7 +82,16 @@ namespace TradeBot.BL.Managers
                 return _positionRepo.GetOrderPrice(optionChain);
             }
 
-			throw new NotImplementedException();
+            if (positionType == PositionType.Naked)
+            {
+                // 1. need to know price of underlying so I can
+                optionChain = _positionRepo.GetOptionChain(underlying, optionType);
+
+                // Get the price of the order
+                return _positionRepo.GetOrderPrice(optionChain);
+            }
+
+            throw new NotImplementedException();
 		}
 
         public AccountPosition Change(AccountPosition accountPosition, TradeDirection tradeDirection, double changeAmount)
@@ -130,9 +140,9 @@ namespace TradeBot.BL.Managers
 			return (maxPosition / positionPrice).ToGetBase();
 		}
 
-        public Decision Evaluate(AccountPosition adjustedAccountPosition)
+        public Decision Evaluate(Trade trade)
         {
-            return _positionRepo.Evaluate(adjustedAccountPosition);
+            return _positionRepo.Evaluate(trade);
         }
 
         private Position CreateNewPosition(string underlying, OptionChainResponse optionChain, int numOfContracts, double currentPositionPrice, AppEnums.OptionType optionType)
@@ -170,5 +180,11 @@ namespace TradeBot.BL.Managers
 
             throw new NotImplementedException();
         }
+
+        public Decision Evaluate(Tuple<PositionBehavior, List<Change>> callTuple, Tuple<PositionBehavior, List<Change>> putTuple)
+        {
+            throw new NotImplementedException();
+        }
+        
     }
 }

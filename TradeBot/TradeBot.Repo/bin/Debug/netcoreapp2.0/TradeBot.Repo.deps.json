@@ -16,14 +16,14 @@
         }
       },
       "TradeBot.Models/1.0.0": {
-        "dependencies": {
-          "TradeBot.Utils": "1.0.0"
-        },
         "runtime": {
           "TradeBot.Models.dll": {}
         }
       },
       "TradeBot.Utils/1.0.0": {
+        "dependencies": {
+          "TradeBot.Models": "1.0.0"
+        },
         "runtime": {
           "TradeBot.Utils.dll": {}
         }

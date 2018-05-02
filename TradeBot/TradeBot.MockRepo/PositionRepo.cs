@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using TradeBot.Models;
 using TradeBot.Repo;
-using TradeBot.Utils.Enum;
+using TradeBot.Models.Enum;
 using TradeBot.Models.Broker.ETrade;
 using System.Linq;
+using TradeBot.Models.Broker.ETrade.Analyzer;
 
 namespace TradeBot.MockRepo
 {
@@ -32,12 +33,15 @@ namespace TradeBot.MockRepo
 
         public Position CreateNewPosition(string underlying, OptionChainResponse optionChain, int numOfContracts, double currentPositionPrice, AppEnums.OptionType optionType)
         {
+            double commission = 5.95;
+
             return new Position
             {
                 PositionId = 1,
                 InstrumentType = AppEnums.InstrumentType.Option,
                 EntryTime = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 9,30,0),
                 UnderlyingPriceAtEntry = currentPositionPrice,
+                CostBasis = Models.MockModelDefaults.Default.CostBasis,
                 Underlying = new Underlying
                 {
                     Name = Models.MockModelDefaults.Default.RootSymbol
@@ -47,8 +51,8 @@ namespace TradeBot.MockRepo
                 {
                     AccountId = Models.MockModelDefaults.Default.AccountNumber,
                     AllOrNone = false,
-                    EstimatedCommission = 5.95,
-                    EstimatedTotalAmount = Models.MockModelDefaults.Default.CostBasis * 100,
+                    EstimatedCommission = commission,
+                    EstimatedTotalAmount = (Models.MockModelDefaults.Default.CostBasis * 100) + commission,
                     Messages = new List<Message>
                     {
                         new Message
@@ -78,76 +82,81 @@ namespace TradeBot.MockRepo
             };
         }
 
-        public AppEnums.Decision Evaluate(AccountPosition adjustedAccountPosition)
+        public AppEnums.Decision Evaluate(Trade trade)
         {
             // Evaluate the currentPositionPrice versus the costBasis and see the difference in percent
 
-            double changeInDollars = adjustedAccountPosition.CurrentPrice - adjustedAccountPosition.CostBasis;
-            double percentAsDecimal = changeInDollars / adjustedAccountPosition.CostBasis;
-            double percent = percentAsDecimal * 100;
-
-            // Add the evaluation to the history
-            History.Add(adjustedAccountPosition, changeInDollars, percent);
-
-            // negative
-            if (percent < 0)
+            if(trade.Positions.Count == 1)
             {
-                if (percent > -5)
-                {
-                    return AppEnums.Decision.Wait;
-                }
-                if (percent < -5)
-                {
+                AccountPosition position = trade.BehaviorChanges.LastOrDefault().PositionBehavior.AccountPosition;
+                double changeInDollars = position.CurrentPrice - position.CostBasis;
+                double percentAsDecimal = changeInDollars / position.CostBasis;
+                double percent = percentAsDecimal * 100;
 
-                    return AppEnums.Decision.Wait;
-                }
-                if (percent < -7)
+                // Add the evaluation to the history
+                History.Add(position, changeInDollars, percent);
+
+                // negative
+                if (percent < 0)
                 {
-                    return AppEnums.Decision.Start_To_Worry;
+                    if (percent > -5)
+                    {
+                        return AppEnums.Decision.Wait;
+                    }
+                    if (percent < -5)
+                    {
+
+                        return AppEnums.Decision.Wait;
+                    }
+                    if (percent < -7)
+                    {
+                        return AppEnums.Decision.Start_To_Worry;
+                    }
+                    if (percent >= -7)
+                    {
+                        return AppEnums.Decision.Investigate;
+                    }
+                    if (percent < -10)
+                    {
+                        return AppEnums.Decision.Close;
+                    }
+                    if (percent > -15)
+                    {
+                        return AppEnums.Decision.Close;
+                    }
                 }
-                if (percent >= -7)
+                else
                 {
-                    return AppEnums.Decision.Investigate;
-                }
-                if (percent < -10)
-                {
-                    return AppEnums.Decision.Close;
-                }
-                if (percent > -15)
-                {
-                    return AppEnums.Decision.Close;
+                    if (percent < 5)
+                    {
+                        return AppEnums.Decision.Wait;
+                    }
+                    if (percent > 5)
+                    {
+                        // What does 5% look like, what's the book value, (i.e., if 5% = $1,000) then we will NOT give back more than 1% of that 5%.
+                        return AppEnums.Decision.Break_Even;
+                        return AppEnums.Decision.Set_Least_Gain_2_Percent;
+                    }
+                    if (percent > 7)
+                    {
+                        return AppEnums.Decision.Set_Least_Gain_4_Percent;
+                    }
+                    if (percent > 10)
+                    {
+                        // allows room for fluctations
+                        return AppEnums.Decision.Set_Least_Gain_6_Percent;
+                    }
+                    if (percent > 15)
+                    {
+                        return AppEnums.Decision.Close;
+                    }
+                    // positive
                 }
             }
-            else
-            {
-                if (percent < 5)
-                {
-                    return AppEnums.Decision.Wait;
-                }
-                if (percent > 5)
-                {
-                    // What does 5% look like, what's the book value, (i.e., if 5% = $1,000) then we will NOT give back more than 1% of that 5%.
-                    return AppEnums.Decision.Break_Even;
-                    return AppEnums.Decision.Set_Least_Gain_2_Percent;
-                }
-                if (percent > 7)
-                {
-                    return AppEnums.Decision.Set_Least_Gain_4_Percent;
-                }
-                if (percent > 10)
-                {
-                    // allows room for fluctations
-                    return AppEnums.Decision.Set_Least_Gain_6_Percent;
-                }
-                if (percent > 15)
-                {
-                    return AppEnums.Decision.Close;
-                }
-                // positive
-            }
+
+            
 
             throw new Exception("Something went wrong!");
-
         }
 
         public double GetOptionBuyingPower()
@@ -273,12 +282,13 @@ namespace TradeBot.MockRepo
         {
             // determine number of positions to open
             int positions = Models.MockModelDefaults.Default.Positions.Count;
+            double commission = 5.95;
 
             AccountPositionsResponse accountPositionsResponse = new AccountPositionsResponse { AccountId = accountId, Count = positions, AccountPositions = new List<AccountPosition>() };
 
             for (int i = 0; i < positions; i++)
             {
-                double costBasis = Models.MockModelDefaults.Default.Positions.ElementAt(i).OptionOrderResponse.EstimatedTotalAmount / 100;
+                double costBasis = (Models.MockModelDefaults.Default.Positions.ElementAt(i).OptionOrderResponse.EstimatedTotalAmount - commission) / 100;
                 AccountPosition accountPosition = new AccountPosition
                 {
                     CostBasis = costBasis,

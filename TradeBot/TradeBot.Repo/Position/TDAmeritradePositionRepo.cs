@@ -3,7 +3,8 @@ using System.Collections.Generic;
 
 using TradeBot.Models;
 using TradeBot.Models.Broker.ETrade;
-using TradeBot.Utils.Enum;
+using TradeBot.Models.Broker.ETrade.Analyzer;
+using TradeBot.Models.Enum;
 
 namespace TradeBot.Repo.Position
 {
@@ -19,7 +20,7 @@ namespace TradeBot.Repo.Position
             throw new System.NotImplementedException();
         }
 
-        public AppEnums.Decision Evaluate(AccountPosition adjustedAccountPosition)
+        public AppEnums.Decision Evaluate(Trade trade)
         {
             throw new System.NotImplementedException();
         }

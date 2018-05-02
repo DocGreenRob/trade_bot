@@ -997,9 +997,22 @@
           "lib/netstandard1.3/System.Xml.XmlDocument.dll": {}
         }
       },
+      "TradeBot.Models/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v2.0",
+        "compile": {
+          "bin/placeholder/TradeBot.Models.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/TradeBot.Models.dll": {}
+        }
+      },
       "TradeBot.Utils/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v2.0",
+        "dependencies": {
+          "TradeBot.Models": "1.0.0"
+        },
         "compile": {
           "bin/placeholder/TradeBot.Utils.dll": {}
         },
@@ -4025,6 +4038,11 @@
         "system.xml.xmldocument.4.3.0.nupkg.sha512",
         "system.xml.xmldocument.nuspec"
       ]
+    },
+    "TradeBot.Models/1.0.0": {
+      "type": "project",
+      "path": "../TradeBot.Models/TradeBot.Models.csproj",
+      "msbuildProject": "../TradeBot.Models/TradeBot.Models.csproj"
     },
     "TradeBot.Utils/1.0.0": {
       "type": "project",

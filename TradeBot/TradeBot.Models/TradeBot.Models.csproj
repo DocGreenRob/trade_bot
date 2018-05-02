@@ -5,10 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TradeBot.Utils\TradeBot.Utils.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="Broker\TDAmeritrade\" />
   </ItemGroup>
 

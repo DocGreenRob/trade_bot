@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using TradeBot.Models;
 using TradeBot.Models.Broker.ETrade;
-using TradeBot.Utils.Enum;
-using static TradeBot.Utils.Enum.AppEnums;
+using TradeBot.Models.Broker.ETrade.Analyzer;
+using TradeBot.Models.Enum;
+using static TradeBot.Models.Enum.AppEnums;
 
 namespace TradeBot.Repo
 {
@@ -14,9 +15,9 @@ namespace TradeBot.Repo
 		double GetOrderPrice(OptionChainResponse optionChain);
 		double GetOptionBuyingPower();
         Models.Position CreateNewPosition(string underlying, OptionChainResponse optionChain, int numOfContracts, double currentPositionPrice, AppEnums.OptionType optionType);
-        AccountPosition Change(AccountPosition accountPosition, TradeDirection tradeDirection, double changeAmount);
+        AccountPosition Change(AccountPosition accountPosition, AppEnums.TradeDirection tradeDirection, double changeAmount);
         AccountPositionsResponse GetPositions(int accountId);
-        Decision Evaluate(AccountPosition adjustedAccountPosition);
+        Decision Evaluate(Trade trade);
 
         #endregion
 

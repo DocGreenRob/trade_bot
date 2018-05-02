@@ -7,14 +7,27 @@
   "targets": {
     ".NETCoreApp,Version=v2.0": {
       "TradeBot.Utils/1.0.0": {
+        "dependencies": {
+          "TradeBot.Models": "1.0.0"
+        },
         "runtime": {
           "TradeBot.Utils.dll": {}
+        }
+      },
+      "TradeBot.Models/1.0.0": {
+        "runtime": {
+          "TradeBot.Models.dll": {}
         }
       }
     }
   },
   "libraries": {
     "TradeBot.Utils/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "TradeBot.Models/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
