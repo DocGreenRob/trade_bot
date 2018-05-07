@@ -102,37 +102,39 @@ namespace TradeBot.Test.BL
                     {
                         position
                     },
-                    BehaviorChanges = new List<TradeBehaviorChange>
+                    BehaviorChanges = new Dictionary<TradeBehaviorChange, TradeBehaviorChange>
                     {
-                        new TradeBehaviorChange
+
+                    }
+                };
+
+                TradeBehaviorChange callTradeBehaviorChange = new TradeBehaviorChange
+                {
+                    PriceActionBehavior = new PriceActionBehavior
+                    {
+                        IsDoubled = Utils.Utils.Utils.IsDoubled(adjustedAccountPosition.CostBasis, adjustedAccountPosition.CurrentPrice),
+                        PnL = Utils.Utils.Utils.GetPnL(adjustedAccountPosition, 0),
+                        Studies = null
+                    },
+                    PositionBehavior = new PositionBehavior
+                    {
+                        AccountPosition = adjustedAccountPosition,
+                        Change = new Change
                         {
-                            PriceActionBehavior = new PriceActionBehavior
-                            {
-                                IsDoubled = Utils.Utils.Utils.IsDoubled(adjustedAccountPosition.CostBasis,adjustedAccountPosition.CurrentPrice),
-                                PnL = Utils.Utils.Utils.GetPnL(adjustedAccountPosition, 0),
-                                Studies = null
-                            },
-                            PositionBehavior = new PositionBehavior
-                            {
-                                AccountPosition = adjustedAccountPosition,
-                                Changes = new List<Change>
-                                {
-                                    new Change
-                                    {
-                                        Amount = .02,
-                                        DateTime = marketTime,
-                                        StockPrice = currentStockPrice,
-                                        TradeDirection = tradeDirection
-                                    }
-                                }
-                            }
+                            Amount = .02,
+                            DateTime = marketTime,
+                            StockPrice = currentStockPrice,
+                            TradeDirection = tradeDirection
                         }
                     }
                 };
 
+                trade.BehaviorChanges.Add(callTradeBehaviorChange, null);
+
                 // Gain
-                Assert.IsTrue(trade.BehaviorChanges.FirstOrDefault().PriceActionBehavior.PnL.PercentChange < 2);
-                Assert.IsTrue(trade.BehaviorChanges.FirstOrDefault().PriceActionBehavior.PnL.PercentChange > 1.9);
+                // Validate Change() with some Asserts
+                Assert.IsTrue(trade.BehaviorChanges.ElementAt(0).Key.PriceActionBehavior.PnL.PercentChange < 2);
+                Assert.IsTrue(trade.BehaviorChanges.ElementAt(0).Key.PriceActionBehavior.PnL.PercentChange > 1.9);
 
                 #region math notes
                 // 50 * 1.5 = 75
@@ -144,11 +146,11 @@ namespace TradeBot.Test.BL
                 //++ Act
                 // ---
                 // Evaluate Position
-                Decision decision = positionMgr.Evaluate(trade);
+                Trade tradeResult = positionMgr.Evaluate(trade);
 
                 //++ Assert
                 // ------
-                Assert.AreEqual(decision, Decision.Wait);
+                Assert.AreEqual(tradeResult.Decision, Decision.Wait);
             }
         }
 
@@ -290,11 +292,11 @@ namespace TradeBot.Test.BL
                 // Act
                 // ---
                 // Evaluate Position
-                Decision decision = positionMgr.Evaluate(new Trade());
+                Trade tradeResult = positionMgr.Evaluate(new Trade());
 
                 // Assert
                 // ------
-                Assert.AreEqual(decision, Decision.Wait);
+                Assert.AreEqual(tradeResult.Decision, Decision.Wait);
 
                 // TBD
             }
@@ -315,6 +317,16 @@ namespace TradeBot.Test.BL
             List<AccountPosition> positionsOfInterest = result.Item2;
 
             int controlVariable = Models.MockModelDefaults.Default.Positions.Count;
+
+            List<List<Change>> changes = new List<List<Change>>();
+            List<Change> _changes = new List<Change>();
+            AccountPosition accountPosition = new AccountPosition();
+
+
+            #region Create the list of Changes to be applied to the Trade for Evaluation()
+            // Create the list of Changes to be applied to the Trade for Evaluation()
+            // Output: List<Change> changes now has this list of Changes
+
             for (int i = 0; i < controlVariable; i++)
             {
                 Position position = Models.MockModelDefaults.Default.Positions.ElementAt(i);
@@ -322,12 +334,10 @@ namespace TradeBot.Test.BL
                 // Set AccountPositionResponse
                 position.AccountPositionsResponse = accountPositionsResponse;
 
-                // if CALL
-                List<Change> changes = new List<Change>();
-                AccountPosition accountPosition = new AccountPosition();
+
                 if (i == 0)
                 {
-                    changes = new List<Change>
+                    _changes = new List<Change>
                     {
                         new Change
                         {
@@ -456,10 +466,12 @@ namespace TradeBot.Test.BL
                             StockPrice = 317.33
                         }
                     };
+
+                    changes.Add(_changes);
                 }
                 else
                 {
-                    changes = new List<Change>
+                    _changes = new List<Change>
                     {
                         new Change
                         {
@@ -588,54 +600,158 @@ namespace TradeBot.Test.BL
                             StockPrice = 317.33
                         }
                     };
+
+                    changes.Add(_changes);
                 }
 
-
-                accountPosition = positionsOfInterest.Where(pi => pi.Product.StrikePrice == position.OptionOrderResponse.OptionSymbol.StrikePrice && position.OptionOrderResponse.OptionSymbol.OptionType == (i == 0 ? OptionType.CALL : OptionType.PUT)).FirstOrDefault();
-
-                PositionBehavior positionBehavior = new PositionBehavior
-                {
-                    AccountPosition = accountPosition,
-                    Changes = changes
-                };
-
-                Models.MockModelDefaults.Default.Positions.ElementAt(i).PositionBehavior = positionBehavior;
             }
+
+            #endregion
+
+
+            //accountPosition = positionsOfInterest.Where(pi => 
+            //pi.Product.StrikePrice == position.OptionOrderResponse.OptionSymbol.StrikePrice 
+            //&& position.OptionOrderResponse.OptionSymbol.OptionType == (i == 0 ? OptionType.CALL : OptionType.PUT)).FirstOrDefault();
+
+            // Get correct account position
+
+            /*
+            accountPosition = positionsOfInterest.Where(pi =>
+                pi.Product.StrikePrice == position.OptionOrderResponse.OptionSymbol.StrikePrice
+                && position.OptionOrderResponse.OptionSymbol.OptionType == pi.Product.CallPut).FirstOrDefault();
+
+            PositionBehavior positionBehavior = new PositionBehavior
+            {
+                AccountPosition = accountPosition,
+                Change = changes
+            };
+
+            Models.MockModelDefaults.Default.Positions.ElementAt(i).PositionBehavior = positionBehavior;
+            */
 
             // Act & Assert
 
-            // Now run through the "PositionAnalyzer"
+            // Now run through the "Evaluator()"
 
             // it should evaluate the positions as a whole and respond to each message accordingly - but it must have the logic to output the appropriate Decision as per the price action
-            int changesCount = Models.MockModelDefaults.Default.Positions.FirstOrDefault().PositionBehavior.Changes.Count;
+            int changesCount = changes.Count;
 
-            Position callPosition = Models.MockModelDefaults.Default.Positions.ElementAt(0);
-            Position putPosition = Models.MockModelDefaults.Default.Positions.ElementAt(1);
+            Position callPosition = Models.MockModelDefaults.Default.Positions.Where(p => p.OptionOrderResponse.OptionSymbol.OptionType == OptionType.CALL).FirstOrDefault();
+            Position putPosition = Models.MockModelDefaults.Default.Positions.Where(p => p.OptionOrderResponse.OptionSymbol.OptionType == OptionType.PUT).FirstOrDefault();
 
-            PositionBehavior callPositionBehavior = Models.MockModelDefaults.Default.Positions.ElementAt(0).PositionBehavior;
-            PositionBehavior putPositionBehavior = Models.MockModelDefaults.Default.Positions.ElementAt(1).PositionBehavior;
+            //PositionBehavior callPositionBehavior = callPosition.PositionBehavior;
+            //PositionBehavior putPositionBehavior = putPosition.PositionBehavior;
 
+            #region Set Defaults on Trade()
+            Trade trade = new Trade();
+            trade.Positions = new List<Position>();
+            trade.Positions.AddRange(new List<Position>{ callPosition,putPosition });
+            trade.BehaviorChanges = new Dictionary<TradeBehaviorChange, TradeBehaviorChange>();
+            
+            //trade.BehaviorChanges.Add(
+            //    new TradeBehaviorChange
+            //    {
+            //        PriceActionBehavior = new PriceActionBehavior { },
+            //        PositionBehavior = new PositionBehavior
+            //        {
+            //            AccountPosition = new AccountPosition { },
+            //            Change = new Change { }
+            //        }
+            //    },
+            //    new TradeBehaviorChange
+            //    {
+            //        PriceActionBehavior = new PriceActionBehavior { },
+            //        PositionBehavior = new PositionBehavior
+            //        {
+            //            AccountPosition = new AccountPosition { },
+            //            Change = new Change { }
+            //        }
+            //    }
+            //);
+            #endregion
 
             for (int i = 0; i < changesCount; i++)
             {
+
+
                 int n = i + 1;
+
+                // Set the Market Time
+                DateTime marketTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 9, 30, 0).AddMinutes(i);
+                trade.Time = marketTime;
+
+                // Simulate the Change
+                // Call
+                callPosition.PositionBehavior = new PositionBehavior
+                {
+                    Change = changes.ElementAt(0).ElementAt(i)
+                };
+                // Put
+                putPosition.PositionBehavior = new PositionBehavior
+                {
+                    Change = changes.ElementAt(1).ElementAt(i)
+                };
 
                 //++ Act
                 // Simulate Position Change
                 // Simulates checking the position via the API (getting the most current status of the position)
-                Change callChange = callPositionBehavior.Changes.ElementAt(i);
-                AccountPosition callAdjustedAccountPosition = positionMgr.Change(callPosition.AccountPositionsResponse.AccountPositions.Where(a => a.Product.CallPut == OptionType.CALL).FirstOrDefault(), callChange.TradeDirection, callChange.Amount);
+                trade.StockPrice = callPosition.PositionBehavior.Change.StockPrice;
+
+                // [x]Position.PositionBehavior.AccountPosition =
+                // Call
+                AccountPosition callAdjustedAccountPosition = positionMgr.Change(callPosition.AccountPositionsResponse.AccountPositions.Where(a => a.Product.CallPut == OptionType.CALL).FirstOrDefault(), callPosition.PositionBehavior.Change.TradeDirection, callPosition.PositionBehavior.Change.Amount);
+                putPosition.PositionBehavior.AccountPosition = callAdjustedAccountPosition;
+
+                // Put
+                AccountPosition putAdjustedAccountPosition = positionMgr.Change(putPosition.AccountPositionsResponse.AccountPositions.Where(a => a.Product.CallPut == OptionType.PUT).FirstOrDefault(), callPosition.PositionBehavior.Change.TradeDirection, callPosition.PositionBehavior.Change.Amount);
+                putPosition.PositionBehavior.AccountPosition = putAdjustedAccountPosition;
+
+                // Call
+                PriceActionBehavior callPriceActionBehavior = new PriceActionBehavior
+                {
+                    IsDoubled = Utils.Utils.Utils.IsDoubled(callAdjustedAccountPosition.CostBasis, callAdjustedAccountPosition.CurrentPrice),
+                    // need to get the last lastPercentChange if the time is greater than 9:31, else, return 0
+                    PnL = Utils.Utils.Utils.GetPnL(callAdjustedAccountPosition, 0),
+                    Studies = null
+                };
+
+                // Put
+                PriceActionBehavior putPriceActionBehavior = new PriceActionBehavior
+                {
+                    IsDoubled = Utils.Utils.Utils.IsDoubled(putAdjustedAccountPosition.CostBasis, putAdjustedAccountPosition.CurrentPrice),
+                    // need to get the last lastPercentChange if the time is greater than 9:31, else, return 0
+                    PnL = Utils.Utils.Utils.GetPnL(putAdjustedAccountPosition, 0),
+                    Studies = null
+                };
+
+                // Call
+                TradeBehaviorChange callTradeBehaviorChange = new TradeBehaviorChange
+                {
+                    PriceActionBehavior = callPriceActionBehavior,
+                    PositionBehavior = callPosition.PositionBehavior
+                };
+
+                // Put
+                TradeBehaviorChange putTradeBehaviorChange = new TradeBehaviorChange
+                {
+                    PriceActionBehavior = putPriceActionBehavior,
+                    PositionBehavior = putPosition.PositionBehavior
+                };
+
+                trade.BehaviorChanges.Add(callTradeBehaviorChange, putTradeBehaviorChange);
+                
 
                 // Here we want to simulate getting a decision every minute.  So, since our object is fully built, and backward looking (we have mocked the data for the a future time) then here,
                 // as we loop through our "changesCount" we will allow our decision maker utility to act as though it is real time.  Of course in real-time we will not know the future so it will be real time
                 // I think that however I may change the signature but the guts should remain the same.
-                Tuple<PositionBehavior, List<Change>> callTuple = new Tuple<PositionBehavior, List<Change>>(callPositionBehavior, callPositionBehavior.Changes.Take(n).ToList());
-                Tuple<PositionBehavior, List<Change>> putTuple = new Tuple<PositionBehavior, List<Change>>(putPositionBehavior, putPositionBehavior.Changes.Take(n).ToList());
+
+                //Tuple<PositionBehavior, List<Change>> callTuple = new Tuple<PositionBehavior, List<Change>>(callPositionBehavior, callPositionBehavior.Changes.Take(n).ToList());
+                //Tuple<PositionBehavior, List<Change>> putTuple = new Tuple<PositionBehavior, List<Change>>(putPositionBehavior, putPositionBehavior.Changes.Take(n).ToList());
 
                 //++ Act
                 // ---
                 // Evaluate Position
-                Decision decision = positionMgr.Evaluate(callTuple, putTuple);
+                //Decision decision = positionMgr.Evaluate(callTuple, putTuple);
             }
 
             Assert.Equals(true, false);

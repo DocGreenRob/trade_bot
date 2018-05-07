@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+
 using TradeBot.Models;
 using TradeBot.Models.Broker.ETrade;
 using TradeBot.Models.Broker.ETrade.Analyzer;
@@ -17,7 +18,7 @@ namespace TradeBot.Repo
         Models.Position CreateNewPosition(string underlying, OptionChainResponse optionChain, int numOfContracts, double currentPositionPrice, AppEnums.OptionType optionType);
         AccountPosition Change(AccountPosition accountPosition, AppEnums.TradeDirection tradeDirection, double changeAmount);
         AccountPositionsResponse GetPositions(int accountId);
-        Decision Evaluate(Trade trade);
+        Trade Evaluate(Trade trade);
 
         #endregion
 

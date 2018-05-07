@@ -104,7 +104,7 @@ namespace TradeBot.Controllers
                         // Act
                         // ---
                         // Evaluate Position
-                        Decision decision = positionMgr.Evaluate(new Models.Broker.ETrade.Analyzer.Trade());
+                        //Decision decision = positionMgr.Evaluate(new Models.Broker.ETrade.Analyzer.Trade());
 
                         // Assert
                         // ------

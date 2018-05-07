@@ -39,7 +39,7 @@ namespace TradeBot.MockRepo
             {
                 PositionId = 1,
                 InstrumentType = AppEnums.InstrumentType.Option,
-                EntryTime = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 9,30,0),
+                EntryTime = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 9, 30, 0),
                 UnderlyingPriceAtEntry = currentPositionPrice,
                 CostBasis = Models.MockModelDefaults.Default.CostBasis,
                 Underlying = new Underlying
@@ -82,13 +82,14 @@ namespace TradeBot.MockRepo
             };
         }
 
-        public AppEnums.Decision Evaluate(Trade trade)
+        public Trade Evaluate(Trade trade)
         {
             // Evaluate the currentPositionPrice versus the costBasis and see the difference in percent
 
-            if(trade.Positions.Count == 1)
+            // Naked Trade
+            if (trade.Positions.Count == 1)
             {
-                AccountPosition position = trade.BehaviorChanges.LastOrDefault().PositionBehavior.AccountPosition;
+                AccountPosition position = trade.BehaviorChanges.Keys.ElementAt(0).PositionBehavior.AccountPosition;
                 double changeInDollars = position.CurrentPrice - position.CostBasis;
                 double percentAsDecimal = changeInDollars / position.CostBasis;
                 double percent = percentAsDecimal * 100;
@@ -101,60 +102,72 @@ namespace TradeBot.MockRepo
                 {
                     if (percent > -5)
                     {
-                        return AppEnums.Decision.Wait;
+                        trade.Decision = AppEnums.Decision.Wait;
                     }
                     if (percent < -5)
                     {
 
-                        return AppEnums.Decision.Wait;
+                        trade.Decision = AppEnums.Decision.Wait;
                     }
                     if (percent < -7)
                     {
-                        return AppEnums.Decision.Start_To_Worry;
+                        trade.Decision = AppEnums.Decision.Start_To_Worry;
                     }
                     if (percent >= -7)
                     {
-                        return AppEnums.Decision.Investigate;
+                        trade.Decision = AppEnums.Decision.Investigate;
                     }
                     if (percent < -10)
                     {
-                        return AppEnums.Decision.Close;
+                        trade.Decision = AppEnums.Decision.Close;
                     }
                     if (percent > -15)
                     {
-                        return AppEnums.Decision.Close;
+                        trade.Decision = AppEnums.Decision.Close;
                     }
                 }
                 else
                 {
                     if (percent < 5)
                     {
-                        return AppEnums.Decision.Wait;
+                        trade.Decision = AppEnums.Decision.Wait;
                     }
                     if (percent > 5)
                     {
                         // What does 5% look like, what's the book value, (i.e., if 5% = $1,000) then we will NOT give back more than 1% of that 5%.
-                        return AppEnums.Decision.Break_Even;
-                        return AppEnums.Decision.Set_Least_Gain_2_Percent;
+                        trade.Decision = AppEnums.Decision.Break_Even;
+                        trade.Decision = AppEnums.Decision.Set_Least_Gain_2_Percent;
                     }
                     if (percent > 7)
                     {
-                        return AppEnums.Decision.Set_Least_Gain_4_Percent;
+                        trade.Decision = AppEnums.Decision.Set_Least_Gain_4_Percent;
                     }
                     if (percent > 10)
                     {
                         // allows room for fluctations
-                        return AppEnums.Decision.Set_Least_Gain_6_Percent;
+                        trade.Decision = AppEnums.Decision.Set_Least_Gain_6_Percent;
                     }
                     if (percent > 15)
                     {
-                        return AppEnums.Decision.Close;
+                        trade.Decision = AppEnums.Decision.Close;
                     }
                     // positive
                 }
+
+                return trade;
             }
 
-            
+            if (trade.Positions.Count == 2)
+            {
+                // Strangle
+                if ((trade.Positions.ElementAt(0).OptionOrderResponse.OptionSymbol.OptionType == AppEnums.OptionType.PUT && trade.Positions.ElementAt(1).OptionOrderResponse.OptionSymbol.OptionType == AppEnums.OptionType.CALL)
+                    ||
+                        (trade.Positions.ElementAt(0).OptionOrderResponse.OptionSymbol.OptionType == AppEnums.OptionType.CALL && trade.Positions.ElementAt(1).OptionOrderResponse.OptionSymbol.OptionType == AppEnums.OptionType.PUT)
+                        )
+                {
+                    var x = 123;
+                }
+            }
 
             throw new Exception("Something went wrong!");
         }

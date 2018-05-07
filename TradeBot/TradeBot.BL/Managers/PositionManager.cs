@@ -140,7 +140,7 @@ namespace TradeBot.BL.Managers
 			return (maxPosition / positionPrice).ToGetBase();
 		}
 
-        public Decision Evaluate(Trade trade)
+        public Trade Evaluate(Trade trade)
         {
             return _positionRepo.Evaluate(trade);
         }

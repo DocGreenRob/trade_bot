@@ -54,7 +54,7 @@ namespace TradeBot.Repo.Position
             throw new NotImplementedException();
         }
 
-        public AppEnums.Decision Evaluate(Trade trade)
+        public Trade Evaluate(Trade trade)
         {
             throw new NotImplementedException();
         }
