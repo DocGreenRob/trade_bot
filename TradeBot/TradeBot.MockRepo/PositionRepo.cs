@@ -16,16 +16,16 @@ namespace TradeBot.MockRepo
             switch (tradeDirection)
             {
                 case AppEnums.TradeDirection.Down:
-                    accountPosition.CurrentPrice = accountPosition.CurrentPrice - (accountPosition.CurrentPrice * changeAmount);
-                    accountPosition.MarketValue = accountPosition.MarketValue - (accountPosition.CurrentPrice * changeAmount);
+                    accountPosition.CurrentPrice = Math.Round(accountPosition.CurrentPrice - (accountPosition.CurrentPrice * changeAmount), 2);
+                    accountPosition.MarketValue = Math.Round(accountPosition.MarketValue - (accountPosition.CurrentPrice * changeAmount), 2);
                     break;
                 case AppEnums.TradeDirection.Sideways:
                     // TODO: Investigate
                     // Deduct time? Right?  I think so, because time is the only change in that case.  Here we want to siumulate, effectively, no change in price, which says only a change in time has occured!
                     break;
                 case AppEnums.TradeDirection.Up:
-                    accountPosition.CurrentPrice = accountPosition.CurrentPrice + (accountPosition.CurrentPrice * changeAmount);
-                    accountPosition.MarketValue = accountPosition.MarketValue + (accountPosition.CurrentPrice * changeAmount);
+                    accountPosition.CurrentPrice = Math.Round(accountPosition.CurrentPrice + (accountPosition.CurrentPrice * changeAmount), 2);
+                    accountPosition.MarketValue = Math.Round(accountPosition.MarketValue + (accountPosition.CurrentPrice * changeAmount), 2);
                     break;
             }
             return accountPosition;
@@ -90,9 +90,9 @@ namespace TradeBot.MockRepo
             if (trade.Positions.Count == 1)
             {
                 AccountPosition position = trade.BehaviorChanges.Keys.ElementAt(0).PositionBehavior.AccountPosition;
-                double changeInDollars = position.CurrentPrice - position.CostBasis;
-                double percentAsDecimal = changeInDollars / position.CostBasis;
-                double percent = percentAsDecimal * 100;
+                double changeInDollars = Math.Round(position.CurrentPrice - position.CostBasis, 2);
+                double percentAsDecimal = Math.Round(changeInDollars / position.CostBasis, 2);
+                double percent = Math.Round(percentAsDecimal * 100, 2);
 
                 // Add the evaluation to the history
                 History.Add(position, changeInDollars, percent);
