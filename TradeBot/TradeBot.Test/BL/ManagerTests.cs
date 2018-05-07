@@ -10,6 +10,7 @@ using System.Globalization;
 using System;
 using TradeBot.Models.Broker.ETrade.Analyzer;
 using TradeBot.Utils.Utils;
+using System.IO;
 
 namespace TradeBot.Test.BL
 {
@@ -18,12 +19,75 @@ namespace TradeBot.Test.BL
     {
         private Repo.IPositionRepo positionRepo;
 
+        private FileStream ostrm;
+        private StreamWriter writer;
+
+        public void Log(string text)
+        {
+
+            TextWriter oldOut = Console.Out;
+            try
+            {
+                ostrm = new FileStream(@"C:\_dev\_git\trade_bot\Logs\Log.txt", FileMode.OpenOrCreate, FileAccess.Write);
+                writer = new StreamWriter(ostrm);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Cannot open Redirect.txt for writing");
+                Console.WriteLine(e.Message);
+                return;
+            }
+            Console.SetOut(writer);
+            Console.WriteLine($"{DateTime.Now}");
+            Console.WriteLine($"{text}");
+            Console.SetOut(oldOut);
+            writer.Close();
+            ostrm.Close();
+            Console.WriteLine("Done");
+
+        }
+
+        public void AppendLog(string text)
+        {
+            string path = @"C:\_dev\_git\trade_bot\Logs\Log.txt";
+            // This text is added only once to the file.
+            if (!File.Exists(path))
+            {
+                // Create a file to write to.
+                using (StreamWriter sw = File.CreateText(path))
+                {
+                    sw.WriteLine($"{DateTime.Now} >>>>> {text}");
+                }
+            }
+
+            // This text is always added, making the file longer over time
+            // if it is not deleted.
+            using (StreamWriter sw = File.AppendText(path))
+            {
+                sw.WriteLine($"{DateTime.Now} >>>>> {text}");
+            }
+
+            // Open the file to read from.
+            using (StreamReader sr = File.OpenText(path))
+            {
+                string s = "";
+                while ((s = sr.ReadLine()) != null)
+                {
+                    Console.WriteLine(s);
+                }
+            }
+        }
+
         public ManagerTests()
         {
+            // Logger
+
             positionRepo = new MockRepo.PositionRepo();
             Models.MockModelDefaults.Default.AccountNumber = 999999999;
             Models.MockModelDefaults.Default.SetExpirationDate(Utils.Utils.Utils.GetExpirationDate());
             Models.MockModelDefaults.Default.Positions = new List<Position>();
+
+
         }
 
         private void SetTestDefaults(
@@ -651,6 +715,9 @@ namespace TradeBot.Test.BL
 
             #endregion
 
+            string outputLog = "";
+            AppendLog($"{System.Environment.NewLine} -------- NEW TEST -------- {System.Environment.NewLine}");
+
             for (int i = 0; i < changesCount; i++)
             {
 
@@ -658,7 +725,7 @@ namespace TradeBot.Test.BL
                 int n = i + 1;
 
                 // Set the Market Time
-                DateTime marketTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 9, 31, 0).AddMinutes(i);
+                DateTime marketTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 9, 31, 0).AddMinutes(n);
                 trade.Time = marketTime;
 
                 // Simulate the Change
@@ -745,9 +812,14 @@ namespace TradeBot.Test.BL
                 //++ Act
                 // ---
                 // Evaluate Position
-                Trade decision = positionMgr.Evaluate(trade);
-            }
+                //Trade decision = positionMgr.Evaluate(trade);
 
+                //outputLog += $"${trade.Sum_Change.LastOrDefault().PriceActionBehavior.PnL.Dollars} <----> {trade.Sum_Change.LastOrDefault().PriceActionBehavior.PnL.PercentChange}% <<=======>> ${callTradeBehaviorChange.PriceActionBehavior.PnL.Dollars} ... {callTradeBehaviorChange.PriceActionBehavior.PnL.PercentChange}% ... {callTradeBehaviorChange.PriceActionBehavior.PnL.Percent}% -------- ${putTradeBehaviorChange.PriceActionBehavior.PnL.Dollars} ... {putTradeBehaviorChange.PriceActionBehavior.PnL.PercentChange}% ... {putTradeBehaviorChange.PriceActionBehavior.PnL.Percent}%{System.Environment.NewLine}";
+
+
+                AppendLog($"{trade.Time} ${trade.Sum_Change.LastOrDefault().PriceActionBehavior.PnL.Dollars} <----> {trade.Sum_Change.LastOrDefault().PriceActionBehavior.PnL.Percent}% <<=======>> ${callTradeBehaviorChange.PriceActionBehavior.PnL.Dollars} ... {callTradeBehaviorChange.PriceActionBehavior.PnL.PercentChange}% ... {callTradeBehaviorChange.PriceActionBehavior.PnL.Percent}% -------- ${putTradeBehaviorChange.PriceActionBehavior.PnL.Dollars} ... {putTradeBehaviorChange.PriceActionBehavior.PnL.PercentChange}% ... {putTradeBehaviorChange.PriceActionBehavior.PnL.Percent}%");
+            }
+            //Log(outputLog);
             Assert.Equals(true, false);
         }
 
