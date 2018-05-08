@@ -9,5 +9,7 @@ namespace TradeBot.Models.Broker.ETrade
         public double Amount { get; set; }
         public DateTime DateTime { get; set; }
         public double StockPrice { get; set; }
+        public double CallOptionPrice { get; set; }
+        public double PutOptionPrice { get; set; }
     }
 }

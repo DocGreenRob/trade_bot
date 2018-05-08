@@ -94,11 +94,6 @@ namespace TradeBot.BL.Managers
             throw new NotImplementedException();
 		}
 
-        public AccountPosition Change(AccountPosition accountPosition, TradeDirection tradeDirection, double changeAmount)
-        {
-            return _positionRepo.Change(accountPosition, tradeDirection, changeAmount);
-        }
-
         private int DetermineNumberOfContracts(double positionPrice, TradeStrength tradeStrength) // ok
         {
 			// 1. Get account value
@@ -185,6 +180,11 @@ namespace TradeBot.BL.Managers
         {
             throw new NotImplementedException();
         }
-        
+
+
+        public AccountPosition Change(AccountPosition accountPosition, Change change)
+        {
+            return _positionRepo.Change(accountPosition, change);
+        }
     }
 }

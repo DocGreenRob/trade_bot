@@ -152,7 +152,12 @@ namespace TradeBot.Test.BL
 
                 // Simulate Position Change
                 // Simulates checking the position via the API (getting the most current status of the position)
-                AccountPosition adjustedAccountPosition = positionMgr.Change(accountPosition, tradeDirection, .02);
+                Change change = new Change {
+                    CallOptionPrice = 4.8,
+                    DateTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 9, 31, 0),
+                    StockPrice = 350
+                };
+                AccountPosition adjustedAccountPosition = positionMgr.Change(accountPosition, change);
                 //AccountPosition adjustedAccountPosition = positionMgr.Change(accountPosition, TradeDirection.Down, .02);
 
                 DateTime marketTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 9, 31, 0);
@@ -338,15 +343,15 @@ namespace TradeBot.Test.BL
 
             foreach (AccountPosition accountPosition in positionsOfInterest)
             {
-                TradeDirection tradeDirection;
-                if (accountPosition.Product.CallPut == OptionType.CALL)
-                    tradeDirection = TradeDirection.Up;
-                else
-                    tradeDirection = TradeDirection.Down;
-
                 // Simulate Position Change
                 // Simulates checking the position via the API (getting the most current status of the position)
-                AccountPosition adjustedAccountPosition = positionMgr.Change(accountPosition, tradeDirection, .02);
+                Change change = new Change
+                {
+                    CallOptionPrice = 4.8,
+                    DateTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 9, 31, 0),
+                    StockPrice = 350
+                };
+                AccountPosition adjustedAccountPosition = positionMgr.Change(accountPosition, change);
 
                 // 50 * 1.5 = 75
                 // 50 * 1.0 = 50 ; so 1.0 = 100%
@@ -405,129 +410,111 @@ namespace TradeBot.Test.BL
                     {
                         new Change
                         {
-                            TradeDirection = TradeDirection.Down,
-                            Amount =  .0741,
                             DateTime = position.EntryTime.AddMinutes(1),
-                            StockPrice = 321.85
+                            StockPrice = 321.85,
+                            CallOptionPrice = 3.75
                         },
                         new Change
                         {
-                            TradeDirection = TradeDirection.Up,
-                            Amount =  .0247,
                             DateTime = position.EntryTime.AddMinutes(2),
-                            StockPrice = 322.38
+                            StockPrice = 322.38,
+                            CallOptionPrice = 3.85
                         },
                         new Change
                         {
-                            TradeDirection = TradeDirection.Up,
-                            Amount =  .0494,
                             DateTime = position.EntryTime.AddMinutes(3),
-                            StockPrice = 322.38
+                            StockPrice = 322.38,
+                            CallOptionPrice = 4.05
                         },
                         new Change
                         {
-                            TradeDirection = TradeDirection.Down,
-                            Amount =  .0617,
                             DateTime = position.EntryTime.AddMinutes(4),
-                            StockPrice = 322.28
+                            StockPrice = 322.28,
+                            CallOptionPrice = 3.8
                         },
                         new Change
                         {
-                            TradeDirection = TradeDirection.Sideways,
-                            Amount =  0,
                             DateTime = position.EntryTime.AddMinutes(5),
-                            StockPrice = 321.38
+                            StockPrice = 321.38,
+                            CallOptionPrice = 3.8
                         },
                         new Change
                         {
-                            TradeDirection = TradeDirection.Down,
-                            Amount =  .1728,
                             DateTime = position.EntryTime.AddMinutes(6),
-                            StockPrice = 320.99
+                            StockPrice = 320.99,
+                            CallOptionPrice = 3.1
                         },
                         new Change
                         {
-                            TradeDirection = TradeDirection.Down,
-                            Amount =  .1432,
                             DateTime = position.EntryTime.AddMinutes(7),
-                            StockPrice = 319.85
+                            StockPrice = 319.85,
+                            CallOptionPrice = 2.52
                         },
                         new Change
                         {
-                            TradeDirection = TradeDirection.Down,
-                            Amount =  .1086,
                             DateTime = position.EntryTime.AddMinutes(8),
-                            StockPrice = 318.71
+                            StockPrice = 318.71,
+                            CallOptionPrice = 2.22
                         },
                         new Change
                         {
-                            TradeDirection = TradeDirection.Down,
-                            Amount =  .1704,
                             DateTime = position.EntryTime.AddMinutes(9),
-                            StockPrice = 317.28
+                            StockPrice = 317.28,
+                            CallOptionPrice = 1.78
                         },
                         new Change
                         {
-                            TradeDirection = TradeDirection.Up,
-                            Amount =  .0247,
                             DateTime = position.EntryTime.AddMinutes(10),
-                            StockPrice = 313.56
+                            StockPrice = 313.56,
+                            CallOptionPrice = 1.09
                         },
                         new Change
                         {
-                            TradeDirection = TradeDirection.Up,
-                            Amount =  .0741,
                             DateTime = position.EntryTime.AddMinutes(11),
-                            StockPrice = 313.74
+                            StockPrice = 313.74,
+                            CallOptionPrice = 1.19
                         },
                         new Change
                         {
-                            TradeDirection = TradeDirection.Up,
-                            Amount =  .0543,
                             DateTime = position.EntryTime.AddMinutes(12),
-                            StockPrice = 315.83
+                            StockPrice = 315.83,
+                            CallOptionPrice = 1.55
                         },
                         new Change
                         {
-                            TradeDirection = TradeDirection.Down,
-                            Amount =  .0370,
                             DateTime = position.EntryTime.AddMinutes(13),
-                            StockPrice = 316.51
+                            StockPrice = 316.51,
+                            CallOptionPrice = 1.77
                         },
                         new Change
                         {
-                            TradeDirection = TradeDirection.Down,
-                            Amount =  .0420,
                             DateTime = position.EntryTime.AddMinutes(14),
-                            StockPrice = 315.73
+                            StockPrice = 315.73,
+                            CallOptionPrice = 1.62
                         },
                         new Change
                         {
-                            TradeDirection = TradeDirection.Up,
-                            Amount =  .0716,
                             DateTime = position.EntryTime.AddMinutes(15),
-                            StockPrice = 314.82
+                            StockPrice = 314.82,
+                            CallOptionPrice = 1.45
                         },
                         new Change
                         {
-                            TradeDirection = TradeDirection.Up,
-                            Amount =  .0469,
                             DateTime = position.EntryTime.AddMinutes(16),
-                            StockPrice = 316.43
+                            StockPrice = 316.43,
+                            CallOptionPrice = 1.74
                         },
                         new Change
                         {
-                            TradeDirection = TradeDirection.Up,
-                            Amount =  .0296,
                             DateTime = position.EntryTime.AddMinutes(17),
-                            StockPrice = 317.15
+                            StockPrice = 317.15,
+                            CallOptionPrice = 1.93
                         },
                         new Change
                         {
-                            TradeDirection = TradeDirection.Up,
-                            Amount =  .1358,
                             DateTime = position.EntryTime.AddMinutes(18),
-                            StockPrice = 317.33
+                            StockPrice = 317.33,
+                            CallOptionPrice = 2.05
                         }
                     };
 
@@ -539,129 +526,111 @@ namespace TradeBot.Test.BL
                     {
                         new Change
                         {
-                            TradeDirection = TradeDirection.Down,
-                            Amount =  .0294,
                             DateTime = position.EntryTime.AddMinutes(1),
-                            StockPrice = 321.85
+                            StockPrice = 321.85,
+                            PutOptionPrice = 3.3
                         },
                         new Change
                         {
-                            TradeDirection = TradeDirection.Down,
-                            Amount =  .1029,
                             DateTime = position.EntryTime.AddMinutes(2),
-                            StockPrice = 322.38
+                            StockPrice = 322.38,
+                            PutOptionPrice = 2.95
                         },
                         new Change
                         {
-                            TradeDirection = TradeDirection.Down,
-                            Amount =  .0559,
                             DateTime = position.EntryTime.AddMinutes(3),
-                            StockPrice = 322.38
+                            StockPrice = 322.38,
+                            PutOptionPrice = 2.76
                         },
                         new Change
                         {
-                            TradeDirection = TradeDirection.Up,
-                            Amount =  .0294,
                             DateTime = position.EntryTime.AddMinutes(4),
-                            StockPrice = 322.28
+                            StockPrice = 322.28,
+                            PutOptionPrice = 2.86
                         },
                         new Change
                         {
-                            TradeDirection = TradeDirection.Down,
-                            Amount =  .0088,
                             DateTime = position.EntryTime.AddMinutes(5),
-                            StockPrice = 321.38
+                            StockPrice = 321.38,
+                            PutOptionPrice = 2.83
                         },
                         new Change
                         {
-                            TradeDirection = TradeDirection.Up,
-                            Amount =  .2265,
                             DateTime = position.EntryTime.AddMinutes(6),
-                            StockPrice = 320.99
+                            StockPrice = 320.99,
+                            PutOptionPrice = 3.6
                         },
                         new Change
                         {
-                            TradeDirection = TradeDirection.Up,
-                            Amount =  .2059,
                             DateTime = position.EntryTime.AddMinutes(7),
-                            StockPrice = 319.85
+                            StockPrice = 319.85,
+                            PutOptionPrice = 4.3
                         },
                         new Change
                         {
-                            TradeDirection = TradeDirection.Up,
-                            Amount =  .1471,
                             DateTime = position.EntryTime.AddMinutes(8),
-                            StockPrice = 318.71
+                            StockPrice = 318.71,
+                            PutOptionPrice = 4.8
                         },
                         new Change
                         {
-                            TradeDirection = TradeDirection.Up,
-                            Amount =  .2941,
                             DateTime = position.EntryTime.AddMinutes(9),
-                            StockPrice = 317.28
+                            StockPrice = 317.28,
+                            PutOptionPrice = 5.8
                         },
                         new Change
                         {
-                            TradeDirection = TradeDirection.Up,
-                            Amount =  .8529,
                             DateTime = position.EntryTime.AddMinutes(10),
-                            StockPrice = 313.56
+                            StockPrice = 313.56,
+                            PutOptionPrice = 8.7
                         },
                         new Change
                         {
-                            TradeDirection = TradeDirection.Down,
-                            Amount =  .0441,
                             DateTime = position.EntryTime.AddMinutes(11),
-                            StockPrice = 313.74
+                            StockPrice = 313.74,
+                            PutOptionPrice = 8.55
                         },
                         new Change
                         {
-                            TradeDirection = TradeDirection.Down,
-                            Amount =  .2794,
                             DateTime = position.EntryTime.AddMinutes(12),
-                            StockPrice = 315.83
+                            StockPrice = 315.83,
+                            PutOptionPrice = 7.6
                         },
                         new Change
                         {
-                            TradeDirection = TradeDirection.Down,
-                            Amount =  .3382,
                             DateTime = position.EntryTime.AddMinutes(13),
-                            StockPrice = 316.51
+                            StockPrice = 316.51,
+                            PutOptionPrice = 6.45
                         },
                         new Change
                         {
-                            TradeDirection = TradeDirection.Up,
-                            Amount =  .1765,
                             DateTime = position.EntryTime.AddMinutes(14),
-                            StockPrice = 315.73
+                            StockPrice = 315.73,
+                            PutOptionPrice = 7.05
                         },
                         new Change
                         {
-                            TradeDirection = TradeDirection.Up,
-                            Amount =  .1912,
                             DateTime = position.EntryTime.AddMinutes(15),
-                            StockPrice = 314.82
+                            StockPrice = 314.82,
+                            PutOptionPrice = 7.7
                         },
                         new Change
                         {
-                            TradeDirection = TradeDirection.Down,
-                            Amount =  .2794,
                             DateTime = position.EntryTime.AddMinutes(16),
-                            StockPrice = 316.43
+                            StockPrice = 316.43,
+                            PutOptionPrice = 6.75
                         },
                         new Change
                         {
-                            TradeDirection = TradeDirection.Down,
-                            Amount =  .2353,
                             DateTime = position.EntryTime.AddMinutes(17),
-                            StockPrice = 317.15
+                            StockPrice = 317.15,
+                            PutOptionPrice = 5.95
                         },
                         new Change
                         {
-                            TradeDirection = TradeDirection.Down,
-                            Amount =  .1029,
                             DateTime = position.EntryTime.AddMinutes(18),
-                            StockPrice = 317.33
+                            StockPrice = 317.33,
+                            PutOptionPrice = 5.6
                         }
                     };
 
@@ -672,26 +641,6 @@ namespace TradeBot.Test.BL
 
             #endregion
 
-
-            //accountPosition = positionsOfInterest.Where(pi => 
-            //pi.Product.StrikePrice == position.OptionOrderResponse.OptionSymbol.StrikePrice 
-            //&& position.OptionOrderResponse.OptionSymbol.OptionType == (i == 0 ? OptionType.CALL : OptionType.PUT)).FirstOrDefault();
-
-            // Get correct account position
-
-            /*
-            accountPosition = positionsOfInterest.Where(pi =>
-                pi.Product.StrikePrice == position.OptionOrderResponse.OptionSymbol.StrikePrice
-                && position.OptionOrderResponse.OptionSymbol.OptionType == pi.Product.CallPut).FirstOrDefault();
-
-            PositionBehavior positionBehavior = new PositionBehavior
-            {
-                AccountPosition = accountPosition,
-                Change = changes
-            };
-
-            Models.MockModelDefaults.Default.Positions.ElementAt(i).PositionBehavior = positionBehavior;
-            */
 
             // Act & Assert
 
@@ -720,8 +669,6 @@ namespace TradeBot.Test.BL
 
             for (int i = 0; i < changesCount; i++)
             {
-
-
                 int n = i + 1;
 
                 // Set the Market Time
@@ -751,12 +698,15 @@ namespace TradeBot.Test.BL
 
                 // [x]Position.PositionBehavior.AccountPosition =
 
+                //+ Change
                 // Call
-                AccountPosition callAdjustedAccountPosition = positionMgr.Change(callPosition.AccountPositionsResponse.AccountPositions.Where(a => a.Product.CallPut == OptionType.CALL).FirstOrDefault(), callPosition.PositionBehavior.Change.TradeDirection, callPosition.PositionBehavior.Change.Amount);
+                AccountPosition callAdjustedAccountPosition = positionMgr.Change(callPosition.AccountPositionsResponse.AccountPositions.Where(a => a.Product.CallPut == OptionType.CALL).FirstOrDefault(), callPosition.PositionBehavior.Change);
+
                 callPosition.PositionBehavior.AccountPosition = callAdjustedAccountPosition;
 
                 // Put
-                AccountPosition putAdjustedAccountPosition = positionMgr.Change(putPosition.AccountPositionsResponse.AccountPositions.Where(a => a.Product.CallPut == OptionType.PUT).FirstOrDefault(), putPosition.PositionBehavior.Change.TradeDirection, putPosition.PositionBehavior.Change.Amount);
+                AccountPosition putAdjustedAccountPosition = positionMgr.Change(putPosition.AccountPositionsResponse.AccountPositions.Where(a => a.Product.CallPut == OptionType.PUT).FirstOrDefault(), putPosition.PositionBehavior.Change);
+
                 putPosition.PositionBehavior.AccountPosition = putAdjustedAccountPosition;
 
                 // Call
@@ -764,7 +714,7 @@ namespace TradeBot.Test.BL
                 {
                     IsDoubled = Utils.Utils.Utils.IsDoubled(callAdjustedAccountPosition.CostBasis, callAdjustedAccountPosition.CurrentPrice),
                     // need to get the last lastPercentChange if the time is greater than 9:31, else, return 0
-                    PnL = Utils.Utils.Utils.GetPnL(callAdjustedAccountPosition, GetLastPercentageChange(trade, OptionType.CALL)),
+                    PnL = Utils.Utils.Utils.GetPnL(callAdjustedAccountPosition, GetLastPercentageOpen(trade, OptionType.CALL)),
                     Studies = null
                 };
 
@@ -773,7 +723,7 @@ namespace TradeBot.Test.BL
                 {
                     IsDoubled = Utils.Utils.Utils.IsDoubled(putAdjustedAccountPosition.CostBasis, putAdjustedAccountPosition.CurrentPrice),
                     // need to get the last lastPercentChange if the time is greater than 9:31, else, return 0
-                    PnL = Utils.Utils.Utils.GetPnL(putAdjustedAccountPosition, GetLastPercentageChange(trade, OptionType.PUT)),
+                    PnL = Utils.Utils.Utils.GetPnL(putAdjustedAccountPosition, GetLastPercentageOpen(trade, OptionType.PUT)),
                     Studies = null
                 };
 
@@ -798,41 +748,57 @@ namespace TradeBot.Test.BL
                 // (cost / dollarsPnL) * 100
                 double cost = Math.Round(callTradeBehaviorChange.PositionBehavior.AccountPosition.CostBasis + putTradeBehaviorChange.PositionBehavior.AccountPosition.CostBasis, 2);
                 double current = Math.Round(callTradeBehaviorChange.PositionBehavior.AccountPosition.CurrentPrice + putTradeBehaviorChange.PositionBehavior.AccountPosition.CurrentPrice, 2);
-                double percentPnL = Math.Round(dollarsPnL / cost, 2); // callTradeBehaviorChange.PriceActionBehavior.PnL.Percent + putTradeBehaviorChange.PriceActionBehavior.PnL.Percent;
+                double percentPnL = Math.Round(dollarsPnL / cost, 2);
                 double percentChange = Math.Round(callTradeBehaviorChange.PriceActionBehavior.PnL.PercentChange + putTradeBehaviorChange.PriceActionBehavior.PnL.PercentChange, 2);
                 trade.Sum_Change.Add(new TradeBehaviorChange { PriceActionBehavior = new PriceActionBehavior { PnL = new PnL { Dollars = dollarsPnL, Percent = percentPnL, PercentChange = percentChange } } });
 
-                // Here we want to simulate getting a decision every minute.  So, since our object is fully built, and backward looking (we have mocked the data for the a future time) then here,
-                // as we loop through our "changesCount" we will allow our decision maker utility to act as though it is real time.  Of course in real-time we will not know the future so it will be real time
-                // I think that however I may change the signature but the guts should remain the same.
-
-                //Tuple<PositionBehavior, List<Change>> callTuple = new Tuple<PositionBehavior, List<Change>>(callPositionBehavior, callPositionBehavior.Changes.Take(n).ToList());
-                //Tuple<PositionBehavior, List<Change>> putTuple = new Tuple<PositionBehavior, List<Change>>(putPositionBehavior, putPositionBehavior.Changes.Take(n).ToList());
-
                 //++ Act
                 // ---
-                // Evaluate Position
-                //Trade decision = positionMgr.Evaluate(trade);
 
-                //outputLog += $"${trade.Sum_Change.LastOrDefault().PriceActionBehavior.PnL.Dollars} <----> {trade.Sum_Change.LastOrDefault().PriceActionBehavior.PnL.PercentChange}% <<=======>> ${callTradeBehaviorChange.PriceActionBehavior.PnL.Dollars} ... {callTradeBehaviorChange.PriceActionBehavior.PnL.PercentChange}% ... {callTradeBehaviorChange.PriceActionBehavior.PnL.Percent}% -------- ${putTradeBehaviorChange.PriceActionBehavior.PnL.Dollars} ... {putTradeBehaviorChange.PriceActionBehavior.PnL.PercentChange}% ... {putTradeBehaviorChange.PriceActionBehavior.PnL.Percent}%{System.Environment.NewLine}";
+                //+ Log
+                AppendLog($"{trade.Time} ${trade.Sum_Change.LastOrDefault().PriceActionBehavior.PnL.Dollars} <----> {trade.Sum_Change.LastOrDefault().PriceActionBehavior.PnL.Percent}% <<=======>> ${callTradeBehaviorChange.PriceActionBehavior.PnL.Dollars} ... {callTradeBehaviorChange.PriceActionBehavior.PnL.Percent}% ... {callTradeBehaviorChange.PriceActionBehavior.PnL.PercentChange}% -------- ${putTradeBehaviorChange.PriceActionBehavior.PnL.Dollars} ... {putTradeBehaviorChange.PriceActionBehavior.PnL.Percent}% ... {putTradeBehaviorChange.PriceActionBehavior.PnL.PercentChange}%");
 
+                //+ Evaluate Position
+                trade = positionMgr.Evaluate(trade);
 
-                AppendLog($"{trade.Time} ${trade.Sum_Change.LastOrDefault().PriceActionBehavior.PnL.Dollars} <----> {trade.Sum_Change.LastOrDefault().PriceActionBehavior.PnL.Percent}% <<=======>> ${callTradeBehaviorChange.PriceActionBehavior.PnL.Dollars} ... {callTradeBehaviorChange.PriceActionBehavior.PnL.PercentChange}% ... {callTradeBehaviorChange.PriceActionBehavior.PnL.Percent}% -------- ${putTradeBehaviorChange.PriceActionBehavior.PnL.Dollars} ... {putTradeBehaviorChange.PriceActionBehavior.PnL.PercentChange}% ... {putTradeBehaviorChange.PriceActionBehavior.PnL.Percent}%");
+                switch (i)
+                {
+                    case 0:
+                        Assert.AreEqual(Decision.Wait, trade.Decision);
+                        // Trade Flags
+                        Assert.AreEqual(0, trade.Flags.Count);
+                        //+ Call
+                        // Flags
+                        Assert.AreEqual(0, trade.Call().PositionBehavior.Flags.Count);
+                        // Decision
+                        Assert.AreEqual(Decision.Null, trade.Call().PositionBehavior.Decision);
+
+                        //+ Put
+                        // Flags
+                        Assert.AreEqual(0, trade.Put().PositionBehavior.Flags.Count);
+                        // Decision
+                        Assert.AreEqual(Decision.Null, trade.Put().PositionBehavior.Decision);
+
+                        break;
+                    default:
+                        throw new Exception("Something went wrong!");
+                }
+                
             }
             //Log(outputLog);
             Assert.Equals(true, false);
         }
 
-        private double GetLastPercentageChange(Trade trade, OptionType optionType)
+        private double GetLastPercentageOpen(Trade trade, OptionType optionType)
         {
             if (trade.BehaviorChanges.Count == 0)
                 return 0;
 
             if (optionType == OptionType.CALL)
-                return trade.BehaviorChanges.LastOrDefault().Key.PriceActionBehavior.PnL.PercentChange;
+                return trade.BehaviorChanges.LastOrDefault().Key.PriceActionBehavior.PnL.Percent;
 
             if (optionType == OptionType.PUT)
-                return trade.BehaviorChanges.LastOrDefault().Value.PriceActionBehavior.PnL.PercentChange;
+                return trade.BehaviorChanges.LastOrDefault().Value.PriceActionBehavior.PnL.Percent;
 
             return 0;
         }

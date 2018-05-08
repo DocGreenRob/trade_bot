@@ -1,6 +1,9 @@
 ﻿using System;
-
+using System.Linq;
+using TradeBot.Models;
+using TradeBot.Models.Broker.ETrade.Analyzer;
 using TradeBot.Utils.ExtensionMethods;
+using static TradeBot.Models.Enum.AppEnums;
 
 namespace TradeBot.Utils.ExtensionMethods
 {
@@ -92,5 +95,15 @@ namespace TradeBot.Utils.ExtensionMethods
         {
             return minute % 15 == 0;
         }
-	}
+
+        public static Position Call(this Trade trade)
+        {
+            return trade.Positions.Where(p => p.OptionOrderResponse.OptionSymbol.OptionType == OptionType.CALL).FirstOrDefault();
+        }
+
+        public static Position Put(this Trade trade)
+        {
+            return trade.Positions.Where(p => p.OptionOrderResponse.OptionSymbol.OptionType == OptionType.PUT).FirstOrDefault();
+        }
+    }
 }

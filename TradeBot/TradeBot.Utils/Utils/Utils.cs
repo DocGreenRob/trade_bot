@@ -24,11 +24,11 @@ namespace TradeBot.Utils.Utils
             }
         }
 
-        public static PnL GetPnL(AccountPosition accountPosition, double lastPercentChange)
+        public static PnL GetPnL(AccountPosition accountPosition, double lastPercentOpen)
         {
             double dollarsPnL = Math.Round((Math.Round(accountPosition.CurrentPrice, 2) - Math.Round(accountPosition.CostBasis, 2)) * 100,2);
             double percentPnL = Math.Round((dollarsPnL / Math.Round(accountPosition.CostBasis, 2)), 2);
-            double percentChange = Math.Round(percentPnL - lastPercentChange, 2);
+            double percentChange = Math.Round(percentPnL - lastPercentOpen, 2);
 
             return new PnL
             {

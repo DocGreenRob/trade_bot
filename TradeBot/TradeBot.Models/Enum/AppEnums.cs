@@ -149,6 +149,7 @@
         /// </summary>
         public enum Decision
         {
+            Null,
             Break_Even,
             /// <summary>
             /// The close

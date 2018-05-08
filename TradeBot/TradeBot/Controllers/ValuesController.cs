@@ -94,7 +94,7 @@ namespace TradeBot.Controllers
 
                         // Simulate Position Change
                         // Simulates checking the position via the API (getting the most current status of the position)
-                        AccountPosition adjustedAccountPosition = positionMgr.Change(accountPosition, tradeDirection, .02);
+                        //AccountPosition adjustedAccountPosition = positionMgr.Change(accountPosition, tradeDirection, .02);
 
                         // 50 * 1.5 = 75
                         // 50 * 1.0 = 50 ; so 1.0 = 100%

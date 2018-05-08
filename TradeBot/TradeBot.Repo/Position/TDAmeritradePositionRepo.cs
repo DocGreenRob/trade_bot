@@ -10,7 +10,7 @@ namespace TradeBot.Repo.Position
 {
     public class TDAmeritradePositionRepo : IPositionRepo
     {
-        public AccountPosition Change(AccountPosition accountPosition, AppEnums.TradeDirection tradeDirection, double changeAmount)
+        public AccountPosition Change(AccountPosition accountPosition, Change change)
         {
             throw new System.NotImplementedException();
         }

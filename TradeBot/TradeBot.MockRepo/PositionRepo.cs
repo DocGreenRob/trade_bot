@@ -6,28 +6,31 @@ using TradeBot.Models.Enum;
 using TradeBot.Models.Broker.ETrade;
 using System.Linq;
 using TradeBot.Models.Broker.ETrade.Analyzer;
+using TradeBot.Utils.ExtensionMethods;
+using static TradeBot.Models.Enum.AppEnums;
 
 namespace TradeBot.MockRepo
 {
     public class PositionRepo : IPositionRepo
     {
-        public AccountPosition Change(AccountPosition accountPosition, AppEnums.TradeDirection tradeDirection, double changeAmount)
+        public AccountPosition Change(AccountPosition accountPosition, Change change)
         {
-            switch (tradeDirection)
-            {
-                case AppEnums.TradeDirection.Down:
-                    accountPosition.CurrentPrice = Math.Round(accountPosition.CurrentPrice - (accountPosition.CurrentPrice * changeAmount), 2);
-                    accountPosition.MarketValue = Math.Round(accountPosition.MarketValue - (accountPosition.CurrentPrice * changeAmount), 2);
-                    break;
-                case AppEnums.TradeDirection.Sideways:
-                    // TODO: Investigate
-                    // Deduct time? Right?  I think so, because time is the only change in that case.  Here we want to siumulate, effectively, no change in price, which says only a change in time has occured!
-                    break;
-                case AppEnums.TradeDirection.Up:
-                    accountPosition.CurrentPrice = Math.Round(accountPosition.CurrentPrice + (accountPosition.CurrentPrice * changeAmount), 2);
-                    accountPosition.MarketValue = Math.Round(accountPosition.MarketValue + (accountPosition.CurrentPrice * changeAmount), 2);
-                    break;
-            }
+            double currentOptionPrice = change.CallOptionPrice == 0 ? change.PutOptionPrice : change.CallOptionPrice;
+
+            // Call/Put P/L % Open
+            double percentOpen = Math.Round(((currentOptionPrice - accountPosition.CostBasis) / accountPosition.CostBasis) * 100, 2);
+
+            // Relative Change
+            // doubleRelativeChange = percentOpen - percentOpen.Previous()
+
+
+            // Call/Put P/L $ Open
+            double dollarsOpen = Math.Round((currentOptionPrice - accountPosition.CostBasis) * 100, 2);
+
+            // Set
+            accountPosition.CurrentPrice = currentOptionPrice;
+            accountPosition.MarketValue = accountPosition.CurrentPrice * 100;
+
             return accountPosition;
         }
 
@@ -160,12 +163,20 @@ namespace TradeBot.MockRepo
             if (trade.Positions.Count == 2)
             {
                 // Strangle
-                if ((trade.Positions.ElementAt(0).OptionOrderResponse.OptionSymbol.OptionType == AppEnums.OptionType.PUT && trade.Positions.ElementAt(1).OptionOrderResponse.OptionSymbol.OptionType == AppEnums.OptionType.CALL)
-                    ||
-                        (trade.Positions.ElementAt(0).OptionOrderResponse.OptionSymbol.OptionType == AppEnums.OptionType.CALL && trade.Positions.ElementAt(1).OptionOrderResponse.OptionSymbol.OptionType == AppEnums.OptionType.PUT)
-                        )
+                if (trade.Call() != null && trade.Put() != null)
                 {
-                    var x = 123;
+                    if(trade.Time.TradeMinutes() <= 3)
+                    {
+                        trade.Decision = AppEnums.Decision.Wait;
+                        trade.Flags = new List<Flag>();
+                        trade.Call().PositionBehavior.Flags = new List<Flag>();
+                        trade.Put().PositionBehavior.Flags = new List<Flag>();
+
+                        trade.Call().PositionBehavior.Decision = Decision.Null;
+                        trade.Put().PositionBehavior.Decision = Decision.Null;
+
+                        return trade;
+                    }
                 }
             }
 
