@@ -756,42 +756,63 @@ namespace TradeBot.Test.BL
 
                 AppendLog($"i = {i} ");
 
+
                 // Call
                 if (i >= 1)
                 {
-                    PriceActionBehavior this_call_priceActionBehavior = trade.BehaviorChanges.ElementAt(i).Key.PriceActionBehavior;
                     PriceActionBehavior prior_call_priceActionBehavior = trade.BehaviorChanges.ElementAt(i - 1).Key.PriceActionBehavior;
+                    PriceActionBehavior this_call_priceActionBehavior = trade.BehaviorChanges.ElementAt(i).Key.PriceActionBehavior;
 
                     AppendLog($"CALL : i = {i} prior.change = {prior_call_priceActionBehavior.PnL.PercentChange}  ?? this.change {this_call_priceActionBehavior.PnL.PercentChange}");
 
-                    this_call_priceActionBehavior.IsDoubled = Utils.Utils.Utils.IsDoubled(this_call_priceActionBehavior.PnL.PercentChange, this_call_priceActionBehavior.PnL.PercentChange);
+                    this_call_priceActionBehavior.IsDoubled = Utils.Utils.Utils.IsDoubled(prior_call_priceActionBehavior.PnL.PercentChange, this_call_priceActionBehavior.PnL.PercentChange);
                 }
                 else
                 {
-                    AppendLog("Skip.Call");
-                    callPriceActionBehavior.IsDoubled = false;
+                    PriceActionBehavior this_call_priceActionBehavior = trade.BehaviorChanges.ElementAt(i).Key.PriceActionBehavior;
+                    AppendLog($"CALL : i = {i} prior.change = {0}  ?? this.change {this_call_priceActionBehavior.PnL.PercentChange}");
+
+                    if (i == 1)
+                    {
+                        this_call_priceActionBehavior.IsDoubled = Utils.Utils.Utils.IsDoubled(0, this_call_priceActionBehavior.PnL.PercentChange);
+                    }
+                    else
+                    {
+                        callPriceActionBehavior.IsDoubled = false;
+                    }
                 }
 
                 // Put
                 if (i >= 1)
                 {
-                    PriceActionBehavior this_put_priceActionBehavior = trade.BehaviorChanges.ElementAt(i).Value.PriceActionBehavior;
                     PriceActionBehavior prior_put_priceActionBehavior = trade.BehaviorChanges.ElementAt(i - 1).Value.PriceActionBehavior;
+                    PriceActionBehavior this_put_priceActionBehavior = trade.BehaviorChanges.ElementAt(i).Value.PriceActionBehavior;
 
                     AppendLog($"PUT : i = {i} prior.change = {prior_put_priceActionBehavior.PnL.PercentChange}  ?? this.change {this_put_priceActionBehavior.PnL.PercentChange}");
 
-                    putPriceActionBehavior.IsDoubled = Utils.Utils.Utils.IsDoubled(this_put_priceActionBehavior.PnL.PercentChange, prior_put_priceActionBehavior.PnL.PercentChange);
+                    putPriceActionBehavior.IsDoubled = Utils.Utils.Utils.IsDoubled(prior_put_priceActionBehavior.PnL.PercentChange, this_put_priceActionBehavior.PnL.PercentChange);
                 }
                 else
                 {
-                    AppendLog("Skip.Put");
-                    putPriceActionBehavior.IsDoubled = false;
+                    PriceActionBehavior this_put_priceActionBehavior = trade.BehaviorChanges.ElementAt(i).Value.PriceActionBehavior;
+                    AppendLog($"PUT : i = {i} prior.change = {0}  ?? this.change {this_put_priceActionBehavior.PnL.PercentChange}");
+
+                    if (i == 1)
+                    {
+                        this_put_priceActionBehavior.IsDoubled = Utils.Utils.Utils.IsDoubled(0, this_put_priceActionBehavior.PnL.PercentChange);
+                    }
+                    else
+                    {
+                        putPriceActionBehavior.IsDoubled = false;
+                    }
                 }
                 //++ Act
                 // ---
 
                 //+ Log
                 AppendLog($"{trade.Time} ${trade.Sum_Change.LastOrDefault().PriceActionBehavior.PnL.Dollars} <----> {trade.Sum_Change.LastOrDefault().PriceActionBehavior.PnL.Percent}% <<=======>> ${callTradeBehaviorChange.PriceActionBehavior.PnL.Dollars} ... {callTradeBehaviorChange.PriceActionBehavior.PnL.Percent}% ... {callTradeBehaviorChange.PriceActionBehavior.PnL.PercentChange}% ({callTradeBehaviorChange.PriceActionBehavior.IsDoubled}) -------- ${putTradeBehaviorChange.PriceActionBehavior.PnL.Dollars} ... {putTradeBehaviorChange.PriceActionBehavior.PnL.Percent}% ... {putTradeBehaviorChange.PriceActionBehavior.PnL.PercentChange}% ({putTradeBehaviorChange.PriceActionBehavior.IsDoubled})");
+
+                AppendLog(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 
                 //+ Evaluate Position
                 //trade = positionMgr.Evaluate(trade);
