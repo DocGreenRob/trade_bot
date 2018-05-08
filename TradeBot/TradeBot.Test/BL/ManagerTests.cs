@@ -152,7 +152,8 @@ namespace TradeBot.Test.BL
 
                 // Simulate Position Change
                 // Simulates checking the position via the API (getting the most current status of the position)
-                Change change = new Change {
+                Change change = new Change
+                {
                     CallOptionPrice = 4.8,
                     DateTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 9, 31, 0),
                     StockPrice = 350
@@ -712,7 +713,6 @@ namespace TradeBot.Test.BL
                 // Call
                 PriceActionBehavior callPriceActionBehavior = new PriceActionBehavior
                 {
-                    IsDoubled = Utils.Utils.Utils.IsDoubled(callAdjustedAccountPosition.CostBasis, callAdjustedAccountPosition.CurrentPrice),
                     // need to get the last lastPercentChange if the time is greater than 9:31, else, return 0
                     PnL = Utils.Utils.Utils.GetPnL(callAdjustedAccountPosition, GetLastPercentageOpen(trade, OptionType.CALL)),
                     Studies = null
@@ -721,11 +721,12 @@ namespace TradeBot.Test.BL
                 // Put
                 PriceActionBehavior putPriceActionBehavior = new PriceActionBehavior
                 {
-                    IsDoubled = Utils.Utils.Utils.IsDoubled(putAdjustedAccountPosition.CostBasis, putAdjustedAccountPosition.CurrentPrice),
                     // need to get the last lastPercentChange if the time is greater than 9:31, else, return 0
                     PnL = Utils.Utils.Utils.GetPnL(putAdjustedAccountPosition, GetLastPercentageOpen(trade, OptionType.PUT)),
                     Studies = null
                 };
+
+                
 
                 // Call
                 TradeBehaviorChange callTradeBehaviorChange = new TradeBehaviorChange
@@ -750,40 +751,74 @@ namespace TradeBot.Test.BL
                 double current = Math.Round(callTradeBehaviorChange.PositionBehavior.AccountPosition.CurrentPrice + putTradeBehaviorChange.PositionBehavior.AccountPosition.CurrentPrice, 2);
                 double percentPnL = Math.Round(dollarsPnL / cost, 2);
                 double percentChange = Math.Round(callTradeBehaviorChange.PriceActionBehavior.PnL.PercentChange + putTradeBehaviorChange.PriceActionBehavior.PnL.PercentChange, 2);
+
                 trade.Sum_Change.Add(new TradeBehaviorChange { PriceActionBehavior = new PriceActionBehavior { PnL = new PnL { Dollars = dollarsPnL, Percent = percentPnL, PercentChange = percentChange } } });
 
+                AppendLog($"i = {i} ");
+
+                // Call
+                if (i >= 1)
+                {
+                    PriceActionBehavior this_call_priceActionBehavior = trade.BehaviorChanges.ElementAt(i).Key.PriceActionBehavior;
+                    PriceActionBehavior prior_call_priceActionBehavior = trade.BehaviorChanges.ElementAt(i - 1).Key.PriceActionBehavior;
+
+                    AppendLog($"CALL : i = {i} prior.change = {prior_call_priceActionBehavior.PnL.PercentChange}  ?? this.change {this_call_priceActionBehavior.PnL.PercentChange}");
+
+                    this_call_priceActionBehavior.IsDoubled = Utils.Utils.Utils.IsDoubled(this_call_priceActionBehavior.PnL.PercentChange, this_call_priceActionBehavior.PnL.PercentChange);
+                }
+                else
+                {
+                    AppendLog("Skip.Call");
+                    callPriceActionBehavior.IsDoubled = false;
+                }
+
+                // Put
+                if (i >= 1)
+                {
+                    PriceActionBehavior this_put_priceActionBehavior = trade.BehaviorChanges.ElementAt(i).Value.PriceActionBehavior;
+                    PriceActionBehavior prior_put_priceActionBehavior = trade.BehaviorChanges.ElementAt(i - 1).Value.PriceActionBehavior;
+
+                    AppendLog($"PUT : i = {i} prior.change = {prior_put_priceActionBehavior.PnL.PercentChange}  ?? this.change {this_put_priceActionBehavior.PnL.PercentChange}");
+
+                    putPriceActionBehavior.IsDoubled = Utils.Utils.Utils.IsDoubled(this_put_priceActionBehavior.PnL.PercentChange, prior_put_priceActionBehavior.PnL.PercentChange);
+                }
+                else
+                {
+                    AppendLog("Skip.Put");
+                    putPriceActionBehavior.IsDoubled = false;
+                }
                 //++ Act
                 // ---
 
                 //+ Log
-                AppendLog($"{trade.Time} ${trade.Sum_Change.LastOrDefault().PriceActionBehavior.PnL.Dollars} <----> {trade.Sum_Change.LastOrDefault().PriceActionBehavior.PnL.Percent}% <<=======>> ${callTradeBehaviorChange.PriceActionBehavior.PnL.Dollars} ... {callTradeBehaviorChange.PriceActionBehavior.PnL.Percent}% ... {callTradeBehaviorChange.PriceActionBehavior.PnL.PercentChange}% -------- ${putTradeBehaviorChange.PriceActionBehavior.PnL.Dollars} ... {putTradeBehaviorChange.PriceActionBehavior.PnL.Percent}% ... {putTradeBehaviorChange.PriceActionBehavior.PnL.PercentChange}%");
+                AppendLog($"{trade.Time} ${trade.Sum_Change.LastOrDefault().PriceActionBehavior.PnL.Dollars} <----> {trade.Sum_Change.LastOrDefault().PriceActionBehavior.PnL.Percent}% <<=======>> ${callTradeBehaviorChange.PriceActionBehavior.PnL.Dollars} ... {callTradeBehaviorChange.PriceActionBehavior.PnL.Percent}% ... {callTradeBehaviorChange.PriceActionBehavior.PnL.PercentChange}% ({callTradeBehaviorChange.PriceActionBehavior.IsDoubled}) -------- ${putTradeBehaviorChange.PriceActionBehavior.PnL.Dollars} ... {putTradeBehaviorChange.PriceActionBehavior.PnL.Percent}% ... {putTradeBehaviorChange.PriceActionBehavior.PnL.PercentChange}% ({putTradeBehaviorChange.PriceActionBehavior.IsDoubled})");
 
                 //+ Evaluate Position
-                trade = positionMgr.Evaluate(trade);
+                //trade = positionMgr.Evaluate(trade);
 
-                switch (i)
-                {
-                    case 0:
-                        Assert.AreEqual(Decision.Wait, trade.Decision);
-                        // Trade Flags
-                        Assert.AreEqual(0, trade.Flags.Count);
-                        //+ Call
-                        // Flags
-                        Assert.AreEqual(0, trade.Call().PositionBehavior.Flags.Count);
-                        // Decision
-                        Assert.AreEqual(Decision.Null, trade.Call().PositionBehavior.Decision);
+                //switch (i)
+                //{
+                //    case 0:
+                //        Assert.AreEqual(Decision.Wait, trade.Decision);
+                //        // Trade Flags
+                //        Assert.AreEqual(0, trade.Flags.Count);
+                //        //+ Call
+                //        // Flags
+                //        Assert.AreEqual(0, trade.Call().PositionBehavior.Flags.Count);
+                //        // Decision
+                //        Assert.AreEqual(Decision.Null, trade.Call().PositionBehavior.Decision);
 
-                        //+ Put
-                        // Flags
-                        Assert.AreEqual(0, trade.Put().PositionBehavior.Flags.Count);
-                        // Decision
-                        Assert.AreEqual(Decision.Null, trade.Put().PositionBehavior.Decision);
+                //        //+ Put
+                //        // Flags
+                //        Assert.AreEqual(0, trade.Put().PositionBehavior.Flags.Count);
+                //        // Decision
+                //        Assert.AreEqual(Decision.Null, trade.Put().PositionBehavior.Decision);
 
-                        break;
-                    default:
-                        throw new Exception("Something went wrong!");
-                }
-                
+                //        break;
+                //    default:
+                //        throw new Exception("Something went wrong!");
+                //}
+
             }
             //Log(outputLog);
             Assert.Equals(true, false);

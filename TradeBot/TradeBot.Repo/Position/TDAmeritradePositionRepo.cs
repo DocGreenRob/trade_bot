@@ -44,10 +44,6 @@ namespace TradeBot.Repo.Position
         {
             throw new System.NotImplementedException();
         }
-
-        Trade IPositionRepo.Evaluate(Trade trade)
-        {
-            throw new System.NotImplementedException();
-        }
+        
     }
 }

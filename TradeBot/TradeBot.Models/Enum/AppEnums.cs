@@ -149,7 +149,8 @@
         /// </summary>
         public enum Decision
         {
-            Null,
+            Null, // Default
+            New_Request,
             Break_Even,
             /// <summary>
             /// The close
