@@ -15,6 +15,11 @@ namespace TradeBot.Repo.Position
             throw new System.NotImplementedException();
         }
 
+        public bool Close(Trade trade)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public Models.Position CreateNewPosition(string underlying, OptionChainResponse optionChain, int numOfContracts, double currentPositionPrice, AppEnums.OptionType optionType)
         {
             throw new System.NotImplementedException();
@@ -44,6 +49,10 @@ namespace TradeBot.Repo.Position
         {
             throw new System.NotImplementedException();
         }
-        
+
+        public double GetStockPrice(string symbol)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

@@ -18,19 +18,19 @@ namespace TradeBot.BL.Managers
 {
     public class PositionManager
     {
-		private IPositionRepo _positionRepo;
+        private IPositionRepo _positionRepo;
 
-		private Broker broker;
+        private Broker broker;
 
 
         public PositionManager(IPositionRepo positionRepo, Broker broker)
-		{
-			this.broker = broker;
+        {
+            this.broker = broker;
 
-			if (positionRepo == null)
-				throw new Exception("Repo cannot be null!");
+            if (positionRepo == null)
+                throw new Exception("Repo cannot be null!");
 
-			_positionRepo = positionRepo;
+            _positionRepo = positionRepo;
 
             var factory = new LoggerFactory();
             var logger = factory.CreateLogger("MyLog");
@@ -41,7 +41,7 @@ namespace TradeBot.BL.Managers
 
         public Position OpenPosition(string underlying, PositionType positionType, TradeStrength tradeStrength, OptionType optionType)
         {
-			DateTime expirationDate;
+            DateTime expirationDate;
             OptionChainResponse optionChain;
 
             // Create new option trade, this should:
@@ -54,14 +54,14 @@ namespace TradeBot.BL.Managers
             int numOfContracts = DetermineNumberOfContracts(currentPositionPrice, tradeStrength);
 
             if (numOfContracts > 0)
-			{
+            {
                 // 3. Place trade &
                 // 4. Return results of the above (order number, position number, position id)
                 return CreateNewPosition(underlying, optionChain, numOfContracts, currentPositionPrice, optionType);
             }
 
             throw new Exception("Don't have enough funds to open a position of this size.");
-		}
+        }
 
         public AccountPositionsResponse GetPositions(int accountId)
         {
@@ -70,13 +70,13 @@ namespace TradeBot.BL.Managers
 
         private double GetCurrentPrice(string underlying, PositionType positionType, OptionType optionType, out DateTime expirationDate, out OptionChainResponse optionChain)
         {
-			expirationDate = Utils.Utils.Utils.GetExpirationDate();
+            expirationDate = Utils.Utils.Utils.GetExpirationDate();
 
             // 1. Get the option chain for the underlying
             if (positionType == PositionType.Strangle)
-			{
-				// 1. need to know price of underlying so I can
-				optionChain = _positionRepo.GetOptionChain(underlying, OptionType.CALLPUT);
+            {
+                // 1. need to know price of underlying so I can
+                optionChain = _positionRepo.GetOptionChain(underlying, OptionType.CALLPUT);
 
                 // Get the price of the order
                 return _positionRepo.GetOrderPrice(optionChain);
@@ -92,48 +92,48 @@ namespace TradeBot.BL.Managers
             }
 
             throw new NotImplementedException();
-		}
+        }
 
         private int DetermineNumberOfContracts(double positionPrice, TradeStrength tradeStrength) // ok
         {
-			// 1. Get account value
-			double optionBuyingPower = _positionRepo.GetOptionBuyingPower(); // ok
+            // 1. Get account value
+            double optionBuyingPower = _positionRepo.GetOptionBuyingPower(); // ok
 
             // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?tabs=basicconfiguration
 
             // 2. If Account value > 
             double maxPosition = 0;
-			if(optionBuyingPower <= 250)
-			{
-				maxPosition = 250;
-			}
-			if (optionBuyingPower <= 500)
-			{
-				maxPosition = 500;
-			}
-			if (optionBuyingPower <= 1000)
-			{
-				maxPosition = 1000;
-			}
-			if (optionBuyingPower <= 2000)
-			{
-				maxPosition = 2000;
-			}
-			if (optionBuyingPower <= 5000)
-			{
-				maxPosition = 5000;
-			}
-			if (optionBuyingPower <= 10000)
-			{
-				maxPosition = 10000;
-			}
-			if (optionBuyingPower > 10000)
-			{
-				maxPosition = 10000;
-			}
+            if (optionBuyingPower <= 250)
+            {
+                maxPosition = 250;
+            }
+            if (optionBuyingPower <= 500)
+            {
+                maxPosition = 500;
+            }
+            if (optionBuyingPower <= 1000)
+            {
+                maxPosition = 1000;
+            }
+            if (optionBuyingPower <= 2000)
+            {
+                maxPosition = 2000;
+            }
+            if (optionBuyingPower <= 5000)
+            {
+                maxPosition = 5000;
+            }
+            if (optionBuyingPower <= 10000)
+            {
+                maxPosition = 10000;
+            }
+            if (optionBuyingPower > 10000)
+            {
+                maxPosition = 10000;
+            }
 
-			return (maxPosition / positionPrice).ToGetBase();
-		}
+            return (maxPosition / positionPrice).ToGetBase();
+        }
 
         public Trade Evaluate(Trade trade)
         {
@@ -217,24 +217,100 @@ namespace TradeBot.BL.Managers
                 // Strangle
                 if (trade.Call() != null && trade.Put() != null)
                 {
-                    if (trade.Time.TradeMinutes() <= 3)
+                    // Less than or equal to 3rd minute of trading day (9:33:00 AM EST)
+                    if (trade.Time.First3Minutes())
                     {
-                        trade.Decision = AppEnums.Decision.Wait;
-                        trade.Flags = new List<Flag>();
-                        trade.Call().PositionBehavior.Flags = new List<Flag>();
-                        trade.Put().PositionBehavior.Flags = new List<Flag>();
+                        if (trade.MaxLossAlert())
+                        {
+                            if (Close(trade))
+                            {
+                                trade.Reset();
+                                trade.Decision = Decision.Close;
 
-                        trade.Call().PositionBehavior.Decision = Decision.Null;
-                        trade.Put().PositionBehavior.Decision = Decision.Null;
-
-                        return trade;
+                                return trade;
+                            }
+                        }
+                        else
+                        {
+                            trade.Default();
+                            Trade _trade = AssignDecision(trade);
+                            return _trade;
+                        }
+                    }
+                    else
+                    {
+                        if (trade.MaxLossAlert())
+                        {
+                            if (!trade.Flags.Any(Flag.Max_Loss_Percent_Triggered))
+                            {
+                                trade.Decision = Decision.Close_If_Worse;
+                                trade.Flags.AddRange(new List<Flag> { Flag.Max_Loss_Percent_Triggered, Flag.Micro_Watch });
+                                Microwatch(trade);
+                                trade.MaxLossPercent = trade.Sum_Change.Last().PriceActionBehavior.PnL.Percent;
+                                trade.MaxLossDollars = trade.Sum_Change.Last().PriceActionBehavior.PnL.Dollars;
+                                return trade;
+                            }
+                        }
                     }
                 }
             }
-
-            throw new Exception("Something went wrong!");
+            return trade;
+            //throw new Exception("Something went wrong!");
         }
 
+        private Trade AssignDecision(Trade trade)
+        {
+            if (trade.Time.First3Minutes())
+            {
+                trade.Decision = Decision.Wait;
+                trade.Call().PositionBehavior.Decision = Decision.Wait;
+                trade.Put().PositionBehavior.Decision = Decision.Wait;
+            }
+
+            return trade;
+        }
+
+        private bool Close(Trade trade)
+        {
+            return _positionRepo.Close(trade);
+        }
+
+        // TODO: Need to adjust for put or call.  Right now I only check 1 direction (if the stock price gets lower than the last check)
+        // TODO: I think that I may need to set the direction or something like that.
+        // TODO: 5.8.18
+        private void Microwatch(Trade trade)
+        {
+            if (trade.Decision == Decision.New_Request)
+                Close(trade);
+            else
+            {
+                if (trade.GetStockPrice() < trade.GetStockPrice(true))
+                    Close(trade);
+                else
+                {
+                    System.Threading.Thread.Sleep(10000);
+
+                    // Get current stock price
+                    double currentStockPrice = _positionRepo.GetStockPrice(trade.GetUnderlying());
+
+                    // create change object
+                    trade.Sum_Change.Add(new TradeBehaviorChange {
+                        PositionBehavior = new PositionBehavior
+                        {
+                            Change = new Change
+                            {
+                                DateTime = DateTime.Now,
+                                StockPrice = currentStockPrice
+                            }
+                        }
+                    });
+
+                    Microwatch(trade);
+                    // call Microwatch
+                }
+            }
+            throw new NotImplementedException("Implement");
+        }
         private Position CreateNewPosition(string underlying, OptionChainResponse optionChain, int numOfContracts, double currentPositionPrice, AppEnums.OptionType optionType)
         {
             return _positionRepo.CreateNewPosition(underlying, optionChain, numOfContracts, currentPositionPrice, optionType);

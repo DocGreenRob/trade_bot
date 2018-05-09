@@ -156,6 +156,7 @@
             /// The close
             /// </summary>
             Close,
+            Close_If_Worse,
             Close_Profit_Gapping_Side_Of_Trade,
             Close_Trade_Percent_Decrease,
             Close_Trade_Price_Hit_15_Minute_30_SMA,
@@ -287,5 +288,14 @@
             Full_K
         }
 
+        public enum Flag
+        {
+            Close_At_10_Percent,
+            Exit_If_Decrease,
+            Inspect_Stoch_15_Mins,
+            Max_Loss_Percent_Triggered,
+            Micro_Watch,
+            New_Request
+        }
     }
 }

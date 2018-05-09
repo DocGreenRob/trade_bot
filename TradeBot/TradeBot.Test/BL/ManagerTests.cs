@@ -815,30 +815,46 @@ namespace TradeBot.Test.BL
                 AppendLog(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 
                 //+ Evaluate Position
-                //trade = positionMgr.Evaluate(trade);
+                trade = positionMgr.Evaluate(trade);
 
-                //switch (i)
-                //{
-                //    case 0:
-                //        Assert.AreEqual(Decision.Wait, trade.Decision);
-                //        // Trade Flags
-                //        Assert.AreEqual(0, trade.Flags.Count);
-                //        //+ Call
-                //        // Flags
-                //        Assert.AreEqual(0, trade.Call().PositionBehavior.Flags.Count);
-                //        // Decision
-                //        Assert.AreEqual(Decision.Null, trade.Call().PositionBehavior.Decision);
+                switch (i)
+                {
+                    case 0: // 9:32
+                        Assert.AreEqual(Decision.Wait, trade.Decision);
+                        // Trade Flags
+                        Assert.AreEqual(0, trade.Flags.Count);
+                        //+ Call
+                        // Flags
+                        Assert.AreEqual(0, trade.Call().PositionBehavior.Flags.Count);
+                        // Decision
+                        Assert.AreEqual(Decision.Wait, trade.Call().PositionBehavior.Decision);
 
-                //        //+ Put
-                //        // Flags
-                //        Assert.AreEqual(0, trade.Put().PositionBehavior.Flags.Count);
-                //        // Decision
-                //        Assert.AreEqual(Decision.Null, trade.Put().PositionBehavior.Decision);
+                        //+ Put
+                        // Flags
+                        Assert.AreEqual(0, trade.Put().PositionBehavior.Flags.Count);
+                        // Decision
+                        Assert.AreEqual(Decision.Wait, trade.Put().PositionBehavior.Decision);
 
-                //        break;
-                //    default:
-                //        throw new Exception("Something went wrong!");
-                //}
+                        break;
+                    case 1: // 9:33
+                        Assert.AreEqual(Decision.Wait, trade.Decision);
+                        // Trade Flags
+                        Assert.AreEqual(0, trade.Flags.Count);
+                        //+ Call
+                        // Flags
+                        Assert.AreEqual(0, trade.Call().PositionBehavior.Flags.Count);
+                        // Decision
+                        Assert.AreEqual(Decision.Wait, trade.Call().PositionBehavior.Decision);
+
+                        //+ Put
+                        // Flags
+                        Assert.AreEqual(0, trade.Put().PositionBehavior.Flags.Count);
+                        // Decision
+                        Assert.AreEqual(Decision.Wait, trade.Put().PositionBehavior.Decision);
+                        break;
+                    //default:
+                    //    throw new Exception("Something went wrong!");
+                }
 
             }
             //Log(outputLog);

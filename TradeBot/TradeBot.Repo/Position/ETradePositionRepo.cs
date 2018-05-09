@@ -58,5 +58,15 @@ namespace TradeBot.Repo.Position
         {
             throw new NotImplementedException();
         }
+
+        public bool Close(Trade trade)
+        {
+            throw new NotImplementedException();
+        }
+
+        public double GetStockPrice(string symbol)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

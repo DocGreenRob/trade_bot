@@ -19,5 +19,9 @@ namespace TradeBot.Models.Broker.ETrade.Analyzer
         /// The sum change.
         /// </value>
         public List<TradeBehaviorChange> Sum_Change { get; set; }
+        public double MaxLossPercent { get; set; }
+        public double MaxLossDollars { get; set; }
+        public double MaxGainPercent { get; set; }
+        public double MaxGainDollars { get; set; }
     }
 }

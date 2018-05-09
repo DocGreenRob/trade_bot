@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using TradeBot.Models;
 using TradeBot.Models.Broker.ETrade.Analyzer;
+using TradeBot.Models.Enum;
 using TradeBot.Utils.ExtensionMethods;
 using static TradeBot.Models.Enum.AppEnums;
 
@@ -84,6 +86,11 @@ namespace TradeBot.Utils.ExtensionMethods
             return difference.Minutes;
         }
 
+        public static bool First3Minutes(this DateTime dateTime)
+        {
+            return TradeMinutes(dateTime) <= 3;
+        }
+
         /// <summary>
         /// Determines whether [is fifteenth minute].
         /// </summary>
@@ -104,6 +111,56 @@ namespace TradeBot.Utils.ExtensionMethods
         public static Position Put(this Trade trade)
         {
             return trade.Positions.Where(p => p.OptionOrderResponse.OptionSymbol.OptionType == OptionType.PUT).FirstOrDefault();
+        }
+
+        public static bool MaxLossAlert(this Trade trade)
+        {
+            double maxLoss = -.125 * 100;
+            return trade.Sum_Change.LastOrDefault().PriceActionBehavior.PnL.Percent < maxLoss;
+        }
+
+        public static Trade Default(this Trade trade)
+        {
+            trade.Decision = AppEnums.Decision.Wait;
+            ResetFlags(trade);
+            trade.Call().PositionBehavior.Decision = Decision.Null;
+            trade.Put().PositionBehavior.Decision = Decision.Null;
+            return trade;
+        }
+
+        public static Trade Reset(this Trade trade)
+        {
+            return Default(trade);
+        }
+
+        public static Trade ResetFlags(this Trade trade)
+        {
+            trade.Flags = new List<Flag>();
+            trade.Call().PositionBehavior.Flags = new List<Flag>();
+            trade.Put().PositionBehavior.Flags = new List<Flag>();
+            return trade;
+        }
+
+        public static bool Any(this List<Flag> flags, Flag flag)
+        {
+            return flags.Any(f => f.Equals(flag));
+        }
+
+        public static double GetStockPrice(this Trade trade, bool previous = false)
+        {
+            if (!previous) // get the last one
+                return trade.Sum_Change.LastOrDefault().PositionBehavior.Change.StockPrice;
+            else
+            {
+                int changesCount = trade.Sum_Change.Count;
+                return trade.Sum_Change.ElementAt(changesCount-1).PositionBehavior.Change.StockPrice;
+            }
+                
+        }
+
+        public static string GetUnderlying(this Trade trade)
+        {
+            return trade.Positions.FirstOrDefault().Underlying.Name;
         }
     }
 }

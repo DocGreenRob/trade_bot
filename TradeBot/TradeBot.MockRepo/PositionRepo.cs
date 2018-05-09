@@ -34,6 +34,11 @@ namespace TradeBot.MockRepo
             return accountPosition;
         }
 
+        public bool Close(Trade trade)
+        {
+            throw new NotImplementedException();
+        }
+
         public Position CreateNewPosition(string underlying, OptionChainResponse optionChain, int numOfContracts, double currentPositionPrice, AppEnums.OptionType optionType)
         {
             double commission = 5.95;
@@ -238,6 +243,11 @@ namespace TradeBot.MockRepo
                 accountPositionsResponse.AccountPositions.Add(accountPosition);
             }
             return accountPositionsResponse;
+        }
+
+        public double GetStockPrice(string symbol)
+        {
+            throw new NotImplementedException();
         }
     }
 }

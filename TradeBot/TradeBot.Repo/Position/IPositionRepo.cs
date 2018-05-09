@@ -18,7 +18,8 @@ namespace TradeBot.Repo
         Models.Position CreateNewPosition(string underlying, OptionChainResponse optionChain, int numOfContracts, double currentPositionPrice, AppEnums.OptionType optionType);
         AccountPosition Change(AccountPosition accountPosition, Change change);
         AccountPositionsResponse GetPositions(int accountId);
-
+        bool Close(Trade trade);
+        double GetStockPrice(string symbol);
         #endregion
 
     }
