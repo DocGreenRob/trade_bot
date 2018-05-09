@@ -278,6 +278,9 @@ namespace TradeBot.BL.Managers
         // TODO: Need to adjust for put or call.  Right now I only check 1 direction (if the stock price gets lower than the last check)
         // TODO: I think that I may need to set the direction or something like that.
         // TODO: 5.8.18
+        // Need to know the impact of Price Action Behavior (Stock Price) on my PnL.Percent.
+        // If the stock going UP has caused me to flag for MicroWatch, then if the Stock Price goes further  UP during a MicroWatch, Close()
+        // conversely, if the stock going DOWN has caused me to flag for MicroWatch, then if the Stock Price goes further DOWN during a MicroWatch, Close()
         private void Microwatch(Trade trade)
         {
             if (trade.Decision == Decision.New_Request)
