@@ -297,5 +297,12 @@
             Micro_Watch,
             New_Request
         }
+
+        public enum Bias
+        {
+            Null,
+            Bullish,
+            Bearish
+        }
     }
 }

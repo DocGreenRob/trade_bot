@@ -7,7 +7,7 @@ namespace TradeBot.Models.Broker.ETrade.Analyzer
     {
         public bool IsDoubled { get; set; }
         public PnL PnL { get; set; }
-        public List<Studies.Study> Studies { get; set; }
+        public List<Study> Studies { get; set; }
     }
 
     public class x

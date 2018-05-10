@@ -373,22 +373,16 @@ namespace TradeBot.Test.BL
 
         }
 
-        /// <summary>
-        /// Determines whether this instance [can evaluate strangle and close position based on decision ba].  Here we want to evaluate a Strange and close 1 side of the position because some conditions have been met, but keep the other side of the position going until some other condition is met and then close it.
-        /// Link: https://docs.google.com/spreadsheets/d/1IDjvIR7H8q15eeP0awyHCkjbuLwf1xnlNSUnzhdbTGI/edit#gid=1396774657
-        /// </summary>
-        [TestMethod]
-        public void Can_Evaluate_Strangle_And_Close_Position_Based_On_Decision_BA()
+        private void BuildStrangle(string symbol, double callStrike, double putStrike, double callOptionPrice, double putOptionPrice, out int changesCount, out Position callPosition, out Position putPosition, out List<List<Change>> changes, out PositionManager positionMgr)
         {
-            //++ Arrange
-            PositionManager positionMgr;
-            Tuple<AccountPositionsResponse, List<AccountPosition>> result = CreateStrangle("BA", 322.5, 320, 4.05, 3.4, out positionMgr);
+            Tuple<AccountPositionsResponse, List<AccountPosition>> result = CreateStrangle(symbol, callStrike, putStrike, callOptionPrice, putOptionPrice, out positionMgr);  //CreateStrangle("BA", 322.5, 320, 4.05, 3.4, out positionMgr);
+            
             AccountPositionsResponse accountPositionsResponse = result.Item1;
             List<AccountPosition> positionsOfInterest = result.Item2;
 
             int controlVariable = Models.MockModelDefaults.Default.Positions.Count;
 
-            List<List<Change>> changes = new List<List<Change>>();
+            changes = new List<List<Change>>();
             List<Change> _changes = new List<Change>();
             AccountPosition accountPosition = new AccountPosition();
 
@@ -637,7 +631,6 @@ namespace TradeBot.Test.BL
 
                     changes.Add(_changes);
                 }
-
             }
 
             #endregion
@@ -648,114 +641,49 @@ namespace TradeBot.Test.BL
             // Now run through the "Evaluator()"
 
             // it should evaluate the positions as a whole and respond to each message accordingly - but it must have the logic to output the appropriate Decision as per the price action
-            int changesCount = changes.FirstOrDefault().Count;
+            changesCount = changes.FirstOrDefault().Count;
 
-            Position callPosition = Models.MockModelDefaults.Default.Positions.Where(p => p.OptionOrderResponse.OptionSymbol.OptionType == OptionType.CALL).FirstOrDefault();
-            Position putPosition = Models.MockModelDefaults.Default.Positions.Where(p => p.OptionOrderResponse.OptionSymbol.OptionType == OptionType.PUT).FirstOrDefault();
+            /****************************************************************************************************************/
+            /****************************************************************************************************************/
+            /****************************************************************************************************************/
 
-            //PositionBehavior callPositionBehavior = callPosition.PositionBehavior;
-            //PositionBehavior putPositionBehavior = putPosition.PositionBehavior;
+            //+ Here is the actual trade (positions) that I place with CBOE. (the options contracts)
+            callPosition = Models.MockModelDefaults.Default.Positions.Where(p => p.OptionOrderResponse.OptionSymbol.OptionType == OptionType.CALL).FirstOrDefault();
+            putPosition = Models.MockModelDefaults.Default.Positions.Where(p => p.OptionOrderResponse.OptionSymbol.OptionType == OptionType.PUT).FirstOrDefault();
+            /****************************************************************************************************************/
+            /****************************************************************************************************************/
+            /****************************************************************************************************************/
+        }
 
-            #region Set Defaults on Trade()
-            Trade trade = new Trade();
-            trade.Positions = new List<Position>();
-            trade.Positions.AddRange(new List<Position> { callPosition, putPosition });
-            trade.BehaviorChanges = new Dictionary<TradeBehaviorChange, TradeBehaviorChange>();
-            trade.Sum_Change = new List<TradeBehaviorChange> { new TradeBehaviorChange() };
+        /// <summary>
+        /// Determines whether this instance [can evaluate strangle and close position based on decision ba].  Here we want to evaluate a Strange and close 1 side of the position because some conditions have been met, but keep the other side of the position going until some other condition is met and then close it.
+        /// Link: https://docs.google.com/spreadsheets/d/1IDjvIR7H8q15eeP0awyHCkjbuLwf1xnlNSUnzhdbTGI/edit#gid=1396774657
+        /// </summary>
 
-            #endregion
+        [TestMethod]
+        public void Can_Evaluate_Strangle_And_Close_Position_Based_On_Decision_BA()
+        {
+            //++ Arrange
+
+            PositionManager positionMgr;
+            List<List<Change>> changes;
+            Position callPosition;
+            Position putPosition;
+            int changesCount;
+
+            BuildStrangle("BA", 322.5, 320, 4.05, 3.4, out changesCount, out callPosition, out putPosition, out changes, out positionMgr);
+            
+            Trade trade = BuildTrade(changesCount, callPosition, putPosition, changes, positionMgr);
 
             string outputLog = "";
-            AppendLog($"{System.Environment.NewLine} -------- NEW TEST -------- {System.Environment.NewLine}");
+            AppendLog($"{Environment.NewLine} -------- NEW TEST -------- {Environment.NewLine}");
 
             for (int i = 0; i < changesCount; i++)
             {
+
                 int n = i + 1;
 
-                // Set the Market Time
-                DateTime marketTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 9, 31, 0).AddMinutes(n);
-                trade.Time = marketTime;
-
-                // Simulate the Change
-                // Call
-                callPosition.PositionBehavior = new PositionBehavior
-                {
-                    Change = changes.ElementAt(0).ElementAt(i)
-                };
-                // Put
-                putPosition.PositionBehavior = new PositionBehavior
-                {
-                    Change = changes.ElementAt(1).ElementAt(i)
-                };
-
-                //++ Act
-
-                // Simulate Position Change
-
-                // Simulates checking the position via the API (getting the most current status of the position)
-
-                // Stock Price
-                trade.StockPrice = callPosition.PositionBehavior.Change.StockPrice;
-
-                // [x]Position.PositionBehavior.AccountPosition =
-
-                //+ Change
-                // Call
-                AccountPosition callAdjustedAccountPosition = positionMgr.Change(callPosition.AccountPositionsResponse.AccountPositions.Where(a => a.Product.CallPut == OptionType.CALL).FirstOrDefault(), callPosition.PositionBehavior.Change);
-
-                callPosition.PositionBehavior.AccountPosition = callAdjustedAccountPosition;
-
-                // Put
-                AccountPosition putAdjustedAccountPosition = positionMgr.Change(putPosition.AccountPositionsResponse.AccountPositions.Where(a => a.Product.CallPut == OptionType.PUT).FirstOrDefault(), putPosition.PositionBehavior.Change);
-
-                putPosition.PositionBehavior.AccountPosition = putAdjustedAccountPosition;
-
-                // Call
-                PriceActionBehavior callPriceActionBehavior = new PriceActionBehavior
-                {
-                    // need to get the last lastPercentChange if the time is greater than 9:31, else, return 0
-                    PnL = Utils.Utils.Utils.GetPnL(callAdjustedAccountPosition, GetLastPercentageOpen(trade, OptionType.CALL)),
-                    Studies = null
-                };
-
-                // Put
-                PriceActionBehavior putPriceActionBehavior = new PriceActionBehavior
-                {
-                    // need to get the last lastPercentChange if the time is greater than 9:31, else, return 0
-                    PnL = Utils.Utils.Utils.GetPnL(putAdjustedAccountPosition, GetLastPercentageOpen(trade, OptionType.PUT)),
-                    Studies = null
-                };
-
-                
-
-                // Call
-                TradeBehaviorChange callTradeBehaviorChange = new TradeBehaviorChange
-                {
-                    PriceActionBehavior = callPriceActionBehavior,
-                    PositionBehavior = callPosition.PositionBehavior
-                };
-
-                // Put
-                TradeBehaviorChange putTradeBehaviorChange = new TradeBehaviorChange
-                {
-                    PriceActionBehavior = putPriceActionBehavior,
-                    PositionBehavior = putPosition.PositionBehavior
-                };
-
-                trade.BehaviorChanges.Add(callTradeBehaviorChange, putTradeBehaviorChange);
-
-                // Calculate Sum Change for the Trade
-                double dollarsPnL = Math.Round(callTradeBehaviorChange.PriceActionBehavior.PnL.Dollars + putTradeBehaviorChange.PriceActionBehavior.PnL.Dollars, 2);
-                // (cost / dollarsPnL) * 100
-                double cost = Math.Round(callTradeBehaviorChange.PositionBehavior.AccountPosition.CostBasis + putTradeBehaviorChange.PositionBehavior.AccountPosition.CostBasis, 2);
-                double current = Math.Round(callTradeBehaviorChange.PositionBehavior.AccountPosition.CurrentPrice + putTradeBehaviorChange.PositionBehavior.AccountPosition.CurrentPrice, 2);
-                double percentPnL = Math.Round(dollarsPnL / cost, 2);
-                double percentChange = Math.Round(callTradeBehaviorChange.PriceActionBehavior.PnL.PercentChange + putTradeBehaviorChange.PriceActionBehavior.PnL.PercentChange, 2);
-
-                trade.Sum_Change.Add(new TradeBehaviorChange { PriceActionBehavior = new PriceActionBehavior { PnL = new PnL { Dollars = dollarsPnL, Percent = percentPnL, PercentChange = percentChange } } });
-
                 AppendLog($"i = {i} ");
-
 
                 // Call
                 if (i >= 1)
@@ -778,7 +706,7 @@ namespace TradeBot.Test.BL
                     }
                     else
                     {
-                        callPriceActionBehavior.IsDoubled = false;
+                        trade.BehaviorChanges.ElementAt(i).Key.PriceActionBehavior.IsDoubled = false;
                     }
                 }
 
@@ -790,7 +718,7 @@ namespace TradeBot.Test.BL
 
                     AppendLog($"PUT : i = {i} prior.change = {prior_put_priceActionBehavior.PnL.PercentChange}  ?? this.change {this_put_priceActionBehavior.PnL.PercentChange}");
 
-                    putPriceActionBehavior.IsDoubled = Utils.Utils.Utils.IsDoubled(prior_put_priceActionBehavior.PnL.PercentChange, this_put_priceActionBehavior.PnL.PercentChange);
+                    trade.BehaviorChanges.ElementAt(i).Value.PriceActionBehavior.IsDoubled = Utils.Utils.Utils.IsDoubled(prior_put_priceActionBehavior.PnL.PercentChange, this_put_priceActionBehavior.PnL.PercentChange);
                 }
                 else
                 {
@@ -803,14 +731,14 @@ namespace TradeBot.Test.BL
                     }
                     else
                     {
-                        putPriceActionBehavior.IsDoubled = false;
+                        trade.BehaviorChanges.ElementAt(i).Value.PriceActionBehavior.IsDoubled = false;
                     }
                 }
                 //++ Act
                 // ---
 
                 //+ Log
-                AppendLog($"{trade.Time} ${trade.Sum_Change.LastOrDefault().PriceActionBehavior.PnL.Dollars} <----> {trade.Sum_Change.LastOrDefault().PriceActionBehavior.PnL.Percent}% <<=======>> ${callTradeBehaviorChange.PriceActionBehavior.PnL.Dollars} ... {callTradeBehaviorChange.PriceActionBehavior.PnL.Percent}% ... {callTradeBehaviorChange.PriceActionBehavior.PnL.PercentChange}% ({callTradeBehaviorChange.PriceActionBehavior.IsDoubled}) -------- ${putTradeBehaviorChange.PriceActionBehavior.PnL.Dollars} ... {putTradeBehaviorChange.PriceActionBehavior.PnL.Percent}% ... {putTradeBehaviorChange.PriceActionBehavior.PnL.PercentChange}% ({putTradeBehaviorChange.PriceActionBehavior.IsDoubled})");
+                AppendLog($"{trade.Time} ${trade.Sum_Change.LastOrDefault().PriceActionBehavior.PnL.Dollars} <----> {trade.Sum_Change.LastOrDefault().PriceActionBehavior.PnL.Percent}% <<=======>> ${trade.BehaviorChanges.ElementAt(i).Key.PriceActionBehavior.PnL.Dollars} ... {trade.BehaviorChanges.ElementAt(i).Key.PriceActionBehavior.PnL.Percent}% ... {trade.BehaviorChanges.ElementAt(i).Key.PriceActionBehavior.PnL.PercentChange}% ({trade.BehaviorChanges.ElementAt(i).Key.PriceActionBehavior.IsDoubled}) -------- ${trade.BehaviorChanges.ElementAt(i).Value.PriceActionBehavior.PnL.Dollars} ... {trade.BehaviorChanges.ElementAt(i).Value.PriceActionBehavior.PnL.Percent}% ... {trade.BehaviorChanges.ElementAt(i).Value.PriceActionBehavior.PnL.PercentChange}% ({trade.BehaviorChanges.ElementAt(i).Value.PriceActionBehavior.IsDoubled})");
 
                 AppendLog(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 
@@ -874,6 +802,140 @@ namespace TradeBot.Test.BL
 
             return 0;
         }
+
+        [TestMethod]
+        public void Can_Develop_Bias()
+        {
+            // Arrange
+            PositionManager positionMgr;
+            List<List<Change>> changes;
+            Position callPosition;
+            Position putPosition;
+            int changesCount;
+
+            BuildStrangle("BA", 322.5, 320, 4.05, 3.4, out changesCount, out callPosition, out putPosition, out changes, out positionMgr);
+
+            Trade trade = BuildTrade(changesCount, callPosition, putPosition, changes, positionMgr);
+
+            // Act
+            positionMgr.GetBias(trade);
+
+            for(var i=0; i<trade.Sum_Change.Count; i++)
+            {
+                switch (i)
+                {
+                    case 0:
+                        Assert.AreEqual(Bias.Null, trade.Bias);
+                        break;
+                }
+            }
+
+            // Assert
+        }
+
+        private Trade BuildTrade(
+            int changesCount,
+            Position callPosition,
+            Position putPosition,
+            List<List<Change>> changes,
+            PositionManager positionMgr)
+        {
+            Trade trade = new Trade(callPosition, putPosition);
+
+            string outputLog = "";
+            AppendLog($"{Environment.NewLine} -------- NEW TEST -------- {Environment.NewLine}");
+
+            for (int i = 0; i < changesCount; i++)
+            {
+
+                int n = i + 1;
+
+                // Set the Market Time
+                DateTime marketTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 9, 31, 0).AddMinutes(n);
+                trade.Time = marketTime;
+
+                // Simulate the Change
+                // Call
+                callPosition.PositionBehavior = new PositionBehavior
+                {
+                    Change = changes.ElementAt(0).ElementAt(i)
+                };
+
+                // Put
+                putPosition.PositionBehavior = new PositionBehavior
+                {
+                    Change = changes.ElementAt(1).ElementAt(i)
+                };
+
+                //++ Act
+
+                // Simulate Position Change
+
+                // Simulates checking the position via the API (getting the most current status of the position)
+
+                // Stock Price
+                trade.StockPrice = callPosition.PositionBehavior.Change.StockPrice;
+
+                // [x]Position.PositionBehavior.AccountPosition =
+
+                //+ Change
+                // Call
+                AccountPosition callAdjustedAccountPosition = positionMgr.Change(callPosition.AccountPositionsResponse.AccountPositions.Where(a => a.Product.CallPut == OptionType.CALL).FirstOrDefault(), callPosition.PositionBehavior.Change);
+
+                callPosition.PositionBehavior.AccountPosition = callAdjustedAccountPosition;
+
+                // Put
+                AccountPosition putAdjustedAccountPosition = positionMgr.Change(putPosition.AccountPositionsResponse.AccountPositions.Where(a => a.Product.CallPut == OptionType.PUT).FirstOrDefault(), putPosition.PositionBehavior.Change);
+
+                putPosition.PositionBehavior.AccountPosition = putAdjustedAccountPosition;
+
+                // Call
+                PriceActionBehavior callPriceActionBehavior = new PriceActionBehavior
+                {
+                    // need to get the last lastPercentChange if the time is greater than 9:31, else, return 0
+                    PnL = Utils.Utils.Utils.GetPnL(callAdjustedAccountPosition, GetLastPercentageOpen(trade, OptionType.CALL)),
+                    Studies = null
+                };
+
+                // Put
+                PriceActionBehavior putPriceActionBehavior = new PriceActionBehavior
+                {
+                    // need to get the last lastPercentChange if the time is greater than 9:31, else, return 0
+                    PnL = Utils.Utils.Utils.GetPnL(putAdjustedAccountPosition, GetLastPercentageOpen(trade, OptionType.PUT)),
+                    Studies = null
+                };
+
+                // Call
+                TradeBehaviorChange callTradeBehaviorChange = new TradeBehaviorChange
+                {
+                    PriceActionBehavior = callPriceActionBehavior,
+                    PositionBehavior = callPosition.PositionBehavior
+                };
+
+                // Put
+                TradeBehaviorChange putTradeBehaviorChange = new TradeBehaviorChange
+                {
+                    PriceActionBehavior = putPriceActionBehavior,
+                    PositionBehavior = putPosition.PositionBehavior
+                };
+
+                trade.BehaviorChanges.Add(callTradeBehaviorChange, putTradeBehaviorChange);
+
+                // Calculate Sum Change for the Trade
+                double dollarsPnL = Math.Round(callTradeBehaviorChange.PriceActionBehavior.PnL.Dollars + putTradeBehaviorChange.PriceActionBehavior.PnL.Dollars, 2);
+                // (cost / dollarsPnL) * 100
+                double cost = Math.Round(callTradeBehaviorChange.PositionBehavior.AccountPosition.CostBasis + putTradeBehaviorChange.PositionBehavior.AccountPosition.CostBasis, 2);
+                double current = Math.Round(callTradeBehaviorChange.PositionBehavior.AccountPosition.CurrentPrice + putTradeBehaviorChange.PositionBehavior.AccountPosition.CurrentPrice, 2);
+                double percentPnL = Math.Round(dollarsPnL / cost, 2);
+                double percentChange = Math.Round(callTradeBehaviorChange.PriceActionBehavior.PnL.PercentChange + putTradeBehaviorChange.PriceActionBehavior.PnL.PercentChange, 2);
+
+                trade.Sum_Change.Add(new TradeBehaviorChange { PriceActionBehavior = new PriceActionBehavior { PnL = new PnL { Dollars = dollarsPnL, Percent = percentPnL, PercentChange = percentChange } } });
+
+            }
+
+            return trade;
+        }
+
 
         //      /// <summary>
         //      /// In this case, we will change the Position value such as to make the app start the monitoring process

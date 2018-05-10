@@ -323,5 +323,25 @@ namespace TradeBot.BL.Managers
         {
             return _positionRepo.Change(accountPosition, change);
         }
+
+        public Trade GetBias(Trade trade)
+        {
+            if (trade.BehaviorChanges.Count <= 1)
+            {
+                trade.Bias = Bias.Null;
+                return trade;
+            }
+
+            int count = trade.Sum_Change.Count - 2;
+            // let the last one
+            double currentPercent = trade.Sum_Change.ElementAt(count).PriceActionBehavior.PnL.Percent;
+            double currentPrice = trade.Sum_Change.ElementAt(count).PositionBehavior.Change.StockPrice;
+
+            // get the one before the last one
+            double priorPercent = trade.Sum_Change.ElementAt(count).PriceActionBehavior.PnL.Percent;
+            double priorPrice = trade.Sum_Change.ElementAt(count).PositionBehavior.Change.StockPrice;
+
+            return trade;
+        }
     }
 }

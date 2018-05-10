@@ -105,6 +105,7 @@ namespace TradeBot.Utils.ExtensionMethods
 
         public static Position Call(this Trade trade)
         {
+            //return trade.BehaviorChanges.Where(b => b.Key.PositionBehavior.AccountPosition.Product.CallPut == OptionType.CALL);
             return trade.Positions.Where(p => p.OptionOrderResponse.OptionSymbol.OptionType == OptionType.CALL).FirstOrDefault();
         }
 

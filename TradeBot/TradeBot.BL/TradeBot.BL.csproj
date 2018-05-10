@@ -1,14 +1,14 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
+    <FileUpgradeFlags>40</FileUpgradeFlags>
+    <UpgradeBackupLocation>C:\_dev\_git\trade_bot\TradeBot\Backup\TradeBot.BL\</UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
   </PropertyGroup>
-
   <ItemGroup>
     <None Remove="appsettings.Development.json" />
     <None Remove="appsettings.json" />
   </ItemGroup>
-
   <ItemGroup>
     <Content Include="appsettings.Development.json">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
@@ -17,19 +17,16 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Elmah.Io.Extensions.Logging" Version="3.2.27" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.1" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\TradeBot.MockRepo\TradeBot.MockRepo.csproj" />
     <ProjectReference Include="..\TradeBot.Models\TradeBot.Models.csproj" />
     <ProjectReference Include="..\TradeBot.Repo\TradeBot.Repo.csproj" />
     <ProjectReference Include="..\TradeBot.Utils\TradeBot.Utils.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <Reference Include="Microsoft.AspNetCore">
       <HintPath>..\..\..\..\..\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.aspnetcore\2.0.1\lib\netstandard2.0\Microsoft.AspNetCore.dll</HintPath>
@@ -38,5 +35,4 @@
       <HintPath>..\..\..\..\..\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.aspnetcore.hosting.abstractions\2.0.1\lib\netstandard2.0\Microsoft.AspNetCore.Hosting.Abstractions.dll</HintPath>
     </Reference>
   </ItemGroup>
-
 </Project>
