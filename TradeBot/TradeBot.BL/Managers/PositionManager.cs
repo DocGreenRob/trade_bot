@@ -297,7 +297,8 @@ namespace TradeBot.BL.Managers
                     double currentStockPrice = _positionRepo.GetStockPrice(trade.GetUnderlying());
 
                     // create change object
-                    trade.Sum_Change.Add(new TradeBehaviorChange {
+                    trade.Sum_Change.Add(new TradeBehaviorChange
+                    {
                         PositionBehavior = new PositionBehavior
                         {
                             Change = new Change

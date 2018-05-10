@@ -840,7 +840,10 @@ namespace TradeBot.Test.BL
             List<List<Change>> changes,
             PositionManager positionMgr)
         {
+            PositionBehavior tradePositionBehavior;
+
             Trade trade = new Trade(callPosition, putPosition);
+            double totalTradeCost = Math.Round(callPosition.CostBasis + putPosition.CostBasis, 2);
 
             string outputLog = "";
             AppendLog($"{Environment.NewLine} -------- NEW TEST -------- {Environment.NewLine}");
@@ -866,7 +869,6 @@ namespace TradeBot.Test.BL
                 {
                     Change = changes.ElementAt(1).ElementAt(i)
                 };
-
                 //++ Act
 
                 // Simulate Position Change
@@ -929,7 +931,24 @@ namespace TradeBot.Test.BL
                 double percentPnL = Math.Round(dollarsPnL / cost, 2);
                 double percentChange = Math.Round(callTradeBehaviorChange.PriceActionBehavior.PnL.PercentChange + putTradeBehaviorChange.PriceActionBehavior.PnL.PercentChange, 2);
 
-                trade.Sum_Change.Add(new TradeBehaviorChange { PriceActionBehavior = new PriceActionBehavior { PnL = new PnL { Dollars = dollarsPnL, Percent = percentPnL, PercentChange = percentChange } } });
+                var callPrice = changes.ElementAt(0).ElementAt(i).CallOptionPrice;
+                var putPrice = changes.ElementAt(1).ElementAt(i).PutOptionPrice;
+                var x = changes.ElementAt(0).ElementAt(i).DateTime;
+
+                // Generate the overall PositionBehavior
+                tradePositionBehavior = new PositionBehavior
+                {
+                    Change = new Change
+                    {
+                        Amount = Math.Round((callPrice + putPrice) - totalTradeCost, 2) * 100,
+                        CallOptionPrice = changes.ElementAt(0).ElementAt(i).CallOptionPrice,
+                        PutOptionPrice = changes.ElementAt(1).ElementAt(i).PutOptionPrice,
+                        DateTime = changes.ElementAt(0).ElementAt(i).DateTime,
+                        StockPrice = changes.ElementAt(0).ElementAt(i).StockPrice
+                    }
+                };
+
+                trade.Sum_Change.Add(new TradeBehaviorChange { PositionBehavior = tradePositionBehavior, PriceActionBehavior = new PriceActionBehavior { PnL = new PnL { Dollars = dollarsPnL, Percent = percentPnL, PercentChange = percentChange } } });
 
             }
 

@@ -18,7 +18,8 @@ namespace TradeBot.Models.Broker.ETrade.Analyzer
             this.Positions = new List<Position>();
             this.Positions.AddRange(new List<Position> { callPosition, putPosition });
             this.BehaviorChanges = new Dictionary<TradeBehaviorChange, TradeBehaviorChange>();
-            this.Sum_Change = new List<TradeBehaviorChange> { new TradeBehaviorChange() };
+            // this.Sum_Change = new List<TradeBehaviorChange> { new TradeBehaviorChange() };
+            this.Sum_Change = new List<TradeBehaviorChange>();
         }
         public DateTime Time { get; set; }
         public double StockPrice { get; set; }
