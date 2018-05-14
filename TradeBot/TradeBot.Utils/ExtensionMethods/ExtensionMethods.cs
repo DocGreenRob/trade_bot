@@ -163,5 +163,17 @@ namespace TradeBot.Utils.ExtensionMethods
         {
             return trade.Positions.FirstOrDefault().Underlying.Name;
         }
+
+        public static PositionType PositionType(this Trade trade)
+        {
+
+            if (trade.Positions.Count == 1)
+                return AppEnums.PositionType.Naked;
+
+            if (trade.Positions.Count == 2)
+                return AppEnums.PositionType.Strangle;
+
+            throw new Exception("Something went wrong!");
+        }
     }
 }

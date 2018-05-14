@@ -405,6 +405,12 @@ namespace TradeBot.Test.BL
                     {
                         new Change
                         {
+                            DateTime = position.EntryTime,
+                            StockPrice = 322.15,
+                            CallOptionPrice = 4.05
+                        },
+                        new Change
+                        {
                             DateTime = position.EntryTime.AddMinutes(1),
                             StockPrice = 321.85,
                             CallOptionPrice = 3.75
@@ -519,6 +525,12 @@ namespace TradeBot.Test.BL
                 {
                     _changes = new List<Change>
                     {
+                        new Change
+                        {
+                            DateTime = position.EntryTime,
+                            StockPrice = 322.15,
+                            PutOptionPrice = 3.4
+                        },
                         new Change
                         {
                             DateTime = position.EntryTime.AddMinutes(1),
@@ -818,15 +830,62 @@ namespace TradeBot.Test.BL
             Trade trade = BuildTrade(changesCount, callPosition, putPosition, changes, positionMgr);
 
             // Act
-            positionMgr.GetBias(trade);
+            var sumChanges = trade.Sum_Change;
+            //a.MemberwiseClone
+            //new List<TradeBehaviorChange>().MemberwiseClone
 
-            for(var i=0; i<trade.Sum_Change.Count; i++)
+            //Trade t = trade;
+            //t.Sum_Change = new List<TradeBehaviorChange>();
+
+            //foreach (var change in sumChanges)
+            //{
+            //    //Trade t = new Trade();
+            //    //t.Sum_Change.Add(x);
+
+            //    t.Sum_Change.Add(change);
+
+            //    t = positionMgr.GetBias(t);
+            //}
+
+            //Trade t = trade;
+            trade.Sum_Change = new List<TradeBehaviorChange>();
+
+            foreach (var change in sumChanges)
+            {
+                //Trade t = new Trade();
+                //t.Sum_Change.Add(x);
+
+                trade.Sum_Change.Add(change);
+
+                trade = positionMgr.GetBias(trade);
+            }
+
+            for (var i=0; i<trade.Sum_Change.Count; i++)
             {
                 switch (i)
                 {
                     case 0:
-                        Assert.AreEqual(Bias.Null, trade.Bias);
+                        Assert.AreEqual(Bias.Null, trade.Sum_Change.ElementAt(i).Bias);
                         break;
+                    case 1:
+                        Assert.AreEqual(Bias.Bullish, trade.Sum_Change.ElementAt(i).Bias);
+                        break;
+                    case 2:
+                    case 3:
+                    case 4:
+                    case 5:
+                    case 6:
+                    case 7:
+                    case 8:
+                    case 9:
+                    case 10:
+                    case 11:
+                    case 12:
+                        Assert.AreEqual(Bias.Bearish, trade.Sum_Change.ElementAt(i).Bias);
+                        break;
+                    //case 1:
+                    //    Assert.AreEqual(Bias.Bullish, trade.Sum_Change.ElementAt(i).Bias);
+                    //    break;
                 }
             }
 
@@ -944,12 +1003,12 @@ namespace TradeBot.Test.BL
                         CallOptionPrice = changes.ElementAt(0).ElementAt(i).CallOptionPrice,
                         PutOptionPrice = changes.ElementAt(1).ElementAt(i).PutOptionPrice,
                         DateTime = changes.ElementAt(0).ElementAt(i).DateTime,
-                        StockPrice = changes.ElementAt(0).ElementAt(i).StockPrice
+                        StockPrice = changes.ElementAt(0).ElementAt(i).StockPrice,
+                        TradeDirection = TradeDirection.Null
                     }
                 };
 
                 trade.Sum_Change.Add(new TradeBehaviorChange { PositionBehavior = tradePositionBehavior, PriceActionBehavior = new PriceActionBehavior { PnL = new PnL { Dollars = dollarsPnL, Percent = percentPnL, PercentChange = percentChange } } });
-
             }
 
             return trade;

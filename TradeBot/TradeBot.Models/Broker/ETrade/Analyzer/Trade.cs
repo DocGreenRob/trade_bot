@@ -39,6 +39,6 @@ namespace TradeBot.Models.Broker.ETrade.Analyzer
         public double MaxGainPercent { get; set; }
         public double MaxGainDollars { get; set; }
 
-        public Bias Bias { get; set; }
+        
     }
 }

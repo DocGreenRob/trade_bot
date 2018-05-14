@@ -13,6 +13,7 @@ using TradeBot.Models.Broker.ETrade;
 using Microsoft.Extensions.Logging;
 using System.Linq;
 using TradeBot.Models.Broker.ETrade.Analyzer;
+using TradeBot.Utils.Const;
 
 namespace TradeBot.BL.Managers
 {
@@ -137,12 +138,19 @@ namespace TradeBot.BL.Managers
 
         public Trade Evaluate(Trade trade)
         {
+            // If I was previously MicroWatch[ing] then remove that Flag and process as normal. 
+            // If we need to re-Flag it for MicroWatch, let the new logic handle that.
+            if (trade.Flags.Contains(Flag.Micro_Watch))
+            {
+                trade.Flags.Remove(trade.Flags.Where(a => a.Equals(Flag.Micro_Watch)).FirstOrDefault());
+            }
+
             // Evaluate the currentPositionPrice versus the costBasis and see the difference in percent
 
             // CaptureData()
 
             // Naked Trade
-            if (trade.Positions.Count == 1)
+            if (trade.PositionType() == PositionType.Naked)
             {
                 AccountPosition position = trade.BehaviorChanges.Keys.ElementAt(0).PositionBehavior.AccountPosition;
                 double changeInDollars = Math.Round(position.CurrentPrice - position.CostBasis, 2);
@@ -212,7 +220,7 @@ namespace TradeBot.BL.Managers
                 return trade;
             }
 
-            if (trade.Positions.Count == 2)
+            if (trade.PositionType() == PositionType.Strangle)
             {
                 // Strangle
                 if (trade.Call() != null && trade.Put() != null)
@@ -250,10 +258,37 @@ namespace TradeBot.BL.Managers
                                 trade.MaxLossDollars = trade.Sum_Change.Last().PriceActionBehavior.PnL.Dollars;
                                 return trade;
                             }
+                            else
+                            {
+                                // if trade = maxLossPercent
+                                if ((trade.Sum_Change.LastOrDefault().PriceActionBehavior.PnL.Percent == trade.MaxLossPercent) &&
+                                    !trade.Flags.Contains(Flag.Close_At_10_Percent))
+                                {
+                                    trade.Decision = Decision.Close_If_Worse;
+                                    // here we don't add the flag Flag.Max_Loss_Percent_Triggered because we already have it
+                                    trade.Flags.AddRange(new List<Flag> { Flag.Micro_Watch });
+                                    Microwatch(trade);
+                                    return trade;
+                                }
+
+                                // if trade < maxLossPercent OR Flag.Close_At_10_Percent then EXIT
+                                if ((trade.Sum_Change.LastOrDefault().PriceActionBehavior.PnL.Percent < trade.MaxLossPercent) ||
+                                    trade.Flags.Contains(Flag.Close_At_10_Percent))
+                                {
+                                    if (Close(trade))
+                                    {
+                                        trade.Reset();
+                                        trade.Decision = Decision.Close;
+
+                                        return trade;
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             }
+
             return trade;
             //throw new Exception("Something went wrong!");
         }
@@ -283,15 +318,30 @@ namespace TradeBot.BL.Managers
         // conversely, if the stock going DOWN has caused me to flag for MicroWatch, then if the Stock Price goes further DOWN during a MicroWatch, Close()
         private void Microwatch(Trade trade)
         {
-            if (trade.Decision == Decision.New_Request)
-                Close(trade);
-            else
+            if (trade.Flags.Contains(Flag.Micro_Watch))
             {
-                if (trade.GetStockPrice() < trade.GetStockPrice(true))
+                if (trade.Decision == Decision.New_Request)
                     Close(trade);
                 else
                 {
-                    System.Threading.Thread.Sleep(10000);
+                    trade = GetBias(trade);
+                    if (trade.Sum_Change.LastOrDefault().Bias == Bias.Bullish)
+                    {
+                        if (trade.GetStockPrice() < trade.GetStockPrice(true))
+                        {
+                            Close(trade);
+                        }
+                    }
+
+                    if (trade.Sum_Change.LastOrDefault().Bias == Bias.Bearish)
+                    {
+                        if (trade.GetStockPrice() > trade.GetStockPrice(true))
+                        {
+                            Close(trade);
+                        }
+                    }
+
+                    System.Threading.Thread.Sleep(Constants.Microwatch_Trigger);
 
                     // Get current stock price
                     double currentStockPrice = _positionRepo.GetStockPrice(trade.GetUnderlying());
@@ -310,8 +360,9 @@ namespace TradeBot.BL.Managers
                     });
 
                     Microwatch(trade);
-                    // call Microwatch
                 }
+
+                // call Microwatch
             }
             throw new NotImplementedException("Implement");
         }
@@ -327,20 +378,73 @@ namespace TradeBot.BL.Managers
 
         public Trade GetBias(Trade trade)
         {
-            if (trade.BehaviorChanges.Count <= 1)
+            if (trade.Sum_Change.Count == 0)
             {
-                trade.Bias = Bias.Null;
+                trade.Sum_Change.ElementAt(trade.Sum_Change.Count - 1).Bias = Bias.Null;
                 return trade;
             }
 
-            int count = trade.Sum_Change.Count - 2;
-            // let the last one
-            double currentPercent = trade.Sum_Change.ElementAt(count).PriceActionBehavior.PnL.Percent;
-            double currentPrice = trade.Sum_Change.ElementAt(count).PositionBehavior.Change.StockPrice;
+            if (trade.PositionType() == PositionType.Strangle)
+            {
+                int count = trade.Sum_Change.Count - 1;
 
-            // get the one before the last one
-            double priorPercent = trade.Sum_Change.ElementAt(count).PriceActionBehavior.PnL.Percent;
-            double priorPrice = trade.Sum_Change.ElementAt(count).PositionBehavior.Change.StockPrice;
+                // let the last one
+                double currentProfitPercent = trade.Sum_Change.ElementAt(count).PriceActionBehavior.PnL.Percent;
+                double currentStockPrice = trade.Sum_Change.ElementAt(count).PositionBehavior.Change.StockPrice;
+                double currentProfitDollars = trade.Sum_Change.ElementAt(count).PriceActionBehavior.PnL.Dollars;
+                double priorProfitPercent = 0;
+                double priorStockPrice = 0;
+                double priorProfitDollars = 0;
+                Bias lastBias = Bias.Null;
+
+                if (trade.Sum_Change.Count != 1)
+                {
+                    // get the one before the last one
+                    count -= 1;
+                    priorProfitPercent = trade.Sum_Change.ElementAt(count).PriceActionBehavior.PnL.Percent;
+                    priorStockPrice = trade.Sum_Change.ElementAt(count).PositionBehavior.Change.StockPrice;
+                    priorProfitDollars = trade.Sum_Change.ElementAt(count).PriceActionBehavior.PnL.Dollars;
+                    lastBias = trade.Sum_Change.ElementAt(count).Bias;
+                }
+
+                if ((currentStockPrice < priorStockPrice) &&
+                    (currentProfitDollars < priorProfitDollars)
+                    )
+                {
+                    trade.Sum_Change.LastOrDefault().Bias = Bias.Bullish;
+                }
+
+                // opposite ^
+                if ((currentStockPrice > priorStockPrice) &&
+                    (currentProfitDollars > priorProfitDollars)
+                    )
+                {
+                    trade.Sum_Change.LastOrDefault().Bias = Bias.Bullish;
+                }
+
+                if ((currentStockPrice < priorStockPrice) &&
+                    (currentProfitDollars > priorProfitDollars)
+                    )
+                {
+                    trade.Sum_Change.LastOrDefault().Bias = Bias.Bearish;
+                }
+
+                // if currentStockPrice > priorStockPrice && currentProfit < priorProfit then BEARISH
+                if ((currentStockPrice > priorStockPrice) &&
+                    currentProfitDollars < priorProfitDollars)
+                {
+                    trade.Sum_Change.LastOrDefault().Bias = Bias.Bearish;
+                }
+
+                // if currentStockPrice == priorStockPrice && currentProfit < priorProfit then LAST
+                if ((currentStockPrice == priorStockPrice) &&
+                    currentProfitDollars < priorProfitDollars)
+                {
+                    trade.Sum_Change.LastOrDefault().Bias = lastBias;
+                }
+
+                // if last Bias was bullish
+            }
 
             return trade;
         }

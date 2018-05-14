@@ -10,6 +10,7 @@
 
         public enum TradeDirection
         {
+            Null,
             Up,
             Down,
             Sideways
