@@ -261,7 +261,7 @@ namespace TradeBot.BL.Managers
                             else
                             {
                                 // if trade = maxLossPercent
-                                if ((trade.Sum_Change.LastOrDefault().PriceActionBehavior.PnL.Percent == trade.MaxLossPercent) &&
+                                if ((trade.PnL().Percent == trade.MaxLossPercent) &&
                                     !trade.Flags.Contains(Flag.Close_At_10_Percent))
                                 {
                                     trade.Decision = Decision.Close_If_Worse;
@@ -272,7 +272,7 @@ namespace TradeBot.BL.Managers
                                 }
 
                                 // if trade < maxLossPercent OR Flag.Close_At_10_Percent then EXIT
-                                if ((trade.Sum_Change.LastOrDefault().PriceActionBehavior.PnL.Percent < trade.MaxLossPercent) ||
+                                if ((trade.PnL().Percent < trade.MaxLossPercent) ||
                                     trade.Flags.Contains(Flag.Close_At_10_Percent))
                                 {
                                     if (Close(trade))
@@ -282,6 +282,31 @@ namespace TradeBot.BL.Managers
 
                                         return trade;
                                     }
+                                }
+                            }
+
+                            // # 1
+                            // if trade < 0 (in the red)
+                            if (trade.PnL().Percent < 0)
+                            {
+                                // in the red
+                                if (trade.Flags.Contains(Flag.Max_Loss_Percent_Triggered))
+                                {
+                                    trade.Decision = Decision.Wait;
+
+                                    // add flag
+                                    if (trade.Flags.Add(Flag.Close_At_10_Percent, null))
+                                    {
+                                        return trade;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                // in the green
+                                if (trade.Flags.Contains(Flag.Max_Loss_Percent_Triggered))
+                                {
+                                     // TODO: Start here : 5.14.18
                                 }
                             }
                         }
@@ -437,8 +462,9 @@ namespace TradeBot.BL.Managers
                 }
 
                 // if currentStockPrice == priorStockPrice && currentProfit < priorProfit then LAST
-                if ((currentStockPrice == priorStockPrice) &&
-                    currentProfitDollars < priorProfitDollars)
+                if (currentStockPrice == priorStockPrice)
+                //if ((currentStockPrice == priorStockPrice) &&
+                //    currentProfitDollars < priorProfitDollars)
                 {
                     trade.Sum_Change.LastOrDefault().Bias = lastBias;
                 }

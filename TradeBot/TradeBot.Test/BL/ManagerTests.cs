@@ -398,6 +398,7 @@ namespace TradeBot.Test.BL
                 // Set AccountPositionResponse
                 position.AccountPositionsResponse = accountPositionsResponse;
 
+                position.EntryTime = position.EntryTime.AddMinutes(1);
 
                 if (i == 0)
                 {
@@ -436,7 +437,7 @@ namespace TradeBot.Test.BL
                         new Change
                         {
                             DateTime = position.EntryTime.AddMinutes(5),
-                            StockPrice = 321.38,
+                            StockPrice = 322.38,
                             CallOptionPrice = 3.8
                         },
                         new Change
@@ -558,7 +559,7 @@ namespace TradeBot.Test.BL
                         new Change
                         {
                             DateTime = position.EntryTime.AddMinutes(5),
-                            StockPrice = 321.38,
+                            StockPrice = 322.38,
                             PutOptionPrice = 2.83
                         },
                         new Change
@@ -831,34 +832,16 @@ namespace TradeBot.Test.BL
 
             // Act
             var sumChanges = trade.Sum_Change;
-            //a.MemberwiseClone
-            //new List<TradeBehaviorChange>().MemberwiseClone
-
-            //Trade t = trade;
-            //t.Sum_Change = new List<TradeBehaviorChange>();
-
-            //foreach (var change in sumChanges)
-            //{
-            //    //Trade t = new Trade();
-            //    //t.Sum_Change.Add(x);
-
-            //    t.Sum_Change.Add(change);
-
-            //    t = positionMgr.GetBias(t);
-            //}
-
-            //Trade t = trade;
             trade.Sum_Change = new List<TradeBehaviorChange>();
 
             foreach (var change in sumChanges)
             {
-                //Trade t = new Trade();
-                //t.Sum_Change.Add(x);
-
                 trade.Sum_Change.Add(change);
 
                 trade = positionMgr.GetBias(trade);
             }
+
+            DateTime marketTime = new DateTime(2018, 01, 01, 9, 31, 0);
 
             for (var i=0; i<trade.Sum_Change.Count; i++)
             {
@@ -866,22 +849,60 @@ namespace TradeBot.Test.BL
                 {
                     case 0:
                         Assert.AreEqual(Bias.Null, trade.Sum_Change.ElementAt(i).Bias);
+                        Assert.AreEqual(trade.Sum_Change.ElementAt(i).PositionBehavior.Change.DateTime.Minute, marketTime.Minute);
                         break;
                     case 1:
                         Assert.AreEqual(Bias.Bullish, trade.Sum_Change.ElementAt(i).Bias);
+                        Assert.AreEqual(trade.Sum_Change.ElementAt(i).PositionBehavior.Change.DateTime.Minute, marketTime.AddMinutes(1).Minute);
                         break;
                     case 2:
-                    case 3:
-                    case 4:
-                    case 5:
-                    case 6:
-                    case 7:
-                    case 8:
-                    case 9:
-                    case 10:
-                    case 11:
-                    case 12:
                         Assert.AreEqual(Bias.Bearish, trade.Sum_Change.ElementAt(i).Bias);
+                        Assert.AreEqual(trade.Sum_Change.ElementAt(i).PositionBehavior.Change.DateTime.Minute, marketTime.AddMinutes(2).Minute);
+                        break;
+                    case 3:
+                        Assert.AreEqual(Bias.Bearish, trade.Sum_Change.ElementAt(i).Bias);
+                        Assert.AreEqual(trade.Sum_Change.ElementAt(i).PositionBehavior.Change.DateTime.Minute, marketTime.AddMinutes(3).Minute);
+                        break;
+                    case 4:
+                        Assert.AreEqual(Bias.Bullish, trade.Sum_Change.ElementAt(i).Bias);
+                        Assert.AreEqual(trade.Sum_Change.ElementAt(i).PositionBehavior.Change.DateTime.Minute, marketTime.AddMinutes(4).Minute);
+                        break;
+                    case 5:
+                        Assert.AreEqual(Bias.Bearish, trade.Sum_Change.ElementAt(i).Bias);
+                        Assert.AreEqual(trade.Sum_Change.ElementAt(i).PositionBehavior.Change.DateTime.Minute, marketTime.AddMinutes(5).Minute);
+                        break;
+                    case 6:
+                        Assert.AreEqual(Bias.Bearish, trade.Sum_Change.ElementAt(i).Bias);
+                        Assert.AreEqual(trade.Sum_Change.ElementAt(i).PositionBehavior.Change.DateTime.Minute, marketTime.AddMinutes(6).Minute);
+                        break;
+                    case 7:
+                        Assert.AreEqual(Bias.Bearish, trade.Sum_Change.ElementAt(i).Bias);
+                        Assert.AreEqual(trade.Sum_Change.ElementAt(i).PositionBehavior.Change.DateTime.Minute, marketTime.AddMinutes(7).Minute);
+                        break;
+                    case 8:
+                        Assert.AreEqual(Bias.Bearish, trade.Sum_Change.ElementAt(i).Bias);
+                        Assert.AreEqual(trade.Sum_Change.ElementAt(i).PositionBehavior.Change.DateTime.Minute, marketTime.AddMinutes(8).Minute);
+                        break;
+                    case 9:
+                        Assert.AreEqual(Bias.Bearish, trade.Sum_Change.ElementAt(i).Bias);
+                        Assert.AreEqual(trade.Sum_Change.ElementAt(i).PositionBehavior.Change.DateTime.Minute, marketTime.AddMinutes(9).Minute);
+                        break;
+                    case 10:
+                        Assert.AreEqual(Bias.Bearish, trade.Sum_Change.ElementAt(i).Bias);
+                        Assert.AreEqual(trade.Sum_Change.ElementAt(i).PositionBehavior.Change.DateTime.Minute, marketTime.AddMinutes(10).Minute);
+                        break;
+                    case 11:
+                        Assert.AreEqual(Bias.Bearish, trade.Sum_Change.ElementAt(i).Bias);
+                        Assert.AreEqual(trade.Sum_Change.ElementAt(i).PositionBehavior.Change.DateTime.Minute, marketTime.AddMinutes(11).Minute);
+                        break;
+                    case 12:
+                        // TODO: reason-for-failure:
+                        /* In the prior period my "Decision" was to close the trade so that would have automatically changed my 
+                        * "Bias" to the opposite of the closed position.
+                        */
+                        // TODO: Implement!
+                        Assert.AreEqual(Bias.Bullish, trade.Sum_Change.ElementAt(i).Bias);
+                        Assert.AreEqual(trade.Sum_Change.ElementAt(i).PositionBehavior.Change.DateTime.Minute, marketTime.AddMinutes(12).Minute);
                         break;
                     //case 1:
                     //    Assert.AreEqual(Bias.Bullish, trade.Sum_Change.ElementAt(i).Bias);
@@ -1014,7 +1035,15 @@ namespace TradeBot.Test.BL
             return trade;
         }
 
+        [TestMethod]
+        public void Can_Get_Stock_Quote_ETrade()
+        {
+            // Arrange
 
+            // Assert
+
+            // Act
+        }
         //      /// <summary>
         //      /// In this case, we will change the Position value such as to make the app start the monitoring process
         //      /// </summary>

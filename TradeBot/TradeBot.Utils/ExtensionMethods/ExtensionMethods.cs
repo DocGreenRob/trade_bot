@@ -146,6 +146,24 @@ namespace TradeBot.Utils.ExtensionMethods
         {
             return flags.Any(f => f.Equals(flag));
         }
+        /// <summary>
+        /// Adds the specified flag.
+        /// </summary>
+        /// <param name="flags">The flags.</param>
+        /// <param name="flag">The flag.</param>
+        /// <param name="dummy">The dummy. (Dummy object to differentiate between my Add() and .NET's.</param>
+        /// <returns></returns>
+        /// <exception cref="Exception">Something went wrong!</exception>
+        public static bool Add(this List<Flag> flags, Flag flag, object dummy = null)
+        {
+            if (!flags.Any(Flag.Close_At_10_Percent))
+            {
+                flags.Add(flag);
+                return true;
+            }
+
+            throw new Exception("Something went wrong!");
+        }
 
         public static double GetStockPrice(this Trade trade, bool previous = false)
         {
@@ -174,6 +192,11 @@ namespace TradeBot.Utils.ExtensionMethods
                 return AppEnums.PositionType.Strangle;
 
             throw new Exception("Something went wrong!");
+        }
+
+        public static PnL PnL(this Trade trade)
+        {
+            return trade.Sum_Change.LastOrDefault().PriceActionBehavior.PnL;
         }
     }
 }
