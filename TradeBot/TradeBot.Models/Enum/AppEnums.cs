@@ -4,6 +4,7 @@
     {
         public enum PriceType
         {
+            Null,
             MARKET,
             LIMIT
         }
@@ -21,6 +22,7 @@
         /// </summary>
         public enum PositionType
         {
+            Null,
             /// <summary>
             /// If "Underlying" is at $249.00 this means "Buy a Call" at the "Next Strike Price Up" ($250) and "Buy a Put" at the "Next Strike Price Down" ($247.50)
             /// </summary>
@@ -38,6 +40,7 @@
         /// </summary>
         public enum TradeStrength
         {
+            Null,
             /// <summary>
             /// 1 Contract or less than $500 on total trade (or something like this) or some % of account value
             /// </summary>
@@ -57,6 +60,7 @@
         /// </summary>
         public enum Broker
         {
+            Null,
             ETrade,
             TDAmeritrade
 
@@ -67,6 +71,7 @@
         /// </summary>
         public enum OptionType
         {
+            Null,
             CALL,
             PUT,
             CALLPUT
@@ -77,6 +82,7 @@
         /// </summary>
         public enum OrderAction
         {
+            Null,
             BUY_TO_OPEN,
             SELL_TO_OPEN,
             BUY_TO_CLOSE,
@@ -88,6 +94,7 @@
         /// </summary>
         public enum InstrumentType
         {
+            Null,
             Stock,
             Bond,
             Option,
@@ -99,6 +106,7 @@
         /// </summary>
         public enum OrderTerm
         {
+            Null,
             GOOD_FOR_DAY,
             GOOD_TILL_CANCEL
         }
@@ -108,6 +116,7 @@
         /// </summary>
         public enum TypeCode
         {
+            Null,
             /// <summary>
             /// Equity
             /// </summary>
@@ -135,6 +144,7 @@
         /// </summary>
         public enum LongOrShort
         {
+            Null,
             /// <summary>
             /// Bullish
             /// </summary>
@@ -227,16 +237,19 @@
 
         public enum ExchangeCode
         {
+            Null,
             CINC
         }
 
         public enum ExpirationType
         {
+            Null,
             MONTHLY
         }
 
         public enum Month
         {
+            Null,
             Janurary,
             Feburary,
             March,
@@ -253,12 +266,14 @@
 
         public enum AccountType
         {
+            Null,
             MARGIN,
             CASH
         }
 
         public enum OptionLevel
         {
+            Null,
             LEVEL_1,
             LEVEL_2,
             LEVEL_3,
@@ -267,6 +282,7 @@
 
         public enum Interval
         {
+            Null,
             Min_1,
             Min_5,
             Min_15,
@@ -279,6 +295,7 @@
 
         public enum StochType
         {
+            Null,
             /// <summary>
             /// Slow (Purple/Pinkish)
             /// </summary>
@@ -291,12 +308,14 @@
 
         public enum Flag
         {
+            Null,
             Close_At_10_Percent,
             Exit_If_Decrease,
             Inspect_Stoch_15_Mins,
             Max_Loss_Percent_Triggered,
             Micro_Watch,
-            New_Request
+            New_Request,
+            Red_Alert_15_SMA
         }
 
         public enum Bias
@@ -304,6 +323,23 @@
             Null,
             Bullish,
             Bearish
+        }
+
+        public enum Study
+        {
+            Null,
+            Stochastics,
+            MACD,
+            RSI
+        }
+
+        public enum EMALength
+        {
+            _15,
+            _30,
+            _50,
+            _100,
+            _200
         }
     }
 }

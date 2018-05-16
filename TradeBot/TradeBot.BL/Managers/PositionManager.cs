@@ -233,15 +233,14 @@ namespace TradeBot.BL.Managers
                             if (Close(trade))
                             {
                                 trade.Reset();
-                                trade.Decision = Decision.Close;
 
-                                return trade;
+                                return AssignDecision(trade, Decision.Close);
                             }
                         }
                         else
                         {
                             trade.Default();
-                            Trade _trade = AssignDecision(trade);
+                            Trade _trade = AssignDecision(trade, Decision.Wait);
                             return _trade;
                         }
                     }
@@ -264,7 +263,8 @@ namespace TradeBot.BL.Managers
                                 if ((trade.PnL().Percent == trade.MaxLossPercent) &&
                                     !trade.Flags.Contains(Flag.Close_At_10_Percent))
                                 {
-                                    trade.Decision = Decision.Close_If_Worse;
+                                    trade = AssignDecision(trade, Decision.Close_If_Worse);
+
                                     // here we don't add the flag Flag.Max_Loss_Percent_Triggered because we already have it
                                     trade.Flags.AddRange(new List<Flag> { Flag.Micro_Watch });
                                     Microwatch(trade);
@@ -278,9 +278,7 @@ namespace TradeBot.BL.Managers
                                     if (Close(trade))
                                     {
                                         trade.Reset();
-                                        trade.Decision = Decision.Close;
-
-                                        return trade;
+                                        return AssignDecision(trade, Decision.Close);
                                     }
                                 }
                             }
@@ -289,24 +287,49 @@ namespace TradeBot.BL.Managers
                             // if trade < 0 (in the red)
                             if (trade.PnL().Percent < 0)
                             {
-                                // in the red
                                 if (trade.Flags.Contains(Flag.Max_Loss_Percent_Triggered))
                                 {
-                                    trade.Decision = Decision.Wait;
+                                    trade = AssignDecision(trade, Decision.Wait);
 
                                     // add flag
                                     if (trade.Flags.Add(Flag.Close_At_10_Percent, null))
                                     {
                                         return trade;
                                     }
-                                }
+                                    else
+                                    {
+                                        // TODO: Start here : 5.15.18
+                                    }
+                                } 
                             }
-                            else
+                            else // in the green
                             {
-                                // in the green
+                                // Now we are in the green.  Now we hope to be able to monitor the trade and capture either (1) by closing the whole trade or (2) closing the profiting side of the trade.
+                                // Because of this, here is the core logic used to determine the decisions while monitoring a profit???
+
+
+                                // from "[x.1]" (the below "if" statement)
                                 if (trade.Flags.Contains(Flag.Max_Loss_Percent_Triggered))
                                 {
-                                     // TODO: Start here : 5.14.18
+                                    // TODO: Start here : 5.14.18
+                                }
+                                else
+                                {
+                                    // TODO: Start here : 5.15.18
+                                }
+
+                                if (trade.Flags.Contains(Flag.Inspect_Stoch_15_Mins) // trade
+                                    || trade.BehaviorChanges.Keys.Select(k => k.PositionBehavior).Any(b => b.Flags.Contains(Flag.Inspect_Stoch_15_Mins)) // call
+                                    || trade.BehaviorChanges.Values.Select(k => k.PositionBehavior).Any(b => b.Flags.Contains(Flag.Inspect_Stoch_15_Mins))) // put
+                                {
+                                    trade = InspectStudy(Study.Stochastics, Interval.Min_15, trade);
+                                }
+
+                                if (trade.Flags.Contains(Flag.Red_Alert_15_SMA) // trade
+                                    || trade.BehaviorChanges.Keys.Select(k => k.PositionBehavior).Any(b => b.Flags.Contains(Flag.Red_Alert_15_SMA)) // call
+                                    || trade.BehaviorChanges.Values.Select(k => k.PositionBehavior).Any(b => b.Flags.Contains(Flag.Red_Alert_15_SMA))) // put
+                                {
+                                    trade = InspectPriceToEMA(EMALength._30, Interval.Min_15, trade);
                                 }
                             }
                         }
@@ -318,13 +341,54 @@ namespace TradeBot.BL.Managers
             //throw new Exception("Something went wrong!");
         }
 
-        private Trade AssignDecision(Trade trade)
+        private Trade InspectPriceToEMA(EMALength eMALength, Interval interval, Trade trade)
         {
-            if (trade.Time.First3Minutes())
+            double ema = GetEMA(eMALength, interval);
+            Underlying underlying = GetLastSession(Interval.Min_1);
+            
+            if (underlying.High >= ema)
             {
-                trade.Decision = Decision.Wait;
-                trade.Call().PositionBehavior.Decision = Decision.Wait;
-                trade.Put().PositionBehavior.Decision = Decision.Wait;
+                return AssignDecision(trade, Decision.Close);
+            }
+            else
+            {
+                // Since this is a non actionable event for the trade, then render no decision - "Null"
+                return AssignDecision(trade, Decision.Null);
+            }
+                
+            throw new NotImplementedException();
+        }
+
+        private double GetEMA(EMALength eMALength, Interval interval)
+        {
+            // TODO: Start here : 5.15.18
+            throw new NotImplementedException();
+        }
+
+        private Underlying GetLastSession(Interval min_1)
+        {
+            // TODO: Start here : 5.15.18
+            throw new NotImplementedException();
+        }
+
+        private Trade InspectStudy(Study study, Interval interval, Trade trade)
+        {
+            // TODO: Start here : 5.15.18
+            // Inspect 
+            // 1. Trade
+            // 2. Call
+            // 3. Put
+            throw new NotImplementedException();
+        }
+
+        private Trade AssignDecision(Trade trade, Decision decision, bool deep = true)
+        {
+            trade.Decision = decision;
+
+            if (deep)
+            {
+                trade.Call().PositionBehavior.Decision = decision;
+                trade.Put().PositionBehavior.Decision = decision;
             }
 
             return trade;
