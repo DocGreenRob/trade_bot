@@ -1,4 +1,88 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="TradeBot.Models.Broker.ETrade.AccountBalance">
+    <Position X="2.25" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAKQACAAAAAAgAQAAAAAQAAAAAAAACAAAAAAEAAAQ=</HashCode>
+      <FileName>AccountBalance.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TradeBot.Models.Broker.ETrade.Change">
+    <Position X="4.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAQAAAAAAEAACAAAAAAAQAAAAAgAAAAAA=</HashCode>
+      <FileName>Change.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TradeBot.Models.History">
+    <Position X="6" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>History.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TradeBot.Models.Instrument" Collapsed="true">
+    <Position X="8.25" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Instrument.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TradeBot.Models.Broker.ETrade.MarginAccountBalance">
+    <Position X="6.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIBAAAAAAAAEAAQAAAwAAAAAAIAAIAAAgABAAAAACAA=</HashCode>
+      <FileName>MarginAccountBalance.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TradeBot.Models.Option" Collapsed="true">
+    <Position X="9" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAAACAAAgAQgAAAAQAAgAAACAAQCAAA=</HashCode>
+      <FileName>Option.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TradeBot.Models.Broker.ETrade.OptionPair">
+    <Position X="8" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>OptionPair.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TradeBot.Models.Broker.ETrade.OptionPairCount">
+    <Position X="6" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAA=</HashCode>
+      <FileName>OptionPairCount.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TradeBot.Models.Position">
+    <Position X="8" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACBAAAAAMgAAAAQAAAAAAAAAKABAAAAEAAAAAAgCg=</HashCode>
+      <FileName>Position.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TradeBot.Models.Underlying">
+    <Position X="4.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQAAIAAAAgAAAAQAAAgAAAIAAAAAAAAAAAA=</HashCode>
+      <FileName>Underlying.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TradeBot.Models.MockModelDefaults.Default">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAAhRIAAgAAgAAgAAAgAAAAQAAACAAA=</HashCode>
+      <FileName>MockModelDefaults\Default.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TradeBot.Models.Broker.ETrade.AccountBalanceResponse">
+    <Position X="2.25" Y="4" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAAAgAAAIAAAAAAAAAAAAAAAAAAoAA=</HashCode>
+      <FileName>Broker\ETrade\AccountBalanceResponse.cs</FileName>
+    </TypeIdentifier>
+  </Class>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>
